@@ -20,9 +20,9 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 4. **Quản trị viên (Admin):** Quản lý toàn diện hệ thống, kiểm soát tài khoản cơ sở y tế, quản lý danh mục (taxonomy) và giám sát hệ thống.
 
 ## Luồng người dùng
-- **Người dân:** Trang chủ -> Nhập triệu chứng/từ khóa -> Hệ thống gợi ý dịch vụ/cơ sở y tế phù hợp -> Xem chi tiết và tạo checklist chuẩn bị khám bệnh[cite: 7].
-- **Cơ sở y tế:** Đăng nhập -> Vào bảng điều khiển (Dashboard) -> Cập nhật thông tin dịch vụ & quy trình hướng dẫn khám bệnh[cite: 7].
-- **Biên tập viên:** Kiểm tra hàng chờ nội dung -> Xét duyệt hoặc phản hồi -> Sử dụng công cụ giám sát độ mới để xử lý các dữ liệu cũ[cite: 7].
+- **Người dân:** Trang chủ -> Nhập triệu chứng/từ khóa -> Hệ thống gợi ý dịch vụ/cơ sở y tế phù hợp -> Xem chi tiết và tạo checklist chuẩn bị khám bệnh.
+- **Cơ sở y tế:** Đăng nhập -> Vào bảng điều khiển (Dashboard) -> Cập nhật thông tin dịch vụ & quy trình hướng dẫn khám bệnh.
+- **Biên tập viên:** Kiểm tra hàng chờ nội dung -> Xét duyệt hoặc phản hồi -> Sử dụng công cụ giám sát độ mới để xử lý các dữ liệu cũ.
 
 ## Bảng kiểm kê màn hình
 | STT | Tên màn hình / Chức năng | Tên tệp mã nguồn (File name) | Vai trò phụ trách | Thành viên thực hiện |
@@ -64,13 +64,17 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 - Sử dụng nhánh chính `main`. Các thành viên thực hiện clone repository, thực hiện `git pull` trước khi làm việc và `git push` lên nhánh `main` sau khi hoàn thành task.
 
 ## Figma / Canva
-- Link thiết kế giao diện chi tiết trên Figma của nhóm: *[Chèn link Figma tại đây]*
+- Link thiết kế giao diện chi tiết trên Figma của nhóm: *[https://www.figma.com/design/yRPsl2coYwjC13kBhhLKEz/CareRoute---UI-Design?node-id=0-1&t=H6S6YA57MTtvuzha-1]*
 
 ## Demo
 - Link xem trước sản phẩm trực tiếp (GitHub Pages / Vercel): *[Chèn link demo tại đây]*
 
 ## Minh chứng OBS
-- Link video quay màn hình demo sản phẩm và giải thích code qua OBS: *[Chèn link video OBS tại đây]*
+- Link video quay màn hình demo sản phẩm và giải thích code qua OBS:
+ *[Chèn link video OBS tại đây]*
+ *[Chèn link video OBS tại đây]*
+ *[Chèn link video OBS tại đây]*
+ 
 
 ## Khai báo sử dụng AI
 - Sử dụng các công cụ AI hỗ trợ trong quá trình định hình ý tưởng cấu trúc, kiểm tra mã nguồn, hỗ trợ viết tài liệu hướng dẫn và tối ưu hóa giao diện người dùng theo đúng quy chế học phần.
