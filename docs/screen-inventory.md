@@ -42,3 +42,5 @@ Luồng giám sát nội dung cũ: Truy cập reviewer-freshness-monitor.html �
 | **10** | Bảng điều khiển quản trị hệ thống | `admin-dashboard.html` | Quản trị viên | Bạn (SV3)[cite: 2] |
 | **11** | Trang quản lý cơ sở y tế toàn hệ thống | `admin-facility-management.html` | Quản trị viên | Bạn (SV3)[cite: 2] |
 | **12** | Trang quản lý danh mục (Taxonomy) | `admin-category-management.html` | Quản trị viên | Bạn (SV3)[cite: 2] |
+| **13** | Trang đăng nhập / Chọn vai trò | `login.html` | Dùng chung | Cả nhóm[cite: 2] |
+| **14** | Trang báo lỗi không tìm thấy trang | `404.html` | Dùng chung | Cả nhóm[cite: 2] |

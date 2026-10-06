@@ -39,6 +39,8 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 | 10 | Bảng điều khiển quản trị hệ thống | `admin-dashboard.html` | Quản trị viên | Bạn (SV3) |
 | 11 | Trang quản lý cơ sở y tế toàn hệ thống | `admin-facility-management.html` | Quản trị viên | Bạn (SV3) |
 | 12 | Trang quản lý danh mục (Taxonomy) | `admin-category-management.html` | Quản trị viên | Bạn (SV3) |
+| 13 | Trang đăng nhập / Chọn vai trò | `login.html` | Dùng chung | Cả nhóm |
+| 14 | Trang báo lỗi không tìm thấy trang | `404.html` | Dùng chung | Cả nhóm |
 
 ## Tính năng AI
 - **AI-1 (Care Information Router):** Phân tích triệu chứng hoặc từ khóa do người dân nhập vào để điều phối, gợi ý danh mục dịch vụ và cơ sở y tế phù hợp nhất.
