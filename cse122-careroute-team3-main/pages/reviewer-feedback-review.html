@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hàng chờ Duyệt nội dung - CareRoute</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Be Vietnam Pro"', 'Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#e8f5e9',
+                            200: '#bbf7d0',
+                            500: '#10b981',
+                            600: '#0d9488',
+                            700: '#0f766e',
+                            800: '#115e59',
+                            900: '#134e4a',
+                        },
+                        amberSoft: '#fefce8',
+                        amberBorder: '#fde047',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- Custom CSS for specialized adjustments -->
+    <style>
+        body {
+            font-family: 'Be Vietnam Pro', 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased bg-slate-50 text-slate-800">
+
+    <!-- Top Header Navigation -->
+    <header class="sticky top-0 z-40 bg-white border-b border-slate-200 h-16 flex items-center px-4 lg:px-8 justify-between shadow-xs">
+        <!-- Left Header: Brand Logo & Mobile Toggle -->
+        <div class="flex items-center gap-4">
+            <button id="sidebarToggle" class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-lg transition-colors" aria-label="Toggle Navigation Sidebar">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+            <a href="#" class="flex items-center gap-3">
+                <div class="w-9 h-9 bg-emerald-600 rounded-xl flex items-center justify-center shadow-md shadow-emerald-600/20">
+                    <i data-lucide="plus" class="w-6 h-6 text-white stroke-[3]"></i>
+                </div>
+                <div class="flex flex-col">
+                    <span class="text-xl font-bold tracking-tight text-slate-900 leading-none">CareRoute</span>
+                    <span class="text-[10px] font-medium text-emerald-600 uppercase tracking-widest mt-0.5">Admin Portal</span>
+                </div>
+            </a>
+        </div>
+
+        <!-- Center Header: Quick Global Search -->
+        <div class="hidden md:flex items-center flex-1 max-w-md mx-8">
+            <div class="relative w-full">
+                <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                <input type="text" placeholder="Tìm kiếm yêu cầu, dịch vụ, cơ sở y tế..." class="w-full pl-10 pr-4 py-2 text-sm bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-transparent focus:border-emerald-500 rounded-xl transition-all outline-none">
+            </div>
+        </div>
+
+        <!-- Right Header: Notifications & User Profile -->
+        <div class="flex items-center gap-3">
+            <!-- Notification Bell with Badge -->
+            <button class="relative p-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-xl transition-all focus:outline-none">
+                <i data-lucide="bell" class="w-5 h-5"></i>
+                <span class="absolute top-2 right-2 w-2.5 h-2.5 bg-rose-500 border-2 border-white rounded-full"></span>
+            </button>
+            
+            <div class="h-6 w-px bg-slate-200 mx-1"></div>
+
+            <!-- User Profile Dropdown -->
+            <div class="flex items-center gap-3 cursor-pointer p-1.5 rounded-xl hover:bg-slate-100 transition-colors">
+                <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80" alt="Minh Phan Avatar" class="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/30" onerror="this.src='https://placehold.co/100x100/10b981/ffffff?text=MP'">
+                <div class="hidden sm:flex flex-col text-left">
+                    <span class="text-sm font-semibold text-slate-900 leading-tight">Minh Phan</span>
+                    <span class="text-xs font-medium text-slate-500">Điều Phối Viên</span>
+                </div>
+                <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 hidden sm:block"></i>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Outer Container -->
+    <div class="flex-1 flex overflow-hidden">
+
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="w-64 bg-white border-r border-slate-200 flex-shrink-0 fixed inset-y-0 left-0 z-30 transform -translate-x-full lg:translate-x-0 lg:static transition-transform duration-200 ease-in-out flex flex-col pt-16 lg:pt-0">
+            <div class="p-4 flex-1 overflow-y-auto custom-scrollbar">
+                <!-- Group Label -->
+                <div class="px-3 pt-2 pb-3">
+                    <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">KIỂM DUYỆT VIÊN</span>
+                </div>
+
+                <!-- Navigation Links List -->
+                <nav class="space-y-1">
+                    <!-- Link 1: Hàng chờ duyệt -->
+                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-sm font-medium transition-all group">
+                        <i data-lucide="list-todo" class="w-5 h-5 text-slate-400 group-hover:text-slate-600"></i>
+                        <span>Hàng chờ duyệt</span>
+                        <span class="ml-auto bg-slate-200 text-slate-700 text-xs font-semibold px-2 py-0.5 rounded-full">12</span>
+                    </a>
+
+                    <!-- Link 2: Phản hồi & Sửa đổi (ACTIVE STATE) -->
+                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-emerald-800 bg-[#e8f5e9] text-sm font-semibold transition-all shadow-xs border border-emerald-200/60">
+                        <i data-lucide="message-square" class="w-5 h-5 text-emerald-600"></i>
+                        <span>Phản hồi & Sửa đổi</span>
+                        <span class="ml-auto w-2 h-2 rounded-full bg-emerald-500"></span>
+                    </a>
+
+                    <!-- Link 3: Giám sát nội dung cũ -->
+                    <a href="#" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-sm font-medium transition-all group">
+                        <i data-lucide="history" class="w-5 h-5 text-slate-400 group-hover:text-slate-600"></i>
+                        <span>Giám sát nội dung cũ</span>
+                    </a>
+                </nav>
+
+                <div class="my-6 border-t border-slate-100"></div>
+
+                <!-- Secondary Section Label -->
+                <div class="px-3 pb-2">
+                    <span class="text-[11px] font-bold text-slate-400 tracking-wider uppercase">CƠ SỞ Y TẾ LIÊN KẾT</span>
+                </div>
+                <nav class="space-y-1">
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="building-2" class="w-4 h-4 text-slate-400"></i>
+                        <span>Bệnh viện Hồng Ngọc</span>
+                    </a>
+                    <a href="#" class="flex items-center gap-3 px-3 py-2 text-xs font-medium text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <i data-lucide="building-2" class="w-4 h-4 text-slate-400"></i>
+                        <span>Phòng khám Tam Anh</span>
+                    </a>
+                </nav>
+            </div>
+
+            <!-- Sidebar Footer Quick Info -->
+            <div class="p-4 border-t border-slate-100 bg-slate-50/50">
+                <div class="flex items-center justify-between text-xs text-slate-500">
+                    <span class="flex items-center gap-1.5">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 inline-block animate-pulse"></span>
+                        Hệ thống hoạt động
+                    </span>
+                    <span class="font-mono text-[11px] text-slate-400">v2.4.1</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="flex-1 overflow-y-auto custom-scrollbar p-4 lg:p-8">
+            <div class="max-w-7xl mx-auto space-y-6">
+
+                <!-- Breadcrumbs & Quick Header Bar -->
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <!-- Breadcrumb -->
+                        <nav class="flex items-center gap-2 text-xs sm:text-sm text-slate-500">
+                            <a href="#" class="hover:text-emerald-600 transition-colors">Hàng chờ duyệt</a>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-slate-400"></i>
+                            <span class="font-semibold text-slate-800">Yêu cầu chi tiết #1024</span>
+                        </nav>
+                        <h1 class="text-xl sm:text-2xl font-bold text-slate-900 tracking-tight flex items-center gap-3">
+                            Chi tiết kiểm duyệt nội dung
+                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
+                                Đang chờ phản hồi
+                            </span>
+                        </h1>
+                    </div>
+
+                    <!-- Top Action Options -->
+                    <div class="flex items-center gap-2">
+                        <button class="px-3.5 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 text-sm font-medium rounded-xl transition-all shadow-xs flex items-center gap-2">
+                            <i data-lucide="arrow-left" class="w-4 h-4 text-slate-500"></i>
+                            Quay lại hàng chờ
+                        </button>
+                        <button class="p-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl transition-all shadow-xs" title="Xem bản sao lịch sử">
+                            <i data-lucide="copy" class="w-4 h-4"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Main Layout (2 Columns Grid) -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+
+                    <!-- LEFT COLUMN: Nội dung thay đổi (8 Cols on desktop) -->
+                    <div class="lg:col-span-7 xl:col-span-8 space-y-6">
+                        
+                        <!-- Main Card: Nội dung thay đổi -->
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+                            <!-- Card Header -->
+                            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 bg-emerald-50 rounded-xl text-emerald-600">
+                                        <i data-lucide="file-edit" class="w-5 h-5"></i>
+                                    </div>
+                                    <h2 class="text-base font-bold text-slate-900">Nội dung thay đổi</h2>
+                                </div>
+                                <!-- Badge tag on top right -->
+                                <span class="px-3 py-1 bg-[#e8f5e9] text-emerald-800 border border-emerald-200 rounded-full text-xs font-semibold tracking-wide">
+                                    Bảng giá & Dịch vụ
+                                </span>
+                            </div>
+
+                            <!-- Card Body Content -->
+                            <div class="p-6 space-y-6">
+
+                                <!-- Field 1: Tên dịch vụ -->
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-slate-500 tracking-wider uppercase flex items-center gap-1.5">
+                                        <span>Tên dịch vụ</span>
+                                    </label>
+                                    <div class="relative">
+                                        <input type="text" readonly value="Chụp Cộng hưởng từ MRI sọ não" class="w-full px-4 py-3 bg-slate-50/80 border border-slate-200 rounded-xl text-slate-900 font-semibold text-sm cursor-default focus:outline-none">
+                                        <span class="absolute right-3.5 top-1/2 -translate-y-1/2 px-2 py-0.5 bg-slate-200 text-slate-600 text-[11px] font-medium rounded-md">Chỉ đọc</span>
+                                    </div>
+                                </div>
+
+                                <!-- Field 2: Bảng giá ước tính -->
+                                <div class="space-y-2">
+                                    <label class="text-xs font-bold text-slate-500 tracking-wider uppercase">Bảng giá ước tính</label>
+                                    
+                                    <!-- Visual comparison block -->
+                                    <div class="grid grid-cols-1 sm:grid-cols-11 items-center gap-3 p-4 bg-slate-50/60 rounded-xl border border-slate-200">
+                                        
+                                        <!-- Left Box: Giá hiện tại -->
+                                        <div class="sm:col-span-5 bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+                                            <span class="text-xs font-medium text-slate-500 block mb-1">Giá hiện tại</span>
+                                            <span class="text-lg font-bold text-slate-700 line-through decoration-slate-400">2.200.000 đ</span>
+                                        </div>
+
+                                        <!-- Center: Right Arrow Icon -->
+                                        <div class="sm:col-span-1 flex justify-center text-slate-400">
+                                            <div class="p-2 bg-white rounded-full shadow-2xs border border-slate-200 sm:rotate-0 rotate-90">
+                                                <i data-lucide="arrow-right" class="w-4 h-4 text-slate-600"></i>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right Box: Giá đề xuất mới -->
+                                        <div class="sm:col-span-5 bg-[#e8f5e9] p-4 rounded-xl border border-emerald-400 shadow-xs relative overflow-hidden">
+                                            <div class="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-bl-lg">
+                                                +9.09%
+                                            </div>
+                                            <span class="text-xs font-semibold text-emerald-900 block mb-1">Giá đề xuất mới</span>
+                                            <span class="text-xl font-extrabold text-emerald-800">2.400.000 đ</span>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Field 3: Quy trình chuẩn bị (AI khuyến nghị bổ sung) -->
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <label class="text-xs font-bold text-slate-500 tracking-wider uppercase flex items-center gap-1.5">
+                                            <span>Quy trình chuẩn bị (AI khuyến nghị bổ sung)</span>
+                                        </label>
+                                        <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-md">
+                                            <i data-lucide="sparkles" class="w-3 h-3 text-amber-600"></i> AI Generated
+                                        </span>
+                                    </div>
+
+                                    <!-- Highlighted Box (Yellow / Amber soft background #fefce8, border #fde047) -->
+                                    <div class="p-4 sm:p-5 bg-[#fefce8] border border-[#fde047] rounded-xl text-amber-950 space-y-2 shadow-2xs relative">
+                                        <div class="flex items-start gap-3">
+                                            <div class="p-1.5 bg-amber-200/60 rounded-lg text-amber-800 shrink-0 mt-0.5">
+                                                <i data-lucide="alert-circle" class="w-4 h-4"></i>
+                                            </div>
+                                            <div class="space-y-1">
+                                                <h4 class="text-sm font-bold text-amber-900">Hướng dẫn nhịn ăn:</h4>
+                                                <p class="text-sm font-medium leading-relaxed italic text-amber-900/90">
+                                                    "Bệnh nhân cần nhịn ăn hoàn toàn ít nhất 4 tiếng trước khi thực hiện chụp MRI sọ não có cản quang để đảm bảo an toàn tuyệt đối và hình ảnh sắc nét nhất."
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Additional Context Details Box -->
+                                <div class="pt-4 border-t border-slate-100">
+                                    <h3 class="text-xs font-bold text-slate-400 tracking-wider uppercase mb-3">Thông tin chi tiết dịch vụ đi kèm</h3>
+                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                            <span class="text-slate-500">Chuyên khoa:</span>
+                                            <span class="font-semibold text-slate-800">Chẩn đoán hình ảnh</span>
+                                        </div>
+                                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                            <span class="text-slate-500">Thời gian thực hiện:</span>
+                                            <span class="font-semibold text-slate-800">30 - 45 Phút</span>
+                                        </div>
+                                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                            <span class="text-slate-500">Loại máy MRI:</span>
+                                            <span class="font-semibold text-slate-800">Siemens Magnetom 1.5T</span>
+                                        </div>
+                                        <div class="p-3 bg-slate-50 rounded-xl border border-slate-100 flex items-center justify-between">
+                                            <span class="text-slate-500">Mã cơ sở y tế:</span>
+                                            <span class="font-mono font-semibold text-slate-800">CSYT-HNG-092</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- RIGHT COLUMN: Hành động kiểm duyệt (4-5 Cols on desktop) -->
+                    <div class="lg:col-span-5 xl:col-span-4 space-y-6">
+
+                        <!-- Main Card: Hành động kiểm duyệt -->
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden sticky top-20">
+                            <!-- Card Header -->
+                            <div class="px-6 py-4 border-b border-slate-100 flex items-center justify-between bg-white">
+                                <div class="flex items-center gap-2.5">
+                                    <div class="p-2 bg-emerald-50 rounded-xl text-emerald-600">
+                                        <i data-lucide="shield-check" class="w-5 h-5"></i>
+                                    </div>
+                                    <h2 class="text-base font-bold text-slate-900">Hành động kiểm duyệt</h2>
+                                </div>
+                            </div>
+
+                            <!-- Card Body -->
+                            <div class="p-6 space-y-5">
+
+                                <!-- Form Control 1: Trạng thái quyết định -->
+                                <div class="space-y-2">
+                                    <label for="decisionStatus" class="block text-xs font-bold text-slate-500 tracking-wider uppercase">
+                                        Trạng thái quyết định
+                                    </label>
+                                    <div class="relative">
+                                        <select id="decisionStatus" class="w-full pl-4 pr-10 py-3 bg-white border border-slate-300 rounded-xl text-slate-900 text-sm font-semibold appearance-none focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all cursor-pointer">
+                                            <option value="needs_revision" selected>Yêu cầu chỉnh sửa thêm</option>
+                                            <option value="approved">Chấp nhận thay đổi</option>
+                                            <option value="rejected">Từ chối yêu cầu</option>
+                                        </select>
+                                        <i data-lucide="chevron-down" class="w-4 h-4 text-slate-400 absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                                    </div>
+                                </div>
+
+                                <!-- Form Control 2: Ghi chú phản hồi gửi cho cơ sở -->
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center">
+                                        <label for="feedbackNotes" class="block text-xs font-bold text-slate-500 tracking-wider uppercase">
+                                            Ghi chú phản hồi gửi cho cơ sở
+                                        </label>
+                                        <span class="text-[11px] text-slate-400" id="charCounter">152 kí tự</span>
+                                    </div>
+                                    <textarea id="feedbackNotes" rows="4" class="w-full p-3.5 bg-white border border-slate-300 rounded-xl text-slate-800 text-sm leading-relaxed focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition-all placeholder-slate-400 font-normal">Quy trình nhịn ăn cần nêu rõ có áp dụng cho trường hợp không dùng thuốc cản quang không để tránh gây bất tiện không cần thiết cho bệnh nhân.</textarea>
+                                </div>
+
+                                <!-- Dynamic Helper Quick Prompts Chips -->
+                                <div class="space-y-1.5">
+                                    <span class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Mẫu gợi ý nhanh:</span>
+                                    <div class="flex flex-wrap gap-1.5">
+                                        <button type="button" onclick="insertPrompt('Cần làm rõ trường hợp không dùng cản quang.')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors border border-slate-200/80">
+                                            + Cản quang
+                                        </button>
+                                        <button type="button" onclick="insertPrompt('Bổ sung thêm hình ảnh thiết bị MRI thực tế.')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors border border-slate-200/80">
+                                            + Ảnh thiết bị
+                                        </button>
+                                        <button type="button" onclick="insertPrompt('Xác nhận bảng giá niêm yết đúng quy định.')" class="text-xs px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-lg transition-colors border border-slate-200/80">
+                                            + Giá niêm yết
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div class="border-t border-slate-100 pt-4"></div>
+
+                                <!-- Section: LỊCH SỬ HOẠT ĐỘNG -->
+                                <div class="space-y-3">
+                                    <span class="text-xs font-bold text-slate-400 tracking-wider uppercase block">
+                                        LỊCH SỬ HOẠT ĐỘNG
+                                    </span>
+
+                                    <!-- Timeline Events -->
+                                    <div class="relative pl-5 space-y-4 before:content-[''] before:absolute before:left-1.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-slate-200" id="timelineContainer">
+                                        
+                                        <!-- Timeline Item 1: Green Dot -->
+                                        <div class="relative flex items-start gap-2 text-xs">
+                                            <div class="absolute -left-5 top-1 w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-100"></div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-slate-700">
+                                                    <span class="font-bold text-slate-900">15:30</span> - Cơ sở gửi yêu cầu duyệt
+                                                </p>
+                                                <span class="text-[11px] text-slate-400">Bởi BV Hồng Ngọc (NV Nguyễn Văn A)</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Timeline Item 2: Orange Dot -->
+                                        <div class="relative flex items-start gap-2 text-xs">
+                                            <div class="absolute -left-5 top-1 w-3 h-3 rounded-full bg-amber-500 ring-4 ring-amber-100"></div>
+                                            <div class="flex-1">
+                                                <p class="font-medium text-slate-700">
+                                                    <span class="font-bold text-slate-900">15:45</span> - AI tự động phân tích và dịch đề xuất
+                                                </p>
+                                                <span class="text-[11px] text-slate-400">CareRoute AI Engine v2</span>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <!-- Submit Button (Teal / Emerald Button) -->
+                                <div class="pt-2">
+                                    <button id="submitBtn" onclick="handleReviewSubmit()" class="w-full py-3.5 px-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-teal-600/20 flex items-center justify-center gap-2 group">
+                                        <i data-lucide="send" class="w-4 h-4 group-hover:translate-x-0.5 transition-transform"></i>
+                                        <span id="submitBtnText">Gửi Phản Hồi Kiểm Duyệt</span>
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast Notification Overlay -->
+    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-5 py-4 rounded-2xl shadow-2xl flex items-center gap-3 border border-slate-700 max-w-md">
+            <div id="toastIcon" class="p-2 bg-emerald-500/20 text-emerald-400 rounded-xl">
+                <i data-lucide="check-circle-2" class="w-5 h-5"></i>
+            </div>
+            <div>
+                <h4 id="toastTitle" class="text-sm font-bold">Thành công!</h4>
+                <p id="toastMessage" class="text-xs text-slate-300">Đã gửi phản hồi kiểm duyệt cho cơ sở y tế.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Lucide Icons on load
+        document.addEventListener("DOMContentLoaded", () => {
+            lucide.createIcons();
+            setupInteractions();
+        });
+
+        function setupInteractions() {
+            // Sidebar toggle for mobile
+            const sidebarToggle = document.getElementById('sidebarToggle');
+            const sidebar = document.getElementById('sidebar');
+            
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('-translate-x-full');
+                });
+            }
+
+            // Dropdown option change dynamic styling update
+            const decisionStatus = document.getElementById('decisionStatus');
+            const submitBtn = document.getElementById('submitBtn');
+            const submitBtnText = document.getElementById('submitBtnText');
+
+            if (decisionStatus) {
+                decisionStatus.addEventListener('change', (e) => {
+                    const val = e.target.value;
+                    if (val === 'approved') {
+                        submitBtn.className = "w-full py-3.5 px-4 bg-emerald-600 hover:bg-emerald-700 active:bg-emerald-800 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-emerald-600/20 flex items-center justify-center gap-2 group";
+                        submitBtnText.textContent = "Chấp Nhận Thay Đổi";
+                    } else if (val === 'rejected') {
+                        submitBtn.className = "w-full py-3.5 px-4 bg-rose-600 hover:bg-rose-700 active:bg-rose-800 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-rose-600/20 flex items-center justify-center gap-2 group";
+                        submitBtnText.textContent = "Từ Chối Yêu Cầu";
+                    } else {
+                        submitBtn.className = "w-full py-3.5 px-4 bg-teal-600 hover:bg-teal-700 active:bg-teal-800 text-white font-bold text-sm rounded-xl transition-all shadow-md shadow-teal-600/20 flex items-center justify-center gap-2 group";
+                        submitBtnText.textContent = "Gửi Phản Hồi Kiểm Duyệt";
+                    }
+                });
+            }
+
+            // Character counter for textarea
+            const feedbackNotes = document.getElementById('feedbackNotes');
+            const charCounter = document.getElementById('charCounter');
+            if (feedbackNotes && charCounter) {
+                feedbackNotes.addEventListener('input', () => {
+                    charCounter.textContent = `${feedbackNotes.value.length} kí tự`;
+                });
+            }
+        }
+
+        // Insert pre-made prompts into textarea
+        function insertPrompt(text) {
+            const feedbackNotes = document.getElementById('feedbackNotes');
+            if (feedbackNotes) {
+                if (feedbackNotes.value.trim().length > 0) {
+                    feedbackNotes.value += ' ' + text;
+                } else {
+                    feedbackNotes.value = text;
+                }
+                document.getElementById('charCounter').textContent = `${feedbackNotes.value.length} kí tự`;
+                feedbackNotes.focus();
+            }
+        }
+
+        // Handle Review Submission
+        function handleReviewSubmit() {
+            const decision = document.getElementById('decisionStatus').value;
+            const notes = document.getElementById('feedbackNotes').value;
+
+            if (!notes.trim() && decision === 'needs_revision') {
+                showToast("Vui lòng nhập ghi chú!", "Bạn cần nhập nội dung phản hồi cho cơ sở.", "error");
+                return;
+            }
+
+            // Add item to timeline dynamically
+            const timelineContainer = document.getElementById('timelineContainer');
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+
+            let actionText = "Đã gửi phản hồi yêu cầu sửa đổi";
+            let dotColor = "bg-teal-500 ring-teal-100";
+            if (decision === 'approved') {
+                actionText = "Đã chấp nhận phê duyệt thay đổi";
+                dotColor = "bg-emerald-500 ring-emerald-100";
+            } else if (decision === 'rejected') {
+                actionText = "Đã từ chối yêu cầu thay đổi";
+                dotColor = "bg-rose-500 ring-rose-100";
+            }
+
+            const newTimelineItem = document.createElement('div');
+            newTimelineItem.className = "relative flex items-start gap-2 text-xs animate-fade-in";
+            newTimelineItem.innerHTML = `
+                <div class="absolute -left-5 top-1 w-3 h-3 rounded-full ${dotColor} ring-4"></div>
+                <div class="flex-1">
+                    <p class="font-medium text-slate-700">
+                        <span class="font-bold text-slate-900">${timeStr}</span> - ${actionText}
+                    </p>
+                    <span class="text-[11px] text-slate-400">Bởi Minh Phan (Điều Phối Viên)</span>
+                </div>
+            `;
+
+            timelineContainer.prepend(newTimelineItem);
+
+            // Show Toast Alert
+            showToast("Đã xử lý thành công!", "Dữ liệu kiểm duyệt đã được cập nhật vào hệ thống CareRoute.", "success");
+        }
+
+        // Toast Helper
+        function showToast(title, message, type = "success") {
+            const toast = document.getElementById('toast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+
+            if (type === "error") {
+                toastIcon.className = "p-2 bg-rose-500/20 text-rose-400 rounded-xl";
+                toastIcon.innerHTML = `<i data-lucide="alert-triangle" class="w-5 h-5"></i>`;
+            } else {
+                toastIcon.className = "p-2 bg-emerald-500/20 text-emerald-400 rounded-xl";
+                toastIcon.innerHTML = `<i data-lucide="check-circle-2" class="w-5 h-5"></i>`;
+            }
+            lucide.createIcons();
+
+            toast.classList.remove('translate-y-20', 'opacity-0', 'pointer-events-none');
+            toast.classList.add('translate-y-0', 'opacity-100');
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-0', 'opacity-100');
+                toast.classList.add('translate-y-20', 'opacity-0', 'pointer-events-none');
+            }, 3500);
+        }
+    </script>
+</body>
+</html>

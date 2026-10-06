@@ -1,0 +1,1325 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareRoute - Nền Tảng Chăm Sóc Sức Khỏe</title>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-light: #ccfbf1;
+            --primary-bg: #e6fffa;
+            --dark-header: #1e293b;
+            --footer-bg: #064e3b;
+            --text-dark: #0f172a;
+            --text-gray: #475569;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --card-bg: #ffffff;
+            --bg-light: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* TOP HEADER */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--primary-dark);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 550px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 18px 10px 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: 99px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .search-bar input:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+
+        .search-bar::before {
+            content: "🔍";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            opacity: 0.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .hotline {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .hotline strong {
+            color: var(--text-dark);
+        }
+
+        /* SUB NAVIGATION */
+        .sub-nav {
+            background: var(--dark-header);
+            color: white;
+            padding: 0 5%;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .sub-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 14px 10px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .sub-nav a:hover, .sub-nav a.active-nav {
+            color: #ffffff;
+            border-bottom-color: var(--primary);
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        /* PAGE ROUTING CONTAINER */
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.03);
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(4px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* COMMON SECTION STYLES */
+        .section {
+            padding: 40px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .section-title h2 {
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .section-title p {
+            color: var(--text-gray);
+            font-size: 15px;
+        }
+
+        .pill-tag {
+            background: #e6fffa;
+            color: var(--primary-dark);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* --- PAGE 1: HOME PAGE --- */
+        .hero {
+            background: linear-gradient(135deg, #f0fdf4 0%, #e6fffa 100%);
+            padding: 50px 5%;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .hero-text {
+            flex: 1.2;
+        }
+
+        .hero-text h1 {
+            font-size: 38px;
+            line-height: 1.25;
+            color: var(--text-dark);
+            margin: 15px 0;
+            font-weight: 800;
+        }
+
+        .hero-text p {
+            color: var(--text-gray);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+        }
+
+        .floating-badge {
+            position: absolute;
+            bottom: 15px;
+            left: -20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stats-bar {
+            background: #80ebd3;
+            padding: 25px 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 30px;
+            font-weight: 800;
+            color: #044e42;
+        }
+
+        .stat-item p {
+            font-size: 13px;
+            color: #0f6c5c;
+            font-weight: 600;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0,0,0,0.08);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--primary-bg);
+            color: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h4 {
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.5;
+        }
+
+        /* BLOG SECTION */
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .blog-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            background: white;
+            transition: all 0.2s;
+        }
+
+        .blog-card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+        }
+
+        .blog-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 18px;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .blog-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .blog-author {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        /* CLINIC LIST */
+        .clinic-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .featured-clinic {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .featured-clinic:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .featured-clinic img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .clinic-list-side {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .clinic-item-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clinic-item-card:hover {
+            border-color: var(--primary);
+            background: #fafafa;
+        }
+
+        /* BANNER SUPPORT */
+        .support-banner {
+            background: var(--footer-bg);
+            color: white;
+            border-radius: 20px;
+            padding: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 5%;
+        }
+
+        .support-banner h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .support-banner p {
+            color: #a7f3d0;
+            font-size: 14px;
+            max-width: 500px;
+        }
+
+        .support-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 320px;
+        }
+
+        /* --- PAGE 2: CLINIC DETAIL --- */
+        .clinic-hero {
+            position: relative;
+            height: 240px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 30px 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .clinic-hero h1 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .clinic-body {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            padding: 30px 5%;
+        }
+
+        .info-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            background: white;
+        }
+
+        .info-card h3 {
+            font-size: 18px;
+            margin-bottom: 16px;
+            border-bottom: 2px solid var(--primary-bg);
+            padding-bottom: 8px;
+            color: var(--primary-dark);
+        }
+
+        .price-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        .price-table th, .price-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+            font-size: 14px;
+        }
+
+        .price-table th {
+            background: var(--bg-light);
+            color: var(--text-gray);
+        }
+
+        .booking-box {
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 24px;
+            background: #ffffff;
+            position: sticky;
+            top: 90px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .timeline-step {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 16px;
+        }
+
+        .step-num {
+            width: 28px;
+            height: 28px;
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        /* --- PAGE 3: CHECKLIST PAGE --- */
+        .checklist-header {
+            background: #f0fdf4;
+            padding: 30px 5%;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .progress-bar-container {
+            width: 200px;
+            height: 10px;
+            background: #cbd5e1;
+            border-radius: 5px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar {
+            width: 60%;
+            height: 100%;
+            background: var(--primary);
+        }
+
+        .checklist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            padding: 30px 5%;
+        }
+
+        .check-card {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 20px;
+        }
+
+        .check-card h4 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .check-list-items {
+            list-style: none;
+        }
+
+        .check-list-items li {
+            padding: 10px 0;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-gray);
+        }
+
+        .check-list-items li input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+
+        .ai-note-box {
+            background: #e6fffa;
+            border: 1px solid #99f6e4;
+            border-radius: 16px;
+            padding: 20px;
+            margin: 0 5% 30px 5%;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        /* --- PAGE 4: MEDICAL FACILITIES DIRECTORY --- */
+        .filter-bar {
+            display: flex;
+            gap: 15px;
+            padding: 20px 5%;
+            background: #f8fafc;
+            border-bottom: 1px solid #e2e8f0;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 1px solid #cbd5e1;
+            outline: none;
+            font-size: 14px;
+            background: white;
+        }
+
+        /* FOOTER */
+        footer {
+            background: var(--footer-bg);
+            color: #ecfdf5;
+            padding: 40px 5% 20px 5%;
+            margin-top: auto;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .footer-col h4 {
+            font-size: 15px;
+            margin-bottom: 15px;
+            color: #ffffff;
+        }
+
+        .footer-col p, .footer-col a {
+            font-size: 13px;
+            color: #a7f3d0;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .footer-col a:hover {
+            color: #ffffff;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+            color: #a7f3d0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; }
+            .clinic-container { grid-template-columns: 1fr; }
+            .clinic-body { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .support-banner { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- MAIN TOP HEADER -->
+    <header>
+        <div class="logo" onclick="navigateTo('home')">
+            <div class="logo-icon">+</div>
+            CareRoute
+        </div>
+
+        <div class="search-bar">
+            <input type="text" placeholder="Tìm nội dung, cơ sở, danh mục...">
+        </div>
+
+        <div class="header-actions">
+            <div class="hotline">
+                📞 <span>Hotline<br><strong>0387.110.017</strong></span>
+            </div>
+            <button class="btn btn-outline" onclick="alert('Tính năng Đăng nhập chuẩn bị ra mắt!')">Đăng nhập</button>
+            <button class="btn" onclick="navigateTo('facility-detail')">Đăng ký</button>
+        </div>
+    </header>
+
+    <!-- SUB NAVIGATION / MAIN ROUTING BUTTONS -->
+    <nav class="sub-nav">
+        <a id="nav-home" class="active-nav" onclick="navigateTo('home')">Tra cứu Dịch vụ</a>
+        <a id="nav-checklist" onclick="navigateTo('checklist')">Hồ sơ chuẩn bị</a>
+        <a id="nav-directory" onclick="navigateTo('facilities-directory')">Dành cho Cơ sở y tế</a>
+    </nav>
+
+    <main>
+        <!-- ==========================================
+             PAGE 1: TRANG CHỦ (HOME PAGE)
+             ========================================== -->
+        <div id="page-home" class="page active">
+            <!-- Hero Banner -->
+            <section class="hero">
+                <div class="hero-text">
+                    <span class="pill-tag">🛡️ Nền tảng y tế được các gia đình tin dùng</span>
+                    <h1>Chăm sóc đúng nơi,<br>an tâm mỗi ngày</h1>
+                    <p>Tìm bác sĩ phù hợp, đặt lịch nhanh và nhận hướng dẫn rõ ràng — từ những triệu chứng đầu tiên đến suốt hành trình điều trị.</p>
+                    <div style="display: flex; gap: 12px;">
+                        <button class="btn" onclick="navigateTo('facilities-directory')">Khám phá cơ sở y tế</button>
+                        <button class="btn btn-outline" onclick="navigateTo('checklist')">Xem checklist của bạn</button>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=600&q=80" alt="Bác sĩ tư vấn">
+                    <div class="floating-badge">
+                        <span>📅</span>
+                        <div>
+                            <div style="font-size:12px; color:var(--text-light);">Trạng thái</div>
+                            <div>Có lịch trong hôm nay</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Stats Bar -->
+            <section class="stats-bar">
+                <div class="stat-item">
+                    <h3>2,400+</h3>
+                    <p>Cơ sở y tế</p>
+                </div>
+                <div class="stat-item">
+                    <h3>85+</h3>
+                    <p>Chuyên khoa</p>
+                </div>
+                <div class="stat-item">
+                    <h3>180,000+</h3>
+                    <p>Lượt truy cập</p>
+                </div>
+                <div class="stat-item">
+                    <h3>98%</h3>
+                    <p>Đánh giá tích cực</p>
+                </div>
+            </section>
+
+            <!-- Features Section -->
+            <section class="section">
+                <div class="section-title">
+                    <h2>Tại sao chọn CareRoute?</h2>
+                    <p>Nền tảng được thiết kế để giúp người dân tiếp cận dịch vụ y tế dễ dàng và chính xác hơn.</p>
+                </div>
+                <div class="grid-4">
+                    <div class="feature-card" onclick="navigateTo('facilities-directory')">
+                        <div class="feature-icon">🔍</div>
+                        <h4>Tìm đúng dịch vụ</h4>
+                        <p>Tra cứu cơ sở y tế theo chuyên khoa, khu vực và giờ hoạt động trong vài giây.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('checklist')">
+                        <div class="feature-icon">📋</div>
+                        <h4>Checklist chuẩn bị</h4>
+                        <p>Nhận danh sách giấy tờ và hướng dẫn chuẩn bị chi tiết trước khi đến khám.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('facilities-directory')">
+                        <div class="feature-icon">⏱️</div>
+                        <h4>Thông tin cập nhật</h4>
+                        <p>Giờ hoạt động, quy trình và hướng dẫn được kiểm duyệt bởi đội ngũ biên tập.</p>
+                    </div>
+                    <div class="feature-card" onclick="navigateTo('checklist')">
+                        <div class="feature-icon">✨</div>
+                        <h4>Gợi ý AI thông minh</h4>
+                        <p>AI phân tích triệu chứng và đề xuất chuyên khoa phù hợp nhất cho bạn.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Medical Knowledge / Blog Section -->
+            <section class="section" style="background: var(--bg-light);">
+                <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+                    <div>
+                        <span class="pill-tag">KIẾN THỨC DỄ HIỂU</span>
+                        <h2 style="font-size: 26px;">Chủ động chăm sóc sức khỏe mỗi ngày</h2>
+                        <p style="color: var(--text-gray); font-size: 14px;">Nội dung được kiểm duyệt bởi đội ngũ bác sĩ, trình bày ngắn gọn và dễ áp dụng.</p>
+                    </div>
+                    <a href="#" style="color: var(--primary-dark); font-weight: 700; text-decoration: none; font-size: 14px;">Xem toàn bộ cẩm nang →</a>
+                </div>
+
+                <div class="grid-3">
+                    <div class="blog-card" onclick="navigateTo('facility-detail')">
+                        <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=500&q=80" alt="Sức khỏe tim mạch">
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span style="color:var(--primary-dark); font-weight:600;">Sức khỏe tim mạch</span>
+                                <span>⏱ 6 phút đọc</span>
+                            </div>
+                            <div class="blog-title">7 dấu hiệu cơ thể nhắc bạn nên kiểm tra tim sớm</div>
+                            <div class="blog-author">Cố vấn chuyên môn: BS. Nguyễn Minh An</div>
+                        </div>
+                    </div>
+
+                    <div class="blog-card" onclick="navigateTo('facility-detail')">
+                        <img src="https://images.unsplash.com/photo-1584515979956-d9f6e5d09982?auto=format&fit=crop&w=500&q=80" alt="Nhi khoa">
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span style="color:var(--primary-dark); font-weight:600;">Nhi khoa</span>
+                                <span>⏱ 5 phút đọc</span>
+                            </div>
+                            <div class="blog-title">Trẻ sốt: khi nào có thể theo dõi tại nhà?</div>
+                            <div class="blog-author">Cố vấn chuyên môn: ThS.BS Trần Thảo Vy</div>
+                        </div>
+                    </div>
+
+                    <div class="blog-card" onclick="navigateTo('facility-detail')">
+                        <img src="https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=500&q=80" alt="Phòng bệnh">
+                        <div class="blog-content">
+                            <div class="blog-meta">
+                                <span style="color:var(--primary-dark); font-weight:600;">Phòng bệnh</span>
+                                <span>⏱ 4 phút đọc</span>
+                            </div>
+                            <div class="blog-title">Chuẩn bị gì trước buổi khám để bác sĩ hiểu bạn hơn</div>
+                            <div class="blog-author">Cố vấn chuyên môn: Ban chuyên môn An Tâm</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Nearby Clinics -->
+            <section class="section">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                    <div>
+                        <span class="pill-tag">CƠ SỞ GẦN BẠN</span>
+                        <h2>Cơ sở y tế đáng tin cậy quanh đây</h2>
+                    </div>
+                    <button class="btn btn-outline" style="font-size: 13px;">📍 Quận 3, TP. Hồ Chí Minh ▾</button>
+                </div>
+
+                <div class="clinic-container">
+                    <div class="featured-clinic" onclick="navigateTo('facility-detail')">
+                        <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=600&q=80" alt="Phòng khám">
+                        <div style="padding: 20px;">
+                            <span class="pill-tag" style="background: #fef3c7; color: #92400e;">PHÙ HỢP NHẤT • 1.2 km</span>
+                            <h3 style="font-size: 20px; margin: 8px 0;">Phòng khám Đa khoa An Khang</h3>
+                            <p style="color: var(--text-gray); font-size: 14px;">128 Võ Văn Tần, Phường 6, Quận 3</p>
+                        </div>
+                    </div>
+
+                    <div class="clinic-list-side">
+                        <div class="clinic-item-card" onclick="navigateTo('facility-detail')">
+                            <div>
+                                <h4 style="font-size: 16px;">Phòng khám Đa khoa An Khang</h4>
+                                <p style="font-size: 13px; color: var(--text-gray);">Đa khoa • 35 chuyên khoa</p>
+                                <span style="font-size: 12px; color: #d97706;">⭐ 4.9 (428) • Mở cửa đến 20:00</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <strong style="color: var(--primary-dark);">1.2 km</strong>
+                                <div style="font-size: 18px; color: var(--text-light);">›</div>
+                            </div>
+                        </div>
+
+                        <div class="clinic-item-card" onclick="navigateTo('facility-detail')">
+                            <div>
+                                <h4 style="font-size: 16px;">Bệnh viện Quốc tế CityCare</h4>
+                                <p style="font-size: 13px; color: var(--text-gray);">Bệnh viện • Cấp cứu 24/7</p>
+                                <span style="font-size: 12px; color: #d97706;">⭐ 4.8 • Đang mở cửa</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <strong style="color: var(--primary-dark);">2.8 km</strong>
+                                <div style="font-size: 18px; color: var(--text-light);">›</div>
+                            </div>
+                        </div>
+
+                        <div class="clinic-item-card" onclick="navigateTo('facility-detail')">
+                            <div>
+                                <h4 style="font-size: 16px;">Trung tâm Y khoa Gia Định</h4>
+                                <p style="font-size: 13px; color: var(--text-gray);">Chẩn đoán & Xét nghiệm</p>
+                                <span style="font-size: 12px; color: #d97706;">⭐ 4.7 • Mở cửa đến 18:30</span>
+                            </div>
+                            <div style="text-align: right;">
+                                <strong style="color: var(--primary-dark);">4.1 km</strong>
+                                <div style="font-size: 18px; color: var(--text-light);">›</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Support Banner Section -->
+            <div class="support-banner">
+                <div>
+                    <span style="font-size: 12px; letter-spacing: 1px; opacity: 0.8;">LUÔN CÓ NGƯỜI ĐỒNG HÀNH</span>
+                    <h2>Chưa biết nên khám ở đâu?</h2>
+                    <p>Điều phối viên CareRoute sẽ lắng nghe nhu cầu và gợi ý bước tiếp theo phù hợp. Hỗ trợ miễn phí mỗi ngày, từ 7:00–22:00.</p>
+                    <div style="margin-top: 20px; display: flex; gap: 12px;">
+                        <button class="btn" style="background: white; color: var(--footer-bg);" onclick="alert('Đang kết nối với điều phối viên...')">Nhận tư vấn miễn phí</button>
+                        <button class="btn btn-outline" style="border-color: white; color: white;">📞 0387.110.017</button>
+                    </div>
+                </div>
+
+                <div class="support-card">
+                    <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 10px;">
+                        <span style="width: 8px; height: 8px; background: #34d399; border-radius: 50%;"></span>
+                        Đang trực tuyến
+                    </div>
+                    <h4 style="font-size: 18px; margin-bottom: 8px;">Phản hồi trong khoảng 2 phút</h4>
+                    <p style="font-size: 12px; line-height: 1.5; opacity: 0.9;">Không chẩn đoán thay bác sĩ. Chúng tôi giúp bạn tìm đúng dịch vụ và chuẩn bị tốt hơn.</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 2: TRANG CHI TIẾT CƠ SỞ Y TẾ (FACILITY DETAIL)
+             ========================================== -->
+        <div id="page-facility-detail" class="page">
+            <div class="clinic-hero">
+                <div style="font-size: 13px; opacity: 0.9; margin-bottom: 8px;">
+                    <a onclick="navigateTo('home')" style="color: white; cursor: pointer;">Trang chủ</a> / 
+                    <a onclick="navigateTo('facilities-directory')" style="color: white; cursor: pointer;">Bệnh viện & Phòng khám</a> / 
+                    Bệnh viện Đa khoa Tâm Anh
+                </div>
+                <h1>Bệnh viện Đa khoa Tâm Anh</h1>
+                <div style="display: flex; gap: 15px; font-size: 14px; align-items: center;">
+                    <span style="background: #059669; padding: 3px 10px; border-radius: 4px; font-size: 12px;">Chính xác & Xác thực</span>
+                    <span>⭐ 4.9 (428 đánh giá)</span>
+                    <span>📍 108 Hoàng Văn Thụ, Phường 2, Tân Bình, TP. HCM</span>
+                </div>
+            </div>
+
+            <div class="clinic-body">
+                <div>
+                    <!-- Thông tin chung -->
+                    <div class="info-card">
+                        <h3>Thông tin chung</h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                            <div>
+                                <div style="font-size: 13px; color: var(--text-light);">Giờ hoạt động</div>
+                                <strong>07:30 - 19:00 (Thứ 2 - Chủ Nhật)</strong>
+                            </div>
+                            <div>
+                                <div style="font-size: 13px; color: var(--text-light);">Số điện thoại hotline</div>
+                                <strong style="color: var(--primary);">1800 6858</strong>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px;">
+                            <div style="font-size: 13px; color: var(--text-light);">Chuyên khoa thế mạnh</div>
+                            <strong>Thần kinh, Tim mạch, Xương khớp, Sản phụ khoa</strong>
+                        </div>
+                    </div>
+
+                    <!-- Bảng giá dịch vụ -->
+                    <div class="info-card">
+                        <h3>Dịch vụ cung cấp & Bảng giá</h3>
+                        <table class="price-table">
+                            <thead>
+                                <tr>
+                                    <th>Tên dịch vụ</th>
+                                    <th>Bảng giá ước tính</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Khám Tổng quát Thần kinh</td>
+                                    <td><strong style="color: var(--primary-dark);">350.000 đ</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Chụp Cộng hưởng từ MRI sọ não</td>
+                                    <td><strong style="color: var(--primary-dark);">2.200.000 đ</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Đo điện não đồ (EEG)</td>
+                                    <td><strong style="color: var(--primary-dark);">450.000 đ</strong></td>
+                                </tr>
+                                <tr>
+                                    <td>Siêu âm tim Doppler màu</td>
+                                    <td><strong style="color: var(--primary-dark);">500.000 đ</strong></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Quy trình hướng dẫn -->
+                    <div class="info-card">
+                        <h3>Quy trình khám hướng dẫn tại viện</h3>
+                        <div class="timeline-step">
+                            <div class="step-num">1</div>
+                            <div>
+                                <strong>Đăng ký thông tin tại Quầy lễ tân tầng 1</strong>
+                                <p style="font-size: 13px; color: var(--text-gray);">Xuất trình CCCD/Bảo hiểm y tế. Nhận số thứ tự phòng khám chuyên khoa.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="step-num">2</div>
+                            <div>
+                                <strong>Khám lâm sàng tại Phòng 204</strong>
+                                <p style="font-size: 13px; color: var(--text-gray);">Bác sĩ chuyên khoa thần kinh trực tiếp thăm khám và chỉ định chụp chiếu nếu cần.</p>
+                            </div>
+                        </div>
+                        <div class="timeline-step">
+                            <div class="step-num">3</div>
+                            <div>
+                                <strong>Thực hiện cận lâm sàng (MRI / Xét nghiệm)</strong>
+                                <p style="font-size: 13px; color: var(--text-gray);">Di chuyển theo sự hướng dẫn của điều dưỡng đến khu kỹ thuật cao Tầng 3.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cột đặt lịch bên phải -->
+                <div>
+                    <div class="booking-box">
+                        <span class="pill-tag">ĐẶT LỊCH TIỆN LỢI</span>
+                        <h3 style="font-size: 20px; margin-bottom: 10px;">Đặt lịch khám trực tuyến</h3>
+                        <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 20px;">
+                            Đặt chỗ nhanh chóng qua CareRoute để nhận checklist chuẩn bị riêng biệt bằng AI miễn phí.
+                        </p>
+                        <button class="btn" style="width: 100%; justify-content: center; padding: 12px;" onclick="navigateTo('checklist')">
+                            Đặt lịch khám ngay
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 3: TRANG CHECKLIST CHUẨN BỊ (CHECKLIST PAGE)
+             ========================================== -->
+        <div id="page-checklist" class="page">
+            <div class="checklist-header">
+                <span class="pill-tag">CHECKLIST CÁ NHÂN HÓA</span>
+                <h1 style="font-size: 28px; margin: 8px 0;">Chuẩn bị cho cuộc hẹn khám Thần Kinh</h1>
+                <p style="color: var(--text-gray); font-size: 14px;">
+                    Cơ sở: <strong>Bệnh viện Đa khoa Tâm Anh</strong> | Ngày khám: <strong>05/10/2026</strong>
+                </p>
+                <div style="margin-top: 15px; display: flex; align-items: center; gap: 15px;">
+                    <span style="font-size: 13px; font-weight: 600;">Tiến độ chuẩn bị: <span id="progress-text">60%</span></span>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checklist-grid">
+                <div class="check-card">
+                    <h4>📄 Giấy tờ cần mang</h4>
+                    <ul class="check-list-items">
+                        <li><input type="checkbox" checked onchange="updateProgress()"> Căn cước công dân (bản gốc)</li>
+                        <li><input type="checkbox" checked onchange="updateProgress()"> Thẻ Bảo hiểm y tế (nếu có)</li>
+                        <li><input type="checkbox" onchange="updateProgress()"> Hồ sơ khám thần kinh trước đây</li>
+                        <li><input type="checkbox" onchange="updateProgress()"> Sổ đơn thuốc đang sử dụng</li>
+                    </ul>
+                </div>
+
+                <div class="check-card">
+                    <h4>🩺 Chuẩn bị trước khám</h4>
+                    <ul class="check-list-items">
+                        <li><input type="checkbox" checked onchange="updateProgress()"> Ghi lại các triệu chứng đau đầu chi tiết</li>
+                        <li><input type="checkbox" onchange="updateProgress()"> Nhịn ăn tối thiểu 6 tiếng trước giờ chụp MRI</li>
+                        <li><input type="checkbox" checked onchange="updateProgress()"> Tránh uống caffeine và chất kích thích</li>
+                    </ul>
+                </div>
+
+                <div class="check-card">
+                    <h4>🔔 Lưu ý đặc biệt</h4>
+                    <ul class="check-list-items">
+                        <li><input type="checkbox" checked onchange="updateProgress()"> Không đeo đồ trang sức kim loại khi đi chụp MRI</li>
+                        <li><input type="checkbox" onchange="updateProgress()"> Nên đi cùng người thân nếu có chụp thuốc cản quang</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div style="padding: 0 5%; margin-bottom: 20px;">
+                <button class="btn btn-outline" onclick="alert('Tính năng thêm công việc thủ công!')">+ Thêm công việc thủ công</button>
+                <span style="font-size: 13px; color: var(--primary-dark); margin-left: 15px;">✔ Đã lưu tự động vào thiết bị cá nhân</span>
+            </div>
+
+            <div class="ai-note-box">
+                <div style="font-size: 28px;">✨</div>
+                <div>
+                    <strong style="color: var(--primary-dark); font-size: 15px;">Checklist được đề xuất tự động bởi Trí Tuệ Nhân Tạo CareRoute AI</strong>
+                    <p style="font-size: 13px; color: var(--text-gray); margin-top: 4px;">Nội dung chuẩn bị được điều chỉnh chính xác dựa trên loại khám Thần Kinh và quy định riêng của Bệnh viện Tâm Anh.</p>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- ==========================================
+             PAGE 4: DANH SÁCH CƠ SỞ Y TẾ (DIRECTORY PAGE)
+             ========================================== -->
+        <div id="page-facilities-directory" class="page">
+            <div class="section" style="padding-bottom: 10px;">
+                <span class="pill-tag">TRA CỨU TOÀN QUỐC</span>
+                <h2>Danh sách Cơ sở Y tế</h2>
+                <p style="color: var(--text-gray); font-size: 14px;">Tìm kiếm bệnh viện, phòng khám uy tín gần bạn nhất.</p>
+            </div>
+
+            <div class="filter-bar">
+                <select class="filter-select">
+                    <option>Tất cả Tỉnh/Thành phố</option>
+                    <option selected>TP. Hồ Chí Minh</option>
+                    <option>Hà Nội</option>
+                    <option>Đà Nẵng</option>
+                </select>
+                <select class="filter-select">
+                    <option>Tất cả Chuyên khoa</option>
+                    <option>Thần kinh</option>
+                    <option>Tim mạch</option>
+                    <option>Nhi khoa</option>
+                </select>
+                <select class="filter-select">
+                    <option>Loại hình</option>
+                    <option>Bệnh viện công</option>
+                    <option>Bệnh viện tư nhân</option>
+                    <option>Phòng khám đa khoa</option>
+                </select>
+            </div>
+
+            <div class="section">
+                <div style="display: flex; flex-direction: column; gap: 16px;">
+                    <div class="clinic-item-card" onclick="navigateTo('facility-detail')" style="padding: 20px;">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=150&q=80" style="width: 100px; height: 80px; border-radius: 10px; object-fit: cover;">
+                            <div>
+                                <h3 style="font-size: 18px; margin-bottom: 6px;">Bệnh viện Đa khoa Tâm Anh</h3>
+                                <p style="font-size: 13px; color: var(--text-gray);">📍 108 Hoàng Văn Thụ, Phường 2, Tân Bình, TP. HCM</p>
+                                <span style="font-size: 12px; color: #d97706; font-weight: 600;">⭐ 4.9 (428 đánh giá) • Giờ làm việc: 07:30 - 19:00</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline">Xem chi tiết & Đặt lịch</button>
+                    </div>
+
+                    <div class="clinic-item-card" onclick="navigateTo('facility-detail')" style="padding: 20px;">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <img src="https://images.unsplash.com/photo-1586773860418-d37222d8fce3?auto=format&fit=crop&w=150&q=80" style="width: 100px; height: 80px; border-radius: 10px; object-fit: cover;">
+                            <div>
+                                <h3 style="font-size: 18px; margin-bottom: 6px;">Phòng khám Đa khoa An Khang</h3>
+                                <p style="font-size: 13px; color: var(--text-gray);">📍 128 Võ Văn Tần, Phường 6, Quận 3, TP. HCM</p>
+                                <span style="font-size: 12px; color: #d97706; font-weight: 600;">⭐ 4.9 (210 đánh giá) • Giờ làm việc: 08:00 - 20:00</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline">Xem chi tiết & Đặt lịch</button>
+                    </div>
+
+                    <div class="clinic-item-card" onclick="navigateTo('facility-detail')" style="padding: 20px;">
+                        <div style="display: flex; gap: 20px; align-items: center;">
+                            <img src="https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&w=150&q=80" style="width: 100px; height: 80px; border-radius: 10px; object-fit: cover;">
+                            <div>
+                                <h3 style="font-size: 18px; margin-bottom: 6px;">Bệnh viện Quốc tế CityCare</h3>
+                                <p style="font-size: 13px; color: var(--text-gray);">📍 35 Nguyễn Thị Minh Khai, Quận 1, TP. HCM</p>
+                                <span style="font-size: 12px; color: #d97706; font-weight: 600;">⭐ 4.8 (512 đánh giá) • Cấp cứu 24/7</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-outline">Xem chi tiết & Đặt lịch</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="logo" style="color: white; margin-bottom: 12px;">
+                    <div class="logo-icon">+</div>
+                    CareRoute
+                </div>
+                <p style="line-height: 1.6;">Giúp mọi người dễ dàng tiếp cận dịch vụ chăm sóc sức khỏe phù hợp, minh bạch và đáng tin cậy.</p>
+                <br>
+                <p>📞 0387.110.017 - 7:00–22:00 mỗi ngày</p>
+                <p>✉️ quanquybut@CareRoute.vn</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Dịch vụ</h4>
+                <a onclick="navigateTo('facilities-directory')">Đặt lịch khám</a>
+                <a onclick="navigateTo('home')">Tư vấn từ xa</a>
+                <a onclick="navigateTo('facilities-directory')">Tìm cơ sở y tế</a>
+                <a onclick="navigateTo('checklist')">Kiểm tra bảo hiểm</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Hồ sơ</h4>
+                <a onclick="navigateTo('checklist')">Chuẩn bị trước hẹn</a>
+                <a onclick="navigateTo('checklist')">Hồ sơ cần mang</a>
+                <a onclick="navigateTo('checklist')">Kiểm tra trước khám</a>
+                <a onclick="navigateTo('checklist')">Lưu ý khi đến khám</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Thông tin cập nhật</h4>
+                <a onclick="navigateTo('home')">Tin tức chăm sóc sức khỏe</a>
+                <a onclick="navigateTo('home')">Cập nhật dịch vụ</a>
+                <a onclick="navigateTo('home')">Thông báo hệ thống</a>
+                <a onclick="navigateTo('home')">Chính sách mới</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>An toàn & bảo mật</h4>
+                <p>🛡️ Bảo mật dữ liệu y tế</p>
+                <p>🛡️ Đối tác được xác minh</p>
+                <p>🛡️ Kết nối được mã hóa</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 CareRoute Health. Thông tin trên nền tảng không thay thế chẩn đoán y khoa.</div>
+            <div style="display: flex; gap: 20px;">
+                <a href="#" style="color: #a7f3d0; text-decoration: none;">Điều khoản sử dụng</a>
+                <a href="#" style="color: #a7f3d0; text-decoration: none;">Chính sách quyền riêng tư</a>
+                <span>🌐 Tiếng Việt</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JAVASCRIPT FOR ROUTING & INTERACTION -->
+    <script>
+        // Hàm chuyển trang SPA (Single Page Application)
+        function navigateTo(pageId) {
+            // Ẩn tất cả các trang
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active'));
+
+            // Hiển thị trang được chọn
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.add('active');
+            }
+
+            // Cập nhật trạng thái Active trên thanh Sub Nav
+            document.querySelectorAll('.sub-nav a').forEach(nav => nav.classList.remove('active-nav'));
+            
+            if (pageId === 'home') {
+                document.getElementById('nav-home').classList.add('active-nav');
+            } else if (pageId === 'checklist') {
+                document.getElementById('nav-checklist').classList.add('active-nav');
+            } else if (pageId === 'facilities-directory') {
+                document.getElementById('nav-directory').classList.add('active-nav');
+            }
+
+            // Cuộn lên đầu trang mượt mà
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Hàm tính toán tiến độ Checklist khi người dùng tích chọn
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('#page-checklist input[type="checkbox"]');
+            const total = checkboxes.length;
+            let checkedCount = 0;
+
+            checkboxes.forEach(cb => {
+                if (cb.checked) checkedCount++;
+            });
+
+            const percentage = Math.round((checkedCount / total) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').innerText = percentage + '%';
+        }
+    </script>
+</body>
+</html>
