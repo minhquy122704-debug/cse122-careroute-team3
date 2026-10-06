@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareRoute - Hồ Sơ Chuẩn Bị Khám</title>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-light: #ccfbf1;
+            --primary-bg: #e6fffa;
+            --dark-header: #1e293b;
+            --footer-bg: #064e3b;
+            --text-dark: #0f172a;
+            --text-gray: #475569;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f1f5f9; color: var(--text-dark); display: flex; flex-direction: column; min-height: 100vh; }
+
+        header { background: #ffffff; border-bottom: 1px solid var(--border-color); padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 22px; color: var(--primary-dark); text-decoration: none; }
+        .logo-icon { background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        .sub-nav { background: var(--dark-header); color: white; padding: 0 5%; display: flex; justify-content: center; gap: 40px; }
+        .sub-nav a { color: #cbd5e1; text-decoration: none; font-size: 14px; font-weight: 500; padding: 14px 10px; }
+        .sub-nav a.active-nav { color: #ffffff; border-bottom: 3px solid var(--primary); }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 9px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; }
+        .btn-outline { background: transparent; border: 1px solid var(--primary); color: var(--primary); }
+
+        main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; background: #ffffff; box-shadow: 0 0 15px rgba(0,0,0,0.03); }
+
+        .checklist-header { background: #f0fdf4; padding: 30px 5%; border-bottom: 1px solid #e2e8f0; }
+        .pill-tag { background: #e6fffa; color: var(--primary-dark); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; text-transform: uppercase; }
+
+        .progress-bar-container { width: 200px; height: 10px; background: #cbd5e1; border-radius: 5px; overflow: hidden; margin-top: 8px; }
+        .progress-bar { width: 60%; height: 100%; background: var(--primary); transition: width 0.3s; }
+
+        .checklist-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; padding: 30px 5%; }
+        .check-card { background: white; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; }
+        .check-card h4 { font-size: 16px; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
+        .check-list-items { list-style: none; }
+        .check-list-items li { padding: 10px 0; border-bottom: 1px dashed #e2e8f0; font-size: 14px; display: flex; align-items: center; gap: 10px; color: var(--text-gray); }
+        .check-list-items li input[type="checkbox"] { width: 18px; height: 18px; accent-color: var(--primary); cursor: pointer; }
+
+        .ai-note-box { background: #e6fffa; border: 1px solid #99f6e4; border-radius: 16px; padding: 20px; margin: 0 5% 30px 5%; display: flex; gap: 15px; align-items: center; }
+
+        .toast-container { position: fixed; top: 20px; right: 20px; z-index: 3000; }
+        .toast { background: white; border-left: 4px solid var(--primary); padding: 12px 20px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.12); font-size: 14px; }
+
+        footer { background: var(--footer-bg); color: #ecfdf5; padding: 30px 5%; margin-top: auto; font-size: 13px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toast-container"></div>
+
+    <header>
+        <a class="logo" href="home.html">
+            <div class="logo-icon">+</div>
+            CareRoute
+        </a>
+        <a class="btn btn-outline" href="home.html">← Trang chủ</a>
+    </header>
+
+    <nav class="sub-nav">
+        <a href="home.html">Tra cứu Dịch vụ</a>
+        <a class="active-nav" href="checklist.html">Hồ sơ chuẩn bị</a>
+        <a href="clinic_detail.html">Dành cho Cơ sở y tế</a>
+    </nav>
+
+    <main>
+        <div class="checklist-header">
+            <span class="pill-tag">CHECKLIST CÁ NHÂN HÓA</span>
+            <h1 style="font-size: 28px; margin: 8px 0;">Chuẩn bị cho cuộc hẹn khám Thần Kinh</h1>
+            <p style="color: var(--text-gray); font-size: 14px;">
+                Cơ sở: <strong>Bệnh viện Đa khoa Tâm Anh</strong> | Ngày khám: <strong>05/10/2026</strong>
+            </p>
+            <div style="margin-top: 15px; display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 13px; font-weight: 600;">Tiến độ chuẩn bị: <span id="progress-text">60%</span></span>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="checklist-grid">
+            <div class="check-card">
+                <h4>📄 Giấy tờ cần mang</h4>
+                <ul class="check-list-items">
+                    <li><input type="checkbox" checked onchange="updateProgress()"> Căn cước công dân (bản gốc)</li>
+                    <li><input type="checkbox" checked onchange="updateProgress()"> Thẻ Bảo hiểm y tế (nếu có)</li>
+                    <li><input type="checkbox" onchange="updateProgress()"> Hồ sơ khám thần kinh trước đây</li>
+                    <li><input type="checkbox" onchange="updateProgress()"> Sổ đơn thuốc đang sử dụng</li>
+                </ul>
+            </div>
+
+            <div class="check-card">
+                <h4>🩺 Chuẩn bị trước khám</h4>
+                <ul class="check-list-items">
+                    <li><input type="checkbox" checked onchange="updateProgress()"> Ghi lại các triệu chứng đau đầu chi tiết</li>
+                    <li><input type="checkbox" onchange="updateProgress()"> Nhịn ăn tối thiểu 6 tiếng trước giờ chụp MRI</li>
+                    <li><input type="checkbox" checked onchange="updateProgress()"> Tránh uống caffeine và chất kích thích</li>
+                </ul>
+            </div>
+
+            <div class="check-card">
+                <h4>🔔 Lưu ý đặc biệt</h4>
+                <ul class="check-list-items">
+                    <li><input type="checkbox" checked onchange="updateProgress()"> Không đeo đồ trang sức kim loại khi đi chụp MRI</li>
+                    <li><input type="checkbox" onchange="updateProgress()"> Nên đi cùng người thân nếu có chụp thuốc cản quang</li>
+                </ul>
+            </div>
+        </div>
+
+        <div style="padding: 0 5%; margin-bottom: 20px;">
+            <button class="btn btn-outline" onclick="showToast('Đã mở form thêm công việc!')">+ Thêm công việc thủ công</button>
+            <span style="font-size: 13px; color: var(--primary-dark); margin-left: 15px;">✔ Đã lưu tự động vào thiết bị cá nhân</span>
+        </div>
+
+        <div class="ai-note-box">
+            <div style="font-size: 28px;">✨</div>
+            <div>
+                <strong style="color: var(--primary-dark); font-size: 15px;">Checklist được đề xuất tự động bởi Trí Tuệ Nhân Tạo CareRoute AI</strong>
+                <p style="font-size: 13px; color: var(--text-gray); margin-top: 4px;">Nội dung chuẩn bị được điều chỉnh chính xác dựa trên loại khám Thần Kinh và quy định riêng của Bệnh viện Tâm Anh.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 CareRoute Health. Tất cả quyền được bảo lưu.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            updateProgress();
+        });
+
+        function updateProgress() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            if (checkboxes.length === 0) return;
+            let checkedCount = 0;
+            checkboxes.forEach(cb => { if (cb.checked) checkedCount++; });
+
+            const percentage = Math.round((checkedCount / checkboxes.length) * 100);
+            document.getElementById('progress-bar').style.width = percentage + '%';
+            document.getElementById('progress-text').innerText = percentage + '%';
+        }
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = message;
+            container.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
