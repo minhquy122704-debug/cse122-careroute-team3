@@ -69,7 +69,7 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 - Link thiết kế giao diện chi tiết trên Figma của nhóm: *[https://www.figma.com/design/yRPsl2coYwjC13kBhhLKEz/CareRoute---UI-Design?node-id=0-1&t=H6S6YA57MTtvuzha-1]*
 
 ## Demo
-- Link xem trước sản phẩm trực tiếp (GitHub Pages / Vercel): *[Chèn link demo tại đây]*
+- Link xem trước sản phẩm trực tiếp (GitHub Pages / Vercel): *[https://github.com/minhquy122704-debug/cse122-careroute-team3.git]*
 
 ## Minh chứng OBS
 - Link video quay màn hình demo sản phẩm và giải thích code qua OBS:
