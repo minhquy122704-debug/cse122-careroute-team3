@@ -567,7 +567,7 @@
                     <svg viewBox="0 0 16 16"><rect x="2.5" y="4.5" width="11" height="9" rx="1" /><path d="M5 4.5V3h6v1.5M5.5 7v4m2.5-4v4m2.5-4v4" /></svg>
                   </span>
                 </div>
-                <p class="stat-value">482</p>
+                <p class="stat-value" id="facilityTotal">—</p>
                 <div class="stat-note positive">+18 đăng ký mới tuần này</div>
               </article>
 
@@ -578,7 +578,7 @@
                     <svg viewBox="0 0 16 16"><path d="M6 4h7M6 8h7M6 12h7" /><circle cx="3.3" cy="4" r=".6" /><circle cx="3.3" cy="8" r=".6" /><circle cx="3.3" cy="12" r=".6" /></svg>
                   </span>
                 </div>
-                <p class="stat-value">3,124</p>
+                <p class="stat-value" id="serviceTotal">—</p>
                 <div class="stat-note">Bao gồm khám tổng quát &amp; chuyên sâu</div>
               </article>
 
@@ -600,7 +600,7 @@
                     <svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.5" /><path d="M8 4.5V8l2.2 1.4" /></svg>
                   </span>
                 </div>
-                <p class="stat-value">18</p>
+                <p class="stat-value" id="reviewTotal">—</p>
                 <div class="stat-note warning">Cần kiểm duyệt ngay</div>
               </article>
             </section>
@@ -620,29 +620,80 @@
 
               <section class="card" aria-labelledby="region-heading">
                 <h2 id="region-heading">Phân bố theo khu vực</h2>
-                <div class="region-list">
-                  <div class="region-row">
-                    <div class="region-heading"><span class="region-name">TP. Hồ Chí Minh</span><span class="region-value">280 cơ sở (58%)</span></div>
-                    <div class="region-track" role="img" aria-label="58 phần trăm"><div class="region-fill" style="width: 58%"></div></div>
-                  </div>
-                  <div class="region-row">
-                    <div class="region-heading"><span class="region-name">Hà Nội</span><span class="region-value">142 cơ sở (30%)</span></div>
-                    <div class="region-track" role="img" aria-label="30 phần trăm"><div class="region-fill" style="width: 30%"></div></div>
-                  </div>
-                  <div class="region-row">
-                    <div class="region-heading"><span class="region-name">Đà Nẵng</span><span class="region-value">40 cơ sở (8%)</span></div>
-                    <div class="region-track" role="img" aria-label="8 phần trăm"><div class="region-fill" style="width: 8%"></div></div>
-                  </div>
-                  <div class="region-row">
-                    <div class="region-heading"><span class="region-name">Cần Thơ</span><span class="region-value">20 cơ sở (4%)</span></div>
-                    <div class="region-track" role="img" aria-label="4 phần trăm"><div class="region-fill" style="width: 4%"></div></div>
-                  </div>
-                </div>
+                <div class="region-list" id="regionList" aria-live="polite"></div>
               </section>
             </div>
           </main>
         </div>
       </div>
     </div>
+    <script>
+      (() => {
+        const numberFormat = new Intl.NumberFormat("vi-VN");
+        const regionList = document.getElementById("regionList");
+
+        function fetchJson(path) {
+          return fetch(path).then((response) => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+          });
+        }
+
+        Promise.all([
+          fetchJson("../assets/data/facilities.json"),
+          fetchJson("../assets/data/reviews.json")
+        ])
+          .then(([facilities, reviews]) => {
+            if (!Array.isArray(facilities) || !Array.isArray(reviews)) {
+              throw new Error("Tệp facilities.json và reviews.json phải chứa danh sách.");
+            }
+
+            document.getElementById("facilityTotal").textContent = numberFormat.format(facilities.length);
+            document.getElementById("serviceTotal").textContent = numberFormat.format(
+              facilities.reduce((total, facility) => total + (Number(facility.services_count) || 0), 0)
+            );
+            document.getElementById("reviewTotal").textContent = numberFormat.format(reviews.length);
+
+            const countsByRegion = facilities.reduce((counts, facility) => {
+              counts.set(facility.location, (counts.get(facility.location) || 0) + 1);
+              return counts;
+            }, new Map());
+            const totalFacilities = facilities.length;
+            const regionRows = [...countsByRegion.entries()].map(([region, count]) => {
+              const percentage = totalFacilities ? Math.round(count / totalFacilities * 100) : 0;
+              const row = document.createElement("div");
+              row.className = "region-row";
+              const heading = document.createElement("div");
+              heading.className = "region-heading";
+              const name = document.createElement("span");
+              name.className = "region-name";
+              name.textContent = region;
+              const value = document.createElement("span");
+              value.className = "region-value";
+              value.textContent = `${count} cơ sở (${percentage}%)`;
+              heading.append(name, value);
+              const track = document.createElement("div");
+              track.className = "region-track";
+              track.setAttribute("role", "img");
+              track.setAttribute("aria-label", `${percentage} phần trăm`);
+              const fill = document.createElement("div");
+              fill.className = "region-fill";
+              fill.style.width = `${percentage}%`;
+              track.append(fill);
+              row.append(heading, track);
+              return row;
+            });
+            regionList.replaceChildren(...regionRows);
+            if (!regionRows.length) regionList.textContent = "Chưa có dữ liệu khu vực.";
+          })
+          .catch((error) => {
+            console.error("Không thể tải dữ liệu bảng điều khiển:", error);
+            document.getElementById("facilityTotal").textContent = "Lỗi tải dữ liệu";
+            document.getElementById("serviceTotal").textContent = "Lỗi tải dữ liệu";
+            document.getElementById("reviewTotal").textContent = "Lỗi tải dữ liệu";
+            regionList.textContent = "Không thể tải dữ liệu khu vực.";
+          });
+      })();
+    </script>
   </body>
 </html>

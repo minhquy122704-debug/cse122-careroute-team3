@@ -191,38 +191,7 @@
 
         <section class="warning-panel" aria-labelledby="warningHeading">
           <h2 class="section-heading" id="warningHeading">Danh sách nội dung cảnh báo</h2>
-          <div class="warning-list" id="warningList">
-            <article class="warning-row" data-content="Dịch vụ xét nghiệm tổng quát tại nhà">
-              <div>
-                <h3 class="content-title">Dịch vụ xét nghiệm tổng quát tại nhà</h3>
-                <p class="content-source">Diag Laboratories Quận 3</p>
-              </div>
-              <div class="date-cell"><span class="data-label">Lần cuối cập nhật</span><span class="data-value">10/04/2026</span></div>
-              <div class="age-cell"><span class="data-label">Số ngày cũ</span><span class="data-value strong">185 ngày</span></div>
-              <span class="warning-badge">Cảnh báo</span>
-              <div class="row-actions"><button class="button button-update" type="button" data-action="update">Yêu cầu cập nhật</button><button class="button button-dismiss" type="button" data-action="dismiss">Bỏ qua</button></div>
-            </article>
-            <article class="warning-row" data-content="Dịch vụ xét nghiệm tổng quát tại nhà">
-              <div>
-                <h3 class="content-title">Dịch vụ xét nghiệm tổng quát tại nhà</h3>
-                <p class="content-source">Diag Laboratories Quận 3</p>
-              </div>
-              <div class="date-cell"><span class="data-label">Lần cuối cập nhật</span><span class="data-value">10/04/2026</span></div>
-              <div class="age-cell"><span class="data-label">Số ngày cũ</span><span class="data-value strong">185 ngày</span></div>
-              <span class="warning-badge">Cảnh báo</span>
-              <div class="row-actions"><button class="button button-update" type="button" data-action="update">Yêu cầu cập nhật</button><button class="button button-dismiss" type="button" data-action="dismiss">Bỏ qua</button></div>
-            </article>
-            <article class="warning-row" data-content="Dịch vụ xét nghiệm tổng quát tại nhà">
-              <div>
-                <h3 class="content-title">Dịch vụ xét nghiệm tổng quát tại nhà</h3>
-                <p class="content-source">Diag Laboratories Quận 3</p>
-              </div>
-              <div class="date-cell"><span class="data-label">Lần cuối cập nhật</span><span class="data-value">10/04/2026</span></div>
-              <div class="age-cell"><span class="data-label">Số ngày cũ</span><span class="data-value strong">185 ngày</span></div>
-              <span class="warning-badge">Cảnh báo</span>
-              <div class="row-actions"><button class="button button-update" type="button" data-action="update">Yêu cầu cập nhật</button><button class="button button-dismiss" type="button" data-action="dismiss">Bỏ qua</button></div>
-            </article>
-          </div>
+          <div class="warning-list" id="warningList" aria-live="polite"></div>
           <div class="empty-state" id="emptyState">Không còn nội dung cảnh báo trong danh sách.</div>
         </section>
 
@@ -253,6 +222,61 @@
       const emptyState = document.getElementById("emptyState");
       const toast = document.getElementById("toast");
       let toastTimer;
+
+      function renderWarnings(warnings) {
+        warningList.replaceChildren(...warnings.map((warning) => {
+          const row = document.createElement("article");
+          row.className = "warning-row";
+          row.dataset.content = warning.content_title;
+          const content = document.createElement("div");
+          const title = document.createElement("h3");
+          title.className = "content-title";
+          title.textContent = warning.content_title;
+          const source = document.createElement("p");
+          source.className = "content-source";
+          source.textContent = warning.facility_name;
+          content.append(title, source);
+
+          const dateCell = document.createElement("div");
+          dateCell.className = "date-cell";
+          const dateLabel = document.createElement("span");
+          dateLabel.className = "data-label";
+          dateLabel.textContent = "Lần cuối cập nhật";
+          const dateValue = document.createElement("span");
+          dateValue.className = "data-value";
+          const date = new Date(`${warning.last_updated_at}T00:00:00`);
+          dateValue.textContent = Number.isNaN(date.getTime()) ? "Không rõ" : date.toLocaleDateString("vi-VN");
+          dateCell.append(dateLabel, dateValue);
+
+          const ageCell = document.createElement("div");
+          ageCell.className = "age-cell";
+          const ageLabel = document.createElement("span");
+          ageLabel.className = "data-label";
+          ageLabel.textContent = "Số ngày cũ";
+          const ageValue = document.createElement("span");
+          ageValue.className = "data-value strong";
+          ageValue.textContent = `${warning.age_days} ngày`;
+          ageCell.append(ageLabel, ageValue);
+
+          const badge = document.createElement("span");
+          badge.className = "warning-badge";
+          badge.textContent = warning.severity;
+          const actions = document.createElement("div");
+          actions.className = "row-actions";
+          [["update", "Yêu cầu cập nhật", "button button-update"], ["dismiss", "Bỏ qua", "button button-dismiss"]]
+            .forEach(([action, label, className]) => {
+              const button = document.createElement("button");
+              button.type = "button";
+              button.dataset.action = action;
+              button.className = className;
+              button.textContent = label;
+              actions.append(button);
+            });
+          row.append(content, dateCell, ageCell, badge, actions);
+          return row;
+        }));
+        emptyState.classList.toggle("visible", warnings.length === 0);
+      }
 
       function showToast(title, message) {
         document.getElementById("toastTitle").textContent = title;
@@ -296,6 +320,21 @@
           showToast("Quét hoàn tất", "Dữ liệu giám sát nội dung đã được cập nhật.");
         }, 900);
       });
+
+      fetch("../assets/data/freshness.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then((warnings) => {
+          if (!Array.isArray(warnings)) throw new Error("freshness.json phải chứa một danh sách.");
+          renderWarnings(warnings);
+        })
+        .catch((error) => {
+          console.error("Không thể tải dữ liệu giám sát nội dung:", error);
+          emptyState.textContent = "Không thể tải danh sách cảnh báo. Vui lòng thử tải lại trang.";
+          emptyState.classList.add("visible");
+        });
     })();
   </script>
 </body>

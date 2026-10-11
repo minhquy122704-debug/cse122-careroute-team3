@@ -685,17 +685,6 @@
     <script>
       (() => {
         const storageKey = "careroute.admin.categories";
-        const seedCategories = [
-          { id: "general", name: "Khám tổng quát", description: "Các dịch vụ khám sức khỏe tổng quát và sàng lọc ban đầu.", parentId: null, serviceCount: 4 },
-          { id: "internal", name: "Nội khoa", description: "Khám và điều trị các bệnh lý nội khoa.", parentId: "general", serviceCount: 12 },
-          { id: "surgery", name: "Ngoại khoa", description: "Khám và tư vấn các bệnh lý cần điều trị ngoại khoa.", parentId: "general", serviceCount: 8 },
-          { id: "pediatrics", name: "Nhi khoa", description: "Dịch vụ khám và chăm sóc sức khỏe trẻ em.", parentId: "general", serviceCount: 6 },
-          { id: "specialty", name: "Khám chuyên khoa sâu", description: "Các dịch vụ khám chuyên sâu theo từng chuyên khoa.", parentId: null, serviceCount: 14 },
-          { id: "cardiology", name: "Tim mạch", description: "Khám, chẩn đoán và theo dõi bệnh lý tim mạch.", parentId: "specialty", serviceCount: 11 },
-          { id: "neurology", name: "Thần kinh học lâm sàng", description: "Chuyên thăm khám, chẩn đoán điện não và điều trị các triệu chứng liên quan đến hệ thần kinh trung ương và ngoại vi.", parentId: "specialty", serviceCount: 9 },
-          { id: "orthopedics", name: "Xương khớp", description: "Khám và điều trị các bệnh lý cơ xương khớp.", parentId: "specialty", serviceCount: 7 }
-        ];
-
         const tree = document.querySelector("#category-tree");
         const form = document.querySelector("#category-form");
         const nameInput = document.querySelector("#category-name");
@@ -705,14 +694,14 @@
         const saveButton = document.querySelector("#save-category-button");
         const formMessage = document.querySelector("#form-message");
         const toast = document.querySelector("#toast");
-        let categories = loadCategories();
+        let categories = [];
         let editingId = null;
         let toastTimer;
 
-        function loadCategories() {
+        function loadCategories(defaultCategories) {
           try {
             const saved = localStorage.getItem(storageKey);
-            if (!saved) return seedCategories.map((category) => ({ ...category }));
+            if (!saved) return defaultCategories;
             const parsed = JSON.parse(saved);
             if (!Array.isArray(parsed) || parsed.some((category) => !category.id || !category.name)) {
               throw new Error("Dữ liệu danh mục đã lưu không hợp lệ.");
@@ -720,8 +709,8 @@
             return parsed;
           } catch (error) {
             console.error("Không thể tải danh mục đã lưu:", error);
-            window.setTimeout(() => showToast("Không thể đọc dữ liệu đã lưu; đang dùng danh mục mẫu."), 0);
-            return seedCategories.map((category) => ({ ...category }));
+            window.setTimeout(() => showToast("Không thể đọc dữ liệu đã lưu; đang dùng danh mục từ JSON."), 0);
+            return defaultCategories;
           }
         }
 
@@ -765,7 +754,7 @@
                   <img src="../assets/icons/folder-open-svgrepo-com.svg" alt="" />
                 </span>
                 <span class="category-name">${escapeHtml(category.name)}</span>
-                <span class="service-count">${Number(category.serviceCount) || 0} dịch vụ</span>
+                <span class="service-count">${category.serviceCount === undefined ? escapeHtml(category.status || "Không rõ trạng thái") : `${Number(category.serviceCount) || 0} dịch vụ`}</span>
                 <span class="category-actions">
                   <button class="icon-button" type="button" data-action="edit" data-id="${escapeHtml(category.id)}" aria-label="Sửa ${escapeHtml(category.name)}" title="Chỉnh sửa">
                     <img src="../assets/icons/edit-square-svgrepo-com.svg" alt="" />
@@ -783,7 +772,7 @@
                     <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" /></svg>
                   </button>
                   <span class="category-name">${escapeHtml(parent.name)}</span>
-                  <span class="category-meta">${Number(parent.serviceCount) || 0} nhóm con</span>
+                  <span class="category-meta">${children.length} nhóm con · ${escapeHtml(parent.status || "Không rõ trạng thái")}</span>
                   <span class="category-actions">
                     <button class="icon-button" type="button" data-action="edit" data-id="${escapeHtml(parent.id)}" aria-label="Sửa ${escapeHtml(parent.name)}" title="Chỉnh sửa">
                       <img src="../assets/icons/edit-square-svgrepo-com.svg" alt="" />
@@ -919,8 +908,34 @@
           showToast(editingId ? "Đã cập nhật danh mục." : "Đã tạo danh mục.");
         });
 
-        renderTree();
-        startEdit("neurology");
+        fetch("../assets/data/categories.json")
+          .then((response) => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+          })
+          .then((data) => {
+            if (!Array.isArray(data)) throw new Error("categories.json phải chứa một danh sách.");
+            const categoriesFromJson = data.map((category) => ({
+              id: category.id,
+              name: category.name,
+              description: category.description || "",
+              parentId: null,
+              status: category.status
+            }));
+            categoriesFromJson.forEach((category, index) => {
+              const parentName = data[index].parent_category;
+              const parent = categoriesFromJson.find((item) => item.name === parentName);
+              category.parentId = parent ? parent.id : null;
+            });
+            categories = loadCategories(categoriesFromJson);
+            renderTree();
+            if (categories.length) startEdit(categories[0].id);
+          })
+          .catch((error) => {
+            console.error("Không thể tải danh mục:", error);
+            tree.textContent = "Không thể tải danh mục. Vui lòng thử tải lại trang.";
+            showToast("Không thể tải danh mục.");
+          });
       })();
     </script>
   </body>

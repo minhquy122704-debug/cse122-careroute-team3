@@ -153,28 +153,25 @@
         <nav class="breadcrumb" aria-label="Breadcrumb">
           <a href="reviewer-review-queue.html">Hàng chờ duyệt</a>
           <span class="crumb-separator" aria-hidden="true">/</span>
-          <span class="breadcrumb-current">Yêu cầu chi tiết #1024</span>
+          <span class="breadcrumb-current" id="ticketBreadcrumb">Đang tải yêu cầu...</span>
         </nav>
 
         <div class="review-grid">
           <section class="panel" aria-labelledby="contentHeading">
             <div class="panel-heading">
               <h1 class="panel-title" id="contentHeading">Nội dung thay đổi</h1>
-              <span class="category">Bảng giá / Dịch vụ</span>
+              <span class="category" id="ticketCategory"></span>
             </div>
             <span class="field-label">Tên dịch vụ</span>
-            <div class="service-name">Chụp Cộng hưởng từ MRI sọ não</div>
+            <div class="service-name" id="serviceName"></div>
             <span class="field-label">Bảng giá ước tính</span>
             <div class="price-row" aria-label="So sánh bảng giá">
-              <div class="price-box"><span class="price-caption">Giá hiện tại</span><span class="price-value">2.200.000 đ</span></div>
+              <div class="price-box"><span class="price-caption">Giá hiện tại</span><span class="price-value" id="currentPrice"></span></div>
               <span class="arrow" aria-hidden="true">→</span>
-              <div class="price-box new"><span class="price-caption">Giá đề xuất mới</span><span class="price-value">2.400.000 đ</span></div>
+              <div class="price-box new"><span class="price-caption">Giá đề xuất mới</span><span class="price-value" id="proposedPrice"></span></div>
             </div>
             <span class="field-label">Quy trình chuẩn bị (AI khuyến nghị bổ sung)</span>
-            <div class="guidance-box">
-              <strong>Hướng dẫn nhịn ăn:</strong>
-              "Bệnh nhân cần nhịn ăn hoàn toàn ít nhất 4 tiếng trước khi thực hiện chụp MRI sọ não có cản quang để đảm bảo an toàn tuyệt đối và hình ảnh sắc nét nhất."
-            </div>
+            <div class="guidance-box" id="guidanceBox"></div>
           </section>
 
           <form class="panel decision-panel" id="reviewForm">
@@ -182,20 +179,17 @@
             <label class="field-label" for="decisionStatus">Trạng thái quyết định</label>
             <div class="select-wrap">
               <select class="decision-select" id="decisionStatus" name="decision">
-                <option value="revision" selected>Yêu cầu chỉnh sửa thêm</option>
+                <option value="revision">Yêu cầu chỉnh sửa thêm</option>
                 <option value="approved">Phê duyệt nội dung</option>
                 <option value="rejected">Từ chối yêu cầu</option>
               </select>
             </div>
             <label class="field-label" for="feedbackNotes">Ghi chú phản hồi cho cơ sở</label>
-            <textarea class="feedback" id="feedbackNotes" name="notes" placeholder="Nhập nội dung phản hồi cho cơ sở..." required>Quy trình nhịn ăn cần nêu rõ có áp dụng cho trường hợp không dùng thuốc cản quang hay không. Vui lòng bổ sung tài liệu xác nhận bảng giá mới.</textarea>
+            <textarea class="feedback" id="feedbackNotes" name="notes" placeholder="Nhập nội dung phản hồi cho cơ sở..." required></textarea>
 
             <section class="activity" aria-labelledby="activityHeading">
               <h3 class="activity-title" id="activityHeading">LỊCH SỬ HOẠT ĐỘNG</h3>
-              <ul class="activity-list" id="activityList">
-                <li class="activity-item"><span class="activity-dot"></span><span>15:30 - Cơ sở gửi yêu cầu duyệt</span></li>
-                <li class="activity-item"><span class="activity-dot warning"></span><span>15:45 - AI tự động phân tích và đề xuất</span></li>
-              </ul>
+              <ul class="activity-list" id="activityList"></ul>
             </section>
             <button class="send-button" id="submitButton" type="submit">Gửi Phản Hồi Kiểm Duyệt</button>
           </form>
@@ -214,6 +208,35 @@
       const activityList = document.getElementById("activityList");
       const toast = document.getElementById("toast");
       let toastTimer;
+
+      function renderTicket(ticket) {
+        document.getElementById("ticketBreadcrumb").textContent = `Yêu cầu chi tiết #${ticket.ticket_id}`;
+        document.getElementById("ticketCategory").textContent = ticket.content_type;
+        document.getElementById("serviceName").textContent = ticket.details.service_name || ticket.details.summary || "Nội dung cập nhật";
+        document.getElementById("currentPrice").textContent = ticket.details.current_price || "Chưa có dữ liệu";
+        document.getElementById("proposedPrice").textContent = ticket.details.proposed_price || "Chưa có dữ liệu";
+        const guidance = document.createElement("span");
+        guidance.textContent = ticket.details.ai_recommendation || ticket.details.summary || "Không có hướng dẫn bổ sung.";
+        document.getElementById("guidanceBox").replaceChildren(guidance);
+        notes.value = ticket.reviewer_action.feedback_note || "";
+        const decision = {
+          "Yêu cầu chỉnh sửa thêm": "revision",
+          "Phê duyệt nội dung": "approved",
+          "Đã duyệt": "approved",
+          "Từ chối yêu cầu": "rejected"
+        };
+        status.value = decision[ticket.reviewer_action.status] || "revision";
+        activityList.replaceChildren(...ticket.activity_log.map((entry, index) => {
+          const item = document.createElement("li");
+          item.className = "activity-item";
+          const dot = document.createElement("span");
+          dot.className = `activity-dot${index === 1 ? " warning" : ""}`;
+          const text = document.createElement("span");
+          text.textContent = `${entry.time} - ${entry.event}`;
+          item.append(dot, text);
+          return item;
+        }));
+      }
 
       function showToast(title, message, isError = false) {
         document.getElementById("toastTitle").textContent = title;
@@ -250,6 +273,23 @@
         activityList.prepend(item);
         showToast("Đã gửi phản hồi kiểm duyệt", "Trạng thái xử lý đã được cập nhật.");
       });
+
+      const requestedTicketId = new URLSearchParams(window.location.search).get("ticket_id") || "1024";
+      fetch("../assets/data/reviews.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then((tickets) => {
+          if (!Array.isArray(tickets)) throw new Error("reviews.json phải chứa một danh sách.");
+          const ticket = tickets.find((item) => String(item.ticket_id) === requestedTicketId);
+          if (!ticket) throw new Error(`Không tìm thấy yêu cầu #${requestedTicketId}.`);
+          renderTicket(ticket);
+        })
+        .catch((error) => {
+          console.error("Không thể tải chi tiết yêu cầu:", error);
+          showToast("Không thể tải yêu cầu", "Vui lòng kiểm tra dữ liệu hoặc thử tải lại trang.", true);
+        });
     })();
   </script>
 </body>

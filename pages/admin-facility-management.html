@@ -846,17 +846,8 @@
     </dialog>
 
     <script>
-      const facilities = [
-        { id: "facility-1", name: "Bệnh viện đa khoa Tâm Anh", type: "Bệnh viện", region: "Tân Bình, TP.HCM", regionCode: "TP.HCM", services: 24, status: "Hoạt động" },
-        { id: "facility-2", name: "Phòng khám Thần Kinh BS. Nguyễn Văn An", type: "Phòng khám tư", region: "Quận 1, TP.HCM", regionCode: "TP.HCM", services: 3, status: "Hoạt động" },
-        { id: "facility-3", name: "Trung tâm Xét nghiệm Đạt Quận 3", type: "Xét nghiệm", region: "Quận 3, TP.HCM", regionCode: "TP.HCM", services: 12, status: "Hoạt động" },
-        { id: "facility-4", name: "Phòng khám Đa khoa Hoàn Mỹ", type: "Phòng khám tư", region: "Phú Nhuận, TP.HCM", regionCode: "TP.HCM", services: 15, status: "Tạm ngưng" },
-        { id: "facility-5", name: "Bệnh viện Bạch Mai", type: "Bệnh viện", region: "Đống Đa, Hà Nội", regionCode: "Hà Nội", services: 32, status: "Hoạt động" },
-        { id: "facility-6", name: "Phòng khám Đa khoa Đà Nẵng", type: "Phòng khám tư", region: "Hải Châu, Đà Nẵng", regionCode: "Đà Nẵng", services: 8, status: "Hoạt động" },
-        { id: "facility-7", name: "Bệnh viện Đa khoa Cần Thơ", type: "Bệnh viện", region: "Ninh Kiều, Cần Thơ", regionCode: "Cần Thơ", services: 19, status: "Tạm ngưng" },
-        { id: "facility-8", name: "Trung tâm Y tế Hà Nội", type: "Xét nghiệm", region: "Cầu Giấy, Hà Nội", regionCode: "Hà Nội", services: 10, status: "Hoạt động" },
-      ];
-
+      let facilities = [];
+      let loadError = false;
       const pageSize = 4;
       let currentPage = 1;
       const rows = document.querySelector("#facility-rows");
@@ -934,7 +925,7 @@
           const cell = document.createElement("td");
           cell.className = "empty-row";
           cell.colSpan = 6;
-          cell.textContent = "Không tìm thấy cơ sở y tế phù hợp.";
+          cell.textContent = loadError ? "Không thể tải dữ liệu cơ sở y tế." : "Không tìm thấy cơ sở y tế phù hợp.";
           row.append(cell);
           rows.append(row);
         } else {
@@ -1062,7 +1053,29 @@
         renderFacilities();
       });
 
-      renderFacilities();
+      fetch("../assets/data/facilities.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then((data) => {
+          if (!Array.isArray(data)) throw new Error("facilities.json phải chứa một danh sách.");
+          facilities = data.map((facility) => ({
+            id: facility.id,
+            name: facility.name,
+            type: facility.type,
+            region: facility.location,
+            regionCode: facility.location,
+            services: Number(facility.services_count) || 0,
+            status: facility.status
+          }));
+          renderFacilities();
+        })
+        .catch((error) => {
+          console.error("Không thể tải danh sách cơ sở y tế:", error);
+          loadError = true;
+          renderFacilities();
+        });
     </script>
   </body>
 </html>

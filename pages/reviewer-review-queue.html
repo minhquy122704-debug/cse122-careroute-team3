@@ -240,43 +240,7 @@
           </select>
         </section>
 
-        <section class="review-list" id="reviewList" aria-label="Danh sách nội dung chờ duyệt">
-          <article class="review-card" data-priority="high" data-category="service" data-search="bệnh viện đa khoa tâm anh phạm văn b">
-            <div class="review-header">
-              <h2 class="review-title">Bệnh viện Đa khoa Tâm Anh</h2><span class="category">Bảng giá / Dịch vụ</span>
-              <div class="review-meta"><span>Gửi ngày: 15/10/2026</span><span class="priority">Cao</span></div>
-            </div>
-            <p class="review-description">Cập nhật giá Chụp Cộng hưởng từ MRI sọ não lên 2.400.000đ và thêm quy trình chuẩn bị nhịn ăn trước 4 tiếng...</p>
-            <div class="review-footer">
-              <div class="requester"><span class="icon" style="--icon:url('../assets/icons/user-svgrepo-com.svg')"></span><span>Yêu cầu bởi: Phạm Văn B (Quản trị viên Cơ sở)</span></div>
-              <div class="card-actions"><button class="button button-approve" type="button" data-action="approve">Duyệt Ngay</button><button class="button button-reject" type="button" data-action="reject">Từ Chối</button><button class="button" type="button" data-action="details">Xem Chi Tiết</button></div>
-            </div>
-          </article>
-
-          <article class="review-card" data-priority="medium" data-category="guidance" data-search="phòng khám đa khoa quốc tế golden healthcare phạm văn b">
-            <div class="review-header">
-              <h2 class="review-title">Phòng khám Đa khoa Quốc tế Golden Healthcare</h2><span class="category">Quy trình hướng dẫn</span>
-              <div class="review-meta"><span>Gửi ngày: 14/10/2026</span><span class="priority medium">Trung bình</span></div>
-            </div>
-            <p class="review-description">Yêu cầu thêm quy trình hướng dẫn thanh toán bảo hiểm bảo lãnh trực tiếp tại quầy dịch vụ tầng trệt...</p>
-            <div class="review-footer">
-              <div class="requester"><span class="icon" style="--icon:url('../assets/icons/user-svgrepo-com.svg')"></span><span>Yêu cầu bởi: Phạm Văn B (Quản trị viên Cơ sở)</span></div>
-              <div class="card-actions"><button class="button button-approve" type="button" data-action="approve">Duyệt Ngay</button><button class="button button-reject" type="button" data-action="reject">Từ Chối</button><button class="button" type="button" data-action="details">Xem Chi Tiết</button></div>
-            </div>
-          </article>
-
-          <article class="review-card" data-priority="low" data-category="general" data-search="trung tâm xét nghiệm diag chi nhánh quận 3 phạm văn b">
-            <div class="review-header">
-              <h2 class="review-title">Trung tâm Xét nghiệm Diag - Chi nhánh Quận 3</h2><span class="category">Thông tin chung</span>
-              <div class="review-meta"><span>Gửi ngày: 14/10/2026</span><span class="priority low">Thấp</span></div>
-            </div>
-            <p class="review-description">Thay đổi thời gian mở cửa ngày Chủ nhật: từ 07:30 - 12:00 sang 07:30 - 17:00 để đáp ứng nhu cầu...</p>
-            <div class="review-footer">
-              <div class="requester"><span class="icon" style="--icon:url('../assets/icons/user-svgrepo-com.svg')"></span><span>Yêu cầu bởi: Phạm Văn B (Quản trị viên Cơ sở)</span></div>
-              <div class="card-actions"><button class="button button-approve" type="button" data-action="approve">Duyệt Ngay</button><button class="button button-reject" type="button" data-action="reject">Từ Chối</button><button class="button" type="button" data-action="details">Xem Chi Tiết</button></div>
-            </div>
-          </article>
-        </section>
+        <section class="review-list" id="reviewList" aria-label="Danh sách nội dung chờ duyệt" aria-live="polite"></section>
         <div class="empty-state" id="emptyState"><strong>Không tìm thấy hồ sơ phù hợp</strong>Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc.</div>
       </main>
     </div>
@@ -292,7 +256,7 @@
 
   <script>
     (() => {
-      const cards = [...document.querySelectorAll(".review-card")];
+      const reviewList = document.getElementById("reviewList");
       const searchInput = document.getElementById("searchInput");
       const priorityFilter = document.getElementById("priorityFilter");
       const categoryFilter = document.getElementById("categoryFilter");
@@ -301,9 +265,82 @@
       const modalTitle = document.getElementById("modalTitle");
       const modalContent = document.getElementById("modalContent");
       const toast = document.getElementById("toast");
-      let pendingCount = 18;
+      let pendingCount = 0;
       let approvedCount = 32;
       let toastTimer;
+
+      function createCard(review) {
+        const priorities = { "Cao": "high", "Trung bình": "medium", "Thấp": "low" };
+        const categories = {
+          "Bảng giá / Dịch vụ": "service",
+          "Quy trình hướng dẫn": "guidance",
+          "Thông tin chung": "general"
+        };
+        const card = document.createElement("article");
+        const priority = priorities[review.priority] || "low";
+        const category = categories[review.content_type] || "general";
+        const summary = review.details.summary
+          || `Cập nhật ${review.details.service_name || "nội dung"}${review.details.proposed_price ? ` lên ${review.details.proposed_price}` : ""}`;
+        const date = new Date(review.created_at);
+        card.className = "review-card";
+        card.dataset.priority = priority;
+        card.dataset.category = category;
+        card.dataset.search = `${review.facility_name} ${review.requested_by}`.toLocaleLowerCase("vi");
+
+        const header = document.createElement("div");
+        header.className = "review-header";
+        const title = document.createElement("h2");
+        title.className = "review-title";
+        title.textContent = review.facility_name;
+        const categoryLabel = document.createElement("span");
+        categoryLabel.className = "category";
+        categoryLabel.textContent = review.content_type;
+        const meta = document.createElement("div");
+        meta.className = "review-meta";
+        const dateLabel = document.createElement("span");
+        dateLabel.textContent = `Gửi ngày: ${Number.isNaN(date.getTime()) ? "Không rõ" : date.toLocaleDateString("vi-VN")}`;
+        const priorityLabel = document.createElement("span");
+        priorityLabel.className = `priority${priority === "high" ? "" : ` ${priority}`}`;
+        priorityLabel.textContent = review.priority;
+        meta.append(dateLabel, priorityLabel);
+        header.append(title, categoryLabel, meta);
+
+        const description = document.createElement("p");
+        description.className = "review-description";
+        description.textContent = summary;
+        const footer = document.createElement("div");
+        footer.className = "review-footer";
+        const requester = document.createElement("div");
+        requester.className = "requester";
+        const icon = document.createElement("span");
+        icon.className = "icon";
+        icon.style.setProperty("--icon", "url('../assets/icons/user-svgrepo-com.svg')");
+        const requesterLabel = document.createElement("span");
+        requesterLabel.textContent = `Yêu cầu bởi: ${review.requested_by}`;
+        requester.append(icon, requesterLabel);
+
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+        [["approve", "Duyệt Ngay", "button button-approve"], ["reject", "Từ Chối", "button button-reject"], ["details", "Xem Chi Tiết", "button"]]
+          .forEach(([action, label, className]) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.dataset.action = action;
+            button.className = className;
+            button.textContent = label;
+            actions.append(button);
+          });
+        footer.append(requester, actions);
+        card.append(header, description, footer);
+        return card;
+      }
+
+      function renderReviews(reviews) {
+        reviewList.replaceChildren(...reviews.map(createCard));
+        pendingCount = reviews.length;
+        document.getElementById("pendingCount").textContent = String(pendingCount);
+        applyFilters();
+      }
 
       function applyFilters() {
         const query = searchInput.value.trim().toLocaleLowerCase("vi");
@@ -311,7 +348,7 @@
         const category = categoryFilter.value;
         let visible = 0;
 
-        cards.forEach((card) => {
+        reviewList.querySelectorAll(".review-card").forEach((card) => {
           const matches = card.dataset.search.includes(query)
             && (priority === "all" || card.dataset.priority === priority)
             && (category === "all" || card.dataset.category === category);
@@ -341,7 +378,7 @@
         control.addEventListener("change", applyFilters);
       });
 
-      document.getElementById("reviewList").addEventListener("click", (event) => {
+      reviewList.addEventListener("click", (event) => {
         const button = event.target.closest("button[data-action]");
         if (!button) return;
         const card = button.closest(".review-card");
@@ -385,6 +422,21 @@
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") modalBackdrop.classList.remove("open");
       });
+
+      fetch("../assets/data/reviews.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then((reviews) => {
+          if (!Array.isArray(reviews)) throw new Error("reviews.json phải chứa một danh sách.");
+          renderReviews(reviews);
+        })
+        .catch((error) => {
+          console.error("Không thể tải danh sách kiểm duyệt:", error);
+          reviewList.textContent = "Không thể tải danh sách kiểm duyệt. Vui lòng thử tải lại trang.";
+          emptyState.classList.add("visible");
+        });
     })();
   </script>
 </body>
