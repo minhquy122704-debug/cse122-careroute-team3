@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý danh mục | CareRoute</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --page-bg: #f2f4f6;
+        --workspace-bg: #f7f9fb;
+        --surface: #fff;
+        --line: #e3e9ef;
+        --text: #20283a;
+        --muted: #778398;
+        --teal: #529d95;
+        --teal-dark: #438a82;
+        --teal-soft: #f0faf8;
+        --danger: #c94848;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background: var(--page-bg);
+        color: var(--text);
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 13px;
+      }
+
+      button,
+      input,
+      select,
+      textarea {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .page-shell {
+        width: min(1360px, calc(100% - 26px));
+        margin: 10px auto 17px;
+      }
+
+      .page-label {
+        margin: 0 0 8px;
+        color: #a5acb5;
+        font-size: 14px;
+        line-height: 18px;
+      }
+
+      .app-shell {
+        min-height: calc(100vh - 53px);
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--workspace-bg);
+        box-shadow: 0 8px 24px rgba(36, 52, 69, 0.06);
+      }
+
+      .app-header {
+        display: flex;
+        height: 45px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 26px 0 29px;
+        border-bottom: 1px solid var(--line);
+        background: var(--surface);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 23px;
+        height: 23px;
+        place-items: center;
+        border-radius: 6px;
+        background: var(--teal);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 1;
+      }
+
+      .topbar-actions,
+      .user-card {
+        display: flex;
+        align-items: center;
+      }
+
+      .topbar-actions {
+        gap: 13px;
+      }
+
+      .notification-button {
+        display: grid;
+        width: 29px;
+        height: 29px;
+        padding: 7px;
+        place-items: center;
+        border: 0;
+        border-radius: 50%;
+        background: #f6f8fa;
+      }
+
+      .notification-button img {
+        width: 15px;
+        height: 15px;
+        opacity: 0.7;
+      }
+
+      .user-card {
+        gap: 6px;
+      }
+
+      .user-avatar {
+        width: 27px;
+        height: 27px;
+        border: 1px solid #e5eaee;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .user-name {
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.3;
+      }
+
+      .user-role {
+        display: block;
+        color: #9aa5b3;
+        font-size: 9px;
+        line-height: 1.3;
+      }
+
+      .app-body {
+        display: flex;
+        min-height: calc(100vh - 99px);
+      }
+
+      .sidebar {
+        flex: 0 0 181px;
+        padding: 16px 14px;
+        border-right: 1px solid var(--line);
+        background: var(--surface);
+      }
+
+      .sidebar-label {
+        margin: 0 0 12px;
+        color: #8591a2;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .nav-list {
+        display: grid;
+        gap: 4px;
+      }
+
+      .nav-item {
+        display: flex;
+        min-height: 29px;
+        align-items: center;
+        gap: 9px;
+        padding: 0 9px;
+        border-radius: 6px;
+        color: #283247;
+        font-size: 10px;
+        text-decoration: none;
+      }
+
+      .nav-item:hover {
+        background: #f6f9fa;
+      }
+
+      .nav-item.active {
+        background: var(--teal-soft);
+        color: var(--teal-dark);
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        display: inline-flex;
+        width: 13px;
+        height: 13px;
+        flex: 0 0 13px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nav-icon img {
+        width: 13px;
+        height: 13px;
+        object-fit: contain;
+        opacity: 0.8;
+      }
+
+      .main-panel {
+        min-width: 0;
+        flex: 1;
+        padding: 19px 20px 28px;
+        background: var(--workspace-bg);
+      }
+
+      .content-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 14px;
+      }
+
+      .content-heading h1 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+      }
+
+      .content-heading p {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .button {
+        min-height: 29px;
+        padding: 0 11px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .button-primary {
+        border-color: var(--teal);
+        background: var(--teal);
+        color: #fff;
+      }
+
+      .button-primary:hover {
+        border-color: var(--teal-dark);
+        background: var(--teal-dark);
+      }
+
+      .button-secondary {
+        border-color: var(--line);
+        background: #fff;
+        color: #596579;
+      }
+
+      .button-secondary:hover {
+        background: #f7f9fb;
+      }
+
+      .category-layout {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) minmax(260px, 1fr);
+        align-items: start;
+        gap: 15px;
+      }
+
+      .card {
+        min-width: 0;
+        padding: 14px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: var(--surface);
+      }
+
+      .card h2 {
+        margin: 0 0 11px;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .tree-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .tree-group {
+        min-width: 0;
+      }
+
+      .category-row {
+        display: flex;
+        min-height: 25px;
+        align-items: center;
+        gap: 7px;
+        padding: 0 7px;
+        border-bottom: 1px solid #edf0f4;
+        color: #354056;
+        font-size: 9px;
+      }
+
+      .category-row.parent-row {
+        min-height: 25px;
+        border-bottom: 0;
+        border-radius: 5px;
+        background: var(--teal-soft);
+        color: var(--teal-dark);
+        font-weight: 600;
+      }
+
+      .expand-button {
+        display: grid;
+        width: 10px;
+        height: 16px;
+        flex: 0 0 10px;
+        padding: 0;
+        place-items: center;
+        border: 0;
+        background: transparent;
+        color: var(--teal);
+      }
+
+      .expand-button svg {
+        width: 10px;
+        height: 10px;
+        fill: none;
+        stroke: currentColor;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-width: 2;
+        transition: transform 150ms ease;
+      }
+
+      .tree-group.collapsed .expand-button svg {
+        transform: rotate(-90deg);
+      }
+
+      .category-name {
+        min-width: 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .category-meta {
+        flex: 0 0 auto;
+        color: #57998f;
+        font-size: 8px;
+        font-weight: 400;
+      }
+
+      .service-count {
+        flex: 0 0 auto;
+        padding: 2px 5px;
+        border-radius: 4px;
+        background: #f0f3f7;
+        color: #526076;
+        font-size: 8px;
+        line-height: 1.25;
+      }
+
+      .category-actions {
+        display: flex;
+        flex: 0 0 auto;
+        gap: 3px;
+        margin-left: auto;
+      }
+
+      .icon-button {
+        display: grid;
+        width: 16px;
+        height: 18px;
+        padding: 2px;
+        place-items: center;
+        border: 0;
+        border-radius: 3px;
+        background: transparent;
+        color: #536177;
+      }
+
+      .icon-button:hover {
+        background: rgba(41, 60, 78, 0.08);
+      }
+
+      .icon-button img {
+        width: 12px;
+        height: 12px;
+        object-fit: contain;
+      }
+
+      .icon-button.delete:hover {
+        background: #fff0f0;
+      }
+
+      .child-list {
+        margin-left: 15px;
+      }
+
+      .tree-group.collapsed .child-list {
+        display: none;
+      }
+
+      .empty-tree {
+        padding: 20px 8px;
+        color: var(--muted);
+        font-size: 10px;
+        text-align: center;
+      }
+
+      .form-field {
+        display: grid;
+        gap: 5px;
+        margin-bottom: 12px;
+      }
+
+      .form-field label {
+        color: #455168;
+        font-size: 9px;
+        font-weight: 600;
+      }
+
+      .form-field input,
+      .form-field select,
+      .form-field textarea {
+        width: 100%;
+        min-height: 27px;
+        padding: 6px 8px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        outline: none;
+        background: #fff;
+        color: #384257;
+        font-size: 9px;
+      }
+
+      .form-field textarea {
+        min-height: 52px;
+        resize: vertical;
+      }
+
+      .form-field input:focus,
+      .form-field select:focus,
+      .form-field textarea:focus {
+        border-color: #82bdb5;
+        box-shadow: 0 0 0 2px rgba(82, 157, 149, 0.12);
+      }
+
+      .form-field input::placeholder,
+      .form-field textarea::placeholder {
+        color: #a2adbd;
+      }
+
+      .form-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 2px;
+      }
+
+      .form-message {
+        min-height: 14px;
+        margin: -5px 0 8px;
+        color: var(--danger);
+        font-size: 9px;
+      }
+
+      .form-message:empty {
+        display: none;
+      }
+
+      .toast {
+        position: fixed;
+        right: 22px;
+        bottom: 20px;
+        z-index: 5;
+        max-width: min(360px, calc(100vw - 32px));
+        padding: 10px 14px;
+        border: 1px solid #cce8e2;
+        border-radius: 8px;
+        background: #fff;
+        color: #356e67;
+        font-size: 11px;
+        box-shadow: 0 8px 28px rgba(36, 52, 69, 0.12);
+      }
+
+      .toast[hidden] {
+        display: none;
+      }
+
+      @media (min-width: 1200px) {
+        .main-panel {
+          padding-right: 28px;
+          padding-left: 28px;
+        }
+
+        .category-layout {
+          gap: 18px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page-shell {
+          width: 100%;
+          margin: 0;
+        }
+
+        .page-label {
+          display: none;
+        }
+
+        .app-shell {
+          min-height: 100vh;
+          border: 0;
+        }
+
+        .app-body {
+          min-height: calc(100vh - 45px);
+          flex-direction: column;
+        }
+
+        .sidebar {
+          flex: 0 0 auto;
+          padding: 8px 12px;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .sidebar-label {
+          display: none;
+        }
+
+        .nav-list {
+          display: flex;
+          gap: 5px;
+          overflow-x: auto;
+        }
+
+        .nav-item {
+          flex: 0 0 auto;
+        }
+
+        .main-panel {
+          padding: 18px 14px 28px;
+        }
+
+        .category-layout {
+          grid-template-columns: minmax(0, 1fr);
+        }
+      }
+
+      @media (max-width: 420px) {
+        .app-header {
+          padding-right: 12px;
+          padding-left: 14px;
+        }
+
+        .content-heading {
+          align-items: flex-start;
+        }
+
+        .content-heading h1 {
+          font-size: 15px;
+        }
+
+        .content-heading p {
+          max-width: 250px;
+          line-height: 1.45;
+        }
+
+        .content-heading .button {
+          padding: 0 8px;
+        }
+
+        .card {
+          padding: 12px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <p class="page-label">admin-category-management</p>
+      <div class="app-shell">
+        <header class="app-header">
+          <a class="brand" href="admin-dashboard.html" aria-label="CareRoute - Bảng điều khiển">
+            <span class="brand-mark" aria-hidden="true">+</span>
+            <span>CareRoute</span>
+          </a>
+          <div class="topbar-actions">
+            <button class="notification-button" type="button" aria-label="Thông báo">
+              <img src="../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg" alt="" />
+            </button>
+            <div class="user-card">
+              <img class="user-avatar" src="../assets/images/anh_bac_si.png" alt="" />
+              <div>
+                <div class="user-name">Minh Quý</div>
+                <span class="user-role">Điều Phối Viên</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="app-body">
+          <aside class="sidebar" aria-label="Điều hướng quản trị">
+            <p class="sidebar-label">HỆ THỐNG QUẢN TRỊ</p>
+            <nav class="nav-list">
+              <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon" aria-hidden="true"><img src="../assets/icons/layout-grid-1-svgrepo-com.svg" alt="" /></span>
+                <span>Bảng điều khiển</span>
+              </a>
+              <a class="nav-item" href="admin-facility-management.html">
+                <span class="nav-icon" aria-hidden="true"><img src="../assets/icons/briefcase-svgrepo-com.svg" alt="" /></span>
+                <span>Quản lý cơ sở</span>
+              </a>
+              <a class="nav-item active" href="admin-category-management.html" aria-current="page">
+                <span class="nav-icon" aria-hidden="true"><img src="../assets/icons/map-svgrepo-com.svg" alt="" /></span>
+                <span>Quản lý danh mục</span>
+              </a>
+              <a class="nav-item" href="#settings">
+                <span class="nav-icon" aria-hidden="true"><img src="../assets/icons/settings-svgrepo-com.svg" alt="" /></span>
+                <span>Cài đặt hệ thống</span>
+              </a>
+            </nav>
+          </aside>
+
+          <main class="main-panel">
+            <div class="content-heading">
+              <div>
+                <h1>Quản lý Danh mục phân loại y tế</h1>
+                <p>Cấu trúc hóa các chuyên khoa và phân ngành dịch vụ giúp tối ưu hóa thuật toán AI</p>
+              </div>
+              <button class="button button-primary" id="add-category-button" type="button">Thêm danh mục</button>
+            </div>
+
+            <div class="category-layout">
+              <section class="card" aria-labelledby="tree-heading">
+                <h2 id="tree-heading">Cấu trúc chuyên khoa</h2>
+                <div class="tree-list" id="category-tree" aria-live="polite"></div>
+              </section>
+
+              <section class="card" aria-labelledby="form-heading">
+                <h2 id="form-heading">Chi tiết Danh mục chỉnh sửa</h2>
+                <form id="category-form" novalidate>
+                  <div class="form-field">
+                    <label for="category-name">Tên Danh Mục</label>
+                    <input id="category-name" name="name" type="text" maxlength="80" required />
+                  </div>
+                  <div class="form-field">
+                    <label for="category-description">Mô tả chi tiết</label>
+                    <textarea id="category-description" name="description" maxlength="300" rows="3"></textarea>
+                  </div>
+                  <div class="form-field">
+                    <label for="category-parent">Danh mục chính</label>
+                    <select id="category-parent" name="parentId">
+                      <option value="">Không có (danh mục cha)</option>
+                    </select>
+                  </div>
+                  <p class="form-message" id="form-message" role="alert"></p>
+                  <div class="form-actions">
+                    <button class="button button-secondary" id="cancel-edit-button" type="button">Hủy</button>
+                    <button class="button button-primary" id="save-category-button" type="submit">Lưu Thay Đổi</button>
+                  </div>
+                </form>
+              </section>
+            </div>
+          </main>
+        </div>
+      </div>
+    </div>
+    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+    <script>
+      (() => {
+        const storageKey = "careroute.admin.categories";
+        const seedCategories = [
+          { id: "general", name: "Khám tổng quát", description: "Các dịch vụ khám sức khỏe tổng quát và sàng lọc ban đầu.", parentId: null, serviceCount: 4 },
+          { id: "internal", name: "Nội khoa", description: "Khám và điều trị các bệnh lý nội khoa.", parentId: "general", serviceCount: 12 },
+          { id: "surgery", name: "Ngoại khoa", description: "Khám và tư vấn các bệnh lý cần điều trị ngoại khoa.", parentId: "general", serviceCount: 8 },
+          { id: "pediatrics", name: "Nhi khoa", description: "Dịch vụ khám và chăm sóc sức khỏe trẻ em.", parentId: "general", serviceCount: 6 },
+          { id: "specialty", name: "Khám chuyên khoa sâu", description: "Các dịch vụ khám chuyên sâu theo từng chuyên khoa.", parentId: null, serviceCount: 14 },
+          { id: "cardiology", name: "Tim mạch", description: "Khám, chẩn đoán và theo dõi bệnh lý tim mạch.", parentId: "specialty", serviceCount: 11 },
+          { id: "neurology", name: "Thần kinh học lâm sàng", description: "Chuyên thăm khám, chẩn đoán điện não và điều trị các triệu chứng liên quan đến hệ thần kinh trung ương và ngoại vi.", parentId: "specialty", serviceCount: 9 },
+          { id: "orthopedics", name: "Xương khớp", description: "Khám và điều trị các bệnh lý cơ xương khớp.", parentId: "specialty", serviceCount: 7 }
+        ];
+
+        const tree = document.querySelector("#category-tree");
+        const form = document.querySelector("#category-form");
+        const nameInput = document.querySelector("#category-name");
+        const descriptionInput = document.querySelector("#category-description");
+        const parentSelect = document.querySelector("#category-parent");
+        const formHeading = document.querySelector("#form-heading");
+        const saveButton = document.querySelector("#save-category-button");
+        const formMessage = document.querySelector("#form-message");
+        const toast = document.querySelector("#toast");
+        let categories = loadCategories();
+        let editingId = null;
+        let toastTimer;
+
+        function loadCategories() {
+          try {
+            const saved = localStorage.getItem(storageKey);
+            if (!saved) return seedCategories.map((category) => ({ ...category }));
+            const parsed = JSON.parse(saved);
+            if (!Array.isArray(parsed) || parsed.some((category) => !category.id || !category.name)) {
+              throw new Error("Dữ liệu danh mục đã lưu không hợp lệ.");
+            }
+            return parsed;
+          } catch (error) {
+            console.error("Không thể tải danh mục đã lưu:", error);
+            window.setTimeout(() => showToast("Không thể đọc dữ liệu đã lưu; đang dùng danh mục mẫu."), 0);
+            return seedCategories.map((category) => ({ ...category }));
+          }
+        }
+
+        function persistCategories() {
+          try {
+            localStorage.setItem(storageKey, JSON.stringify(categories));
+            return true;
+          } catch (error) {
+            console.error("Không thể lưu danh mục:", error);
+            showToast("Không thể lưu dữ liệu trên thiết bị này.");
+            return false;
+          }
+        }
+
+        function escapeHtml(value) {
+          return String(value).replace(/[&<>"']/g, (character) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+          })[character]);
+        }
+
+        function childrenOf(parentId) {
+          return categories.filter((category) => category.parentId === parentId);
+        }
+
+        function renderTree() {
+          const roots = childrenOf(null);
+          if (!roots.length) {
+            tree.innerHTML = '<div class="empty-tree">Chưa có danh mục. Hãy tạo danh mục đầu tiên.</div>';
+            return;
+          }
+
+          tree.innerHTML = roots.map((parent) => {
+            const children = childrenOf(parent.id);
+            const childRows = children.map((category) => `
+              <div class="category-row child-row" data-category-id="${escapeHtml(category.id)}">
+                <span class="nav-icon" aria-hidden="true">
+                  <img src="../assets/icons/folder-open-svgrepo-com.svg" alt="" />
+                </span>
+                <span class="category-name">${escapeHtml(category.name)}</span>
+                <span class="service-count">${Number(category.serviceCount) || 0} dịch vụ</span>
+                <span class="category-actions">
+                  <button class="icon-button" type="button" data-action="edit" data-id="${escapeHtml(category.id)}" aria-label="Sửa ${escapeHtml(category.name)}" title="Chỉnh sửa">
+                    <img src="../assets/icons/edit-square-svgrepo-com.svg" alt="" />
+                  </button>
+                  <button class="icon-button delete" type="button" data-action="delete" data-id="${escapeHtml(category.id)}" aria-label="Xóa ${escapeHtml(category.name)}" title="Xóa">
+                    <img src="../assets/icons/delete-bin-line-svgrepo-com.svg" alt="" />
+                  </button>
+                </span>
+              </div>`).join("");
+
+            return `
+              <div class="tree-group" data-group-id="${escapeHtml(parent.id)}">
+                <div class="category-row parent-row" data-category-id="${escapeHtml(parent.id)}">
+                  <button class="expand-button" type="button" data-action="toggle" data-id="${escapeHtml(parent.id)}" aria-label="Thu gọn ${escapeHtml(parent.name)}" aria-expanded="true">
+                    <svg viewBox="0 0 12 12" aria-hidden="true"><path d="m3 4.5 3 3 3-3" /></svg>
+                  </button>
+                  <span class="category-name">${escapeHtml(parent.name)}</span>
+                  <span class="category-meta">${Number(parent.serviceCount) || 0} nhóm con</span>
+                  <span class="category-actions">
+                    <button class="icon-button" type="button" data-action="edit" data-id="${escapeHtml(parent.id)}" aria-label="Sửa ${escapeHtml(parent.name)}" title="Chỉnh sửa">
+                      <img src="../assets/icons/edit-square-svgrepo-com.svg" alt="" />
+                    </button>
+                    <button class="icon-button delete" type="button" data-action="delete" data-id="${escapeHtml(parent.id)}" aria-label="Xóa ${escapeHtml(parent.name)}" title="Xóa">
+                      <img src="../assets/icons/delete-bin-line-svgrepo-com.svg" alt="" />
+                    </button>
+                  </span>
+                </div>
+                <div class="child-list">${childRows || '<div class="empty-tree">Chưa có danh mục con</div>'}</div>
+              </div>`;
+          }).join("");
+        }
+
+        function renderParentOptions(selectedId = "") {
+          const current = categories.find((category) => category.id === editingId);
+          const availableParents = categories.filter((category) => category.parentId === null && category.id !== editingId);
+          parentSelect.innerHTML = '<option value="">Không có (danh mục cha)</option>' +
+            availableParents.map((category) =>
+              `<option value="${escapeHtml(category.id)}"${category.id === selectedId ? " selected" : ""}>${escapeHtml(category.name)}</option>`
+            ).join("");
+
+          if (current && current.parentId && !availableParents.some((category) => category.id === current.parentId)) {
+            parentSelect.value = "";
+          }
+        }
+
+        function resetForm() {
+          editingId = null;
+          form.reset();
+          formHeading.textContent = "Chi tiết Danh mục chỉnh sửa";
+          saveButton.textContent = "Lưu Thay Đổi";
+          formMessage.textContent = "";
+          renderParentOptions();
+        }
+
+        function startCreate() {
+          resetForm();
+          formHeading.textContent = "Thêm danh mục mới";
+          saveButton.textContent = "Tạo Danh Mục";
+          nameInput.focus();
+        }
+
+        function startEdit(id) {
+          const category = categories.find((item) => item.id === id);
+          if (!category) return;
+          editingId = id;
+          formHeading.textContent = "Chi tiết Danh mục chỉnh sửa";
+          saveButton.textContent = "Lưu Thay Đổi";
+          nameInput.value = category.name;
+          descriptionInput.value = category.description || "";
+          renderParentOptions(category.parentId || "");
+          formMessage.textContent = "";
+        }
+
+        function showToast(message) {
+          toast.textContent = message;
+          toast.hidden = false;
+          window.clearTimeout(toastTimer);
+          toastTimer = window.setTimeout(() => {
+            toast.hidden = true;
+          }, 2800);
+        }
+
+        function deleteCategory(id) {
+          const category = categories.find((item) => item.id === id);
+          if (!category) return;
+          const descendants = childrenOf(id);
+          const prompt = descendants.length
+            ? `Xóa "${category.name}" và ${descendants.length} danh mục con?`
+            : `Xóa danh mục "${category.name}"?`;
+          if (!window.confirm(prompt)) return;
+
+          categories = categories.filter((item) => item.id !== id && item.parentId !== id);
+          if (!persistCategories()) return;
+          renderTree();
+          if (editingId === id || descendants.some((item) => item.id === editingId)) resetForm();
+          showToast("Đã xóa danh mục.");
+        }
+
+        tree.addEventListener("click", (event) => {
+          const button = event.target.closest("button[data-action]");
+          if (!button) return;
+          const { action, id } = button.dataset;
+          if (action === "edit") startEdit(id);
+          if (action === "delete") deleteCategory(id);
+          if (action === "toggle") {
+            const group = tree.querySelector(`[data-group-id="${CSS.escape(id)}"]`);
+            const isCollapsed = group.classList.toggle("collapsed");
+            button.setAttribute("aria-expanded", String(!isCollapsed));
+            button.setAttribute("aria-label", `${isCollapsed ? "Mở rộng" : "Thu gọn"} ${categories.find((item) => item.id === id)?.name || "danh mục"}`);
+          }
+        });
+
+        document.querySelector("#add-category-button").addEventListener("click", startCreate);
+        document.querySelector("#cancel-edit-button").addEventListener("click", resetForm);
+
+        form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          const name = nameInput.value.trim();
+          if (!name) {
+            formMessage.textContent = "Vui lòng nhập tên danh mục.";
+            nameInput.focus();
+            return;
+          }
+
+          const parentId = parentSelect.value || null;
+          if (editingId && parentId && childrenOf(editingId).length) {
+            formMessage.textContent = "Hãy chuyển hoặc xóa các danh mục con trước khi chuyển danh mục này.";
+            parentSelect.focus();
+            return;
+          }
+
+          const category = {
+            id: editingId || `category-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+            name,
+            description: descriptionInput.value.trim(),
+            parentId,
+            serviceCount: editingId ? Number(categories.find((item) => item.id === editingId)?.serviceCount) || 0 : 0
+          };
+          const previous = categories;
+          categories = editingId
+            ? categories.map((item) => item.id === editingId ? category : item)
+            : [...categories, category];
+
+          if (!persistCategories()) {
+            categories = previous;
+            return;
+          }
+
+          renderTree();
+          resetForm();
+          showToast(editingId ? "Đã cập nhật danh mục." : "Đã tạo danh mục.");
+        });
+
+        renderTree();
+        startEdit("neurology");
+      })();
+    </script>
+  </body>
+</html>
