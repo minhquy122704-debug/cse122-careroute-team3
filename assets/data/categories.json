@@ -1,0 +1,72 @@
+[
+  {
+    "id": "CAT001",
+    "name": "Nhi khoa",
+    "description": "Cấu trúc hóa các chuyên khoa và phân ngành dịch vụ giúp tối ưu hóa thuật toán AI bài viết cho trẻ em.",
+    "parent_category": "Không có (danh mục cha)",
+    "status": "active"
+  },
+  {
+    "id": "CAT002",
+    "name": "Tim mạch",
+    "description": "Chẩn đoán, điều trị các bệnh lý về tim và hệ tuần hoàn mạch máu.",
+    "parent_category": "Không có (danh mục cha)",
+    "status": "active"
+  },
+  {
+    "id": "CAT003",
+    "name": "Chẩn đoán hình ảnh",
+    "description": "Bao gồm chụp X-quang, cắt lớp vi tính CT, và cộng hưởng từ MRI.",
+    "parent_category": "Không có (danh mục cha)",
+    "status": "active"
+  },
+  {
+    "id": "CAT004",
+    "name": "Chụp MRI sọ não",
+    "description": "Phân ngành chuyên sâu thuộc chẩn đoán hình ảnh thần kinh.",
+    "parent_category": "Chẩn đoán hình ảnh",
+    "status": "active"
+  },
+  {
+    "id": "CAT005",
+    "name": "Nội khoa",
+    "description": "Khám, chẩn đoán và điều trị các bệnh lý nội khoa thường gặp.",
+    "parent_category": "Không có (danh mục cha)",
+    "status": "active"
+  },
+  {
+    "id": "CAT006",
+    "name": "Ngoại khoa",
+    "description": "Tư vấn và điều trị các bệnh lý cần can thiệp ngoại khoa.",
+    "parent_category": "Không có (danh mục cha)",
+    "status": "active"
+  },
+  {
+    "id": "CAT007",
+    "name": "Da liễu",
+    "description": "Khám và điều trị các bệnh về da, tóc và móng.",
+    "parent_category": "Không có (danh mục cha)",
+    "status": "active"
+  },
+  {
+    "id": "CAT008",
+    "name": "Sản phụ khoa",
+    "description": "Chăm sóc sức khỏe sinh sản, thai sản và phụ khoa.",
+    "parent_category": "Không có (danh mục cha)",
+    "status": "active"
+  },
+  {
+    "id": "CAT009",
+    "name": "Xét nghiệm máu",
+    "description": "Các xét nghiệm máu phục vụ chẩn đoán và theo dõi sức khỏe.",
+    "parent_category": "Không có (danh mục cha)",
+    "status": "active"
+  },
+  {
+    "id": "CAT010",
+    "name": "Chụp X-quang",
+    "description": "Chẩn đoán hình ảnh bằng kỹ thuật chụp X-quang.",
+    "parent_category": "Chẩn đoán hình ảnh",
+    "status": "active"
+  }
+]

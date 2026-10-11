@@ -1,0 +1,195 @@
+[
+  {
+    "ticket_id": 1024,
+    "facility_name": "Bệnh viện Đa khoa Tâm Anh",
+    "content_type": "Bảng giá / Dịch vụ",
+    "created_at": "2026-10-15T15:30:00Z",
+    "priority": "Cao",
+    "requested_by": "Phạm Văn A (Quản trị viên Cơ sở)",
+    "details": {
+      "service_name": "Chụp Cộng hưởng từ MRI sọ não",
+      "current_price": "2.200.000 đ",
+      "proposed_price": "2.400.000 đ",
+      "ai_recommendation": "Bệnh nhân cần nhịn ăn hoàn toàn ít nhất 4 tiếng trước khi thực hiện chụp MRI sọ não có cản quang để đảm bảo an toàn tuyệt đối và hình ảnh sắc nét nhất."
+    },
+    "reviewer_action": {
+      "status": "Yêu cầu chỉnh sửa thêm",
+      "feedback_note": "Quy trình nhịn ăn cần nêu rõ có áp dụng cho trường hợp không dùng thuốc cản quang hay không. Vui lòng bổ sung tài liệu xác nhận bảng giá mới."
+    },
+    "activity_log": [
+      {"time": "15:30", "event": "Cơ sở gửi yêu cầu duyệt"},
+      {"time": "15:45", "event": "AI tự động phân tích và đề xuất"}
+    ]
+  },
+  {
+    "ticket_id": 1025,
+    "facility_name": "Phòng khám Đa khoa Quốc tế Golden Healthcare",
+    "content_type": "Quy trình hướng dẫn",
+    "created_at": "2026-10-14T09:15:00Z",
+    "priority": "Trung bình",
+    "requested_by": "Phạm Văn B (Quản trị viên Cơ sở)",
+    "details": {
+      "summary": "Yêu cầu thêm quy trình hướng dẫn thanh toán bảo hiểm bảo lãnh trực tiếp tại quầy dịch vụ tầng trệt..."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "09:15", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  },
+  {
+    "ticket_id": 1026,
+    "facility_name": "Trung tâm Xét nghiệm Diag - Chi nhánh Quận 3",
+    "content_type": "Thông tin chung",
+    "created_at": "2026-10-14T11:20:00Z",
+    "priority": "Thấp",
+    "requested_by": "Phạm Văn C (Quản trị viên Cơ sở)",
+    "details": {
+      "summary": "Thay đổi thời gian mở cửa ngày Chủ nhật: từ 07:30 - 12:00 sang 07:30 - 17:00 để đáp ứng nhu cầu..."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "11:20", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  },
+  {
+    "ticket_id": 1027,
+    "facility_name": "Bệnh viện Đa khoa Quốc tế Vinmec",
+    "content_type": "Bảng giá / Dịch vụ",
+    "created_at": "2026-10-13T08:40:00Z",
+    "priority": "Cao",
+    "requested_by": "Nguyễn Thị Mai (Quản trị viên Cơ sở)",
+    "details": {
+      "service_name": "Khám sức khỏe tổng quát",
+      "current_price": "1.500.000 đ",
+      "proposed_price": "1.650.000 đ",
+      "ai_recommendation": "Cập nhật bảng giá khám sức khỏe tổng quát và nêu rõ các hạng mục đã bao gồm trong gói dịch vụ."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "08:40", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  },
+  {
+    "ticket_id": 1028,
+    "facility_name": "Bệnh viện Bạch Mai",
+    "content_type": "Quy trình hướng dẫn",
+    "created_at": "2026-10-13T09:10:00Z",
+    "priority": "Trung bình",
+    "requested_by": "Trần Quốc Huy (Quản trị viên Cơ sở)",
+    "details": {
+      "summary": "Bổ sung hướng dẫn đăng ký khám trực tuyến và các giấy tờ người bệnh cần chuẩn bị khi đến khám."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "09:10", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  },
+  {
+    "ticket_id": 1029,
+    "facility_name": "Phòng khám Đa khoa Hoàn Mỹ Sài Gòn",
+    "content_type": "Thông tin chung",
+    "created_at": "2026-10-13T10:25:00Z",
+    "priority": "Thấp",
+    "requested_by": "Lê Ngọc Anh (Quản trị viên Cơ sở)",
+    "details": {
+      "summary": "Cập nhật giờ làm việc ngày thứ Bảy từ 07:00 - 12:00 thành 07:00 - 16:00."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "10:25", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  },
+  {
+    "ticket_id": 1030,
+    "facility_name": "Trung tâm Xét nghiệm Medlatec",
+    "content_type": "Bảng giá / Dịch vụ",
+    "created_at": "2026-10-13T13:05:00Z",
+    "priority": "Trung bình",
+    "requested_by": "Phạm Minh Đức (Quản trị viên Cơ sở)",
+    "details": {
+      "service_name": "Xét nghiệm tổng phân tích tế bào máu",
+      "current_price": "120.000 đ",
+      "proposed_price": "135.000 đ",
+      "ai_recommendation": "Vui lòng xác nhận mức giá mới và thời gian áp dụng trước khi cập nhật bảng giá."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "13:05", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  },
+  {
+    "ticket_id": 1031,
+    "facility_name": "Bệnh viện Đa khoa Trung ương Cần Thơ",
+    "content_type": "Quy trình hướng dẫn",
+    "created_at": "2026-10-13T14:30:00Z",
+    "priority": "Cao",
+    "requested_by": "Võ Thanh Tùng (Quản trị viên Cơ sở)",
+    "details": {
+      "summary": "Cập nhật hướng dẫn chuẩn bị trước khi chụp CT có thuốc cản quang, gồm lưu ý về dị ứng và bệnh sử."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "14:30", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  },
+  {
+    "ticket_id": 1032,
+    "facility_name": "Phòng khám Đa khoa Đà Nẵng",
+    "content_type": "Thông tin chung",
+    "created_at": "2026-10-13T15:00:00Z",
+    "priority": "Thấp",
+    "requested_by": "Nguyễn Hoàng Lan (Quản trị viên Cơ sở)",
+    "details": {
+      "summary": "Bổ sung thông tin bãi đỗ xe và lối tiếp cận dành cho người sử dụng xe lăn."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "15:00", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  },
+  {
+    "ticket_id": 1033,
+    "facility_name": "Trung tâm Xét nghiệm Pasteur TP.HCM",
+    "content_type": "Bảng giá / Dịch vụ",
+    "created_at": "2026-10-13T16:15:00Z",
+    "priority": "Trung bình",
+    "requested_by": "Đặng Thị Thu (Quản trị viên Cơ sở)",
+    "details": {
+      "service_name": "Xét nghiệm đường huyết",
+      "current_price": "80.000 đ",
+      "proposed_price": "90.000 đ",
+      "ai_recommendation": "Kiểm tra mức giá đề xuất và thông tin thời gian trả kết quả trước khi phê duyệt."
+    },
+    "reviewer_action": {
+      "status": "Chờ duyệt",
+      "feedback_note": ""
+    },
+    "activity_log": [
+      {"time": "16:15", "event": "Cơ sở gửi yêu cầu duyệt"}
+    ]
+  }
+]
