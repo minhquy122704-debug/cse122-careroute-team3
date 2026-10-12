@@ -603,7 +603,7 @@
         .auth-modal {
             background: white;
             width: 100%;
-            max-width: 440px;
+            max-width: 560px;
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 20px 40px rgba(0,0,0,0.15);
@@ -625,9 +625,19 @@
         .auth-tabs { display: flex; border-bottom: 2px solid #f1f5f9; margin-bottom: 20px; }
         .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 15px; color: var(--text-light); cursor: pointer; border-bottom: 2px solid transparent; }
         .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
-        .role-selector { display: flex; background: var(--bg-light); padding: 4px; border-radius: 10px; margin-bottom: 20px; gap: 4px; }
-        .role-btn { flex: 1; border: none; background: transparent; padding: 8px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--text-gray); }
-        .role-btn.active { background: white; color: var(--primary-dark); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .role-selector { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin: 0 0 20px; }
+        .role-selector-label { grid-column: 1 / -1; color: #263344; font-size: 14px; font-weight: 700; }
+        .role-btn { min-height: 76px; display: flex; align-items: center; gap: 12px; padding: 12px 14px; border: 1px solid #dfe8e6; border-radius: 11px; background: #fff; color: var(--text-gray); text-align: left; cursor: pointer; transition: border-color .18s, background .18s, box-shadow .18s; }
+        .role-btn:hover { border-color: #9ac9bd; background: #f7fbfa; }
+        .role-btn.active { border: 2px solid #4e8a7e; padding: 11px 13px; background: #f0f7f5; color: #39786d; box-shadow: none; }
+        .role-btn img { width: 25px; height: 25px; flex: 0 0 25px; opacity: .68; }
+        .role-btn-copy { flex: 1; min-width: 0; }
+        .role-btn-copy strong { display: block; color: #263344; font-size: 14px; }
+        .role-btn-copy small { display: block; margin-top: 4px; color: #7b8986; font-size: 11px; font-weight: 400; line-height: 1.35; }
+        .role-radio { width: 17px; height: 17px; flex: 0 0 17px; border: 2px solid #dce5e2; border-radius: 50%; }
+        .role-btn.active .role-radio { border-color: #4e8a7e; box-shadow: inset 0 0 0 3px #f0f7f5; background: #4e8a7e; }
+        #form-register .role-selector { display: flex; justify-content: center; }
+        #form-register .role-btn { width: min(100%, 270px); justify-content: center; }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
         .form-input-wrap { position: relative; }
@@ -654,22 +664,358 @@
             .footer-grid { grid-template-columns: 1fr 1fr; }
             .support-banner { flex-direction: column; gap: 20px; }
         }
+        @media (max-width: 520px) {
+            .auth-modal { padding: 25px 18px; }
+            .role-selector { gap: 8px; }
+            .role-btn { min-height: 70px; gap: 8px; padding: 10px 9px; }
+            .role-btn.active { padding: 9px 8px; }
+            .role-btn img { width: 21px; height: 21px; flex-basis: 21px; }
+            .role-btn-copy strong { font-size: 12px; }
+            .role-btn-copy small { font-size: 10px; }
+        }
+
+        body {
+            background: #f6f8f8;
+            color: #12312d;
+        }
+
+        main {
+            max-width: none;
+            background: #ffffff;
+            box-shadow: none;
+        }
+
+        header {
+            min-height: 64px;
+            padding: 8px max(5%, calc((100% - 1160px) / 2));
+        }
+
+        .logo { color: #172536; font-size: 18px; }
+        .logo-icon { width: 32px; height: 32px; border-radius: 8px; }
+        .search-bar input { background: #ffffff; font-size: 13px; }
+        .search-bar::before { content: ""; }
+        .sub-nav { min-height: 48px; }
+        .sub-nav a { font-size: 13px; padding: 12px 10px; }
+
+        .hero {
+            min-height: 400px;
+            padding: 42px max(5%, calc((100% - 1160px) / 2));
+            gap: 64px;
+            background: #eef7f4;
+            border: 0;
+        }
+
+        .hero-text { flex: 1.05; }
+        .hero-text h1 { color: #102f2b; font-size: clamp(34px, 4vw, 44px); line-height: 1.12; }
+        .hero-text p { max-width: 560px; color: #66807b; font-size: 15px; }
+        .hero-image { flex: 0 1 460px; }
+        .hero-image img {
+            display: block;
+            height: 336px;
+            border-radius: 48px 18px 48px 18px;
+            box-shadow: 0 14px 28px rgba(11, 57, 48, .12);
+        }
+        .pill-tag { background: #dff2ed; color: #087f73; }
+        .hero .pill-tag { display: inline-flex; align-items: center; gap: 12px; margin: 0; background: transparent; }
+        .hero .pill-tag img { width: 44px; height: 44px; padding: 10px; border-radius: 50%; background: #ffffff; }
+        .floating-badge { bottom: 12px; left: -18px; padding: 11px 14px; font-size: 12px; }
+        .floating-badge img { width: 28px; height: 28px; padding: 6px; border-radius: 8px; background: #fff0ed; filter: invert(47%) sepia(66%) saturate(1997%) hue-rotate(329deg) brightness(101%) contrast(101%); }
+
+        .search-bar { z-index: 20; }
+        .search-bar input { padding-right: 78px; }
+        .search-submit { position: absolute; top: 4px; right: 4px; bottom: 4px; padding: 0 13px; border: 0; border-radius: 99px; background: var(--primary); color: #fff; font-size: 12px; font-weight: 700; cursor: pointer; }
+        .search-submit:hover { background: var(--primary-dark); }
+        .search-submit:disabled { cursor: wait; opacity: .7; }
+        .router-popover { position: absolute; top: calc(100% + 10px); left: 0; z-index: 1200; width: min(520px, calc(100vw - 32px)); max-height: min(70vh, 480px); overflow-y: auto; padding: 16px; border: 1px solid #dcece7; border-radius: 14px; background: #fff; box-shadow: 0 14px 38px rgba(15, 45, 40, .2); }
+        .router-processing { display: flex; align-items: center; gap: 10px; color: #087f73; font-size: 13px; font-weight: 650; }
+        .router-spinner { width: 18px; height: 18px; border: 2px solid #cce9e2; border-top-color: #0d9488; border-radius: 50%; animation: router-spin .7s linear infinite; }
+        @keyframes router-spin { to { transform: rotate(360deg); } }
+        .router-result { padding: 2px 0; border: 0; background: transparent; }
+        .router-result h3 { margin: 0 0 10px; color: #12574e; font-size: 16px; }
+        .router-result p { margin: 7px 0; color: #35534d; font-size: 12px; line-height: 1.55; }
+        .router-result .router-warning { padding: 11px 12px; border-radius: 8px; background: #fff7ed; color: #9a3412; font-weight: 650; }
+        .router-result-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+        .router-edit { padding: 9px 15px; border: 1px solid #b8dcd4; border-radius: 8px; background: #ffffff; color: #087f73; font-weight: 650; cursor: pointer; }
+        .router-edit:hover { background: #effaf7; }
+        .router-accepted { margin-top: 12px !important; color: #087f73 !important; font-weight: 650; }
+        .router-disclaimer { margin: 12px 0 0; color: #718680 !important; font-size: 11px !important; }
+        .facility-filter label { display: block; margin-bottom: 7px; color: #24433e; font-size: 13px; font-weight: 650; }
+        .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+        [hidden] { display: none !important; }
+
+        .stats-bar {
+            padding: 22px max(5%, calc((100% - 1160px) / 2));
+            background: #91d9c3;
+        }
+        .stat-item h3 { color: #123b35; font-size: 30px; }
+        .stat-item p { color: #55857a; font-size: 12px; font-weight: 500; }
+
+        .section {
+            padding: 48px max(5%, calc((100% - 1160px) / 2));
+            background: #ffffff;
+        }
+        .section.features-section { background: #f7f9fa; }
+        .section-title { margin-bottom: 30px; }
+        .section-title h2, .section > div > h2 { color: #12312d; }
+        .section-title p { color: #6a817d; font-size: 14px; }
+        .grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+        .feature-card {
+            padding: 18px;
+            border-color: #dce8e5;
+            border-radius: 14px;
+            background: #ffffff;
+        }
+        .feature-icon {
+            width: 36px;
+            height: 36px;
+            margin-bottom: 12px;
+            border-radius: 9px;
+            background: #e2f3ef;
+        }
+        .feature-icon img { width: 19px; height: 19px; filter: invert(34%) sepia(53%) saturate(634%) hue-rotate(126deg) brightness(91%) contrast(92%); }
+        .feature-card h4 { font-size: 14px; color: #173b36; }
+        .feature-card p { font-size: 12px; color: #718783; }
+
+        .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+        .blog-card, .clinic-item-card, .featured-clinic {
+            border-color: #dce8e5;
+            border-radius: 14px;
+        }
+        .blog-card img { height: 160px; }
+        .blog-content { padding: 14px; }
+        .blog-meta { align-items: center; }
+        .blog-meta img { width: 13px; height: 13px; opacity: .55; }
+        .blog-title { color: #193a35; font-size: 14px; }
+        .blog-author { color: #79908b; font-size: 11px; }
+
+        .clinic-container { grid-template-columns: .9fr 1.2fr; gap: 18px; align-items: stretch; }
+        .featured-clinic { position: relative; min-height: 258px; }
+        .featured-clinic > img { height: 258px; }
+        .featured-clinic-caption {
+            position: absolute;
+            right: 12px;
+            bottom: 12px;
+            left: 12px;
+            padding: 14px 16px;
+            border-radius: 13px;
+            background: rgba(255,255,255,.94);
+            box-shadow: 0 4px 18px rgba(13, 44, 38, .12);
+        }
+        .featured-clinic-caption .pill-tag { margin: 0; font-size: 10px; }
+        .featured-clinic-caption h3 { margin: 7px 0 4px; font-size: 16px; }
+        .featured-clinic-caption p { color: #748a86; font-size: 11px; }
+        .clinic-item-card { padding: 14px; }
+        .clinic-item-card > div:nth-child(2) { flex: 1; margin-left: 10px; }
+        .clinic-icon {
+            width: 34px;
+            height: 34px;
+            flex: 0 0 34px;
+            padding: 8px;
+            border-radius: 9px;
+            background: #e4f4f0;
+            filter: invert(34%) sepia(53%) saturate(634%) hue-rotate(126deg) brightness(91%) contrast(92%);
+        }
+        .clinic-item-card h4 { color: #1d3a36; font-size: 13px !important; }
+        .clinic-item-copy h4 { margin: 0; }
+        .clinic-item-card p { color: #82938f !important; font-size: 11px !important; margin: 3px 0; }
+        .clinic-item-card span { color: #078b69 !important; font-size: 10px !important; }
+        .clinic-item-card > div:last-child strong { font-size: 11px; }
+
+        .support-banner {
+            position: relative;
+            overflow: hidden;
+            max-width: 1160px;
+            margin: 10px auto 48px;
+            padding: 34px 42px;
+            background: #11665f;
+        }
+        .support-banner::after {
+            position: absolute;
+            top: -64px;
+            right: -36px;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: rgba(255,255,255,.04);
+            content: "";
+            pointer-events: none;
+        }
+        .support-banner > div { position: relative; z-index: 1; }
+        .support-banner > div:first-child { flex: 1; }
+        .support-banner h2 { color: #ffffff; }
+        .support-banner p { color: #b8ded5; }
+        .support-card { max-width: 290px; }
+        .support-card h4 { color: #ffffff; }
+
+        footer { padding: 36px max(5%, calc((100% - 1160px) / 2)) 20px; background: #103f3a; }
+        .footer-grid { grid-template-columns: 2fr 1fr 1fr 1fr 1.2fr; gap: 24px; }
+        .footer-brand { color: #ffffff; font-size: 18px; }
+        .footer-brand .logo-icon { background: #ffffff; color: #11665f; }
+        .footer-col a, .footer-col p, footer > div:first-child > p { color: #a9c7c1; }
+        .footer-col h4 { font-size: 13px; }
+        .footer-col a, .footer-col p, footer > div:first-child > p { font-size: 11px; }
+        .footer-bottom { align-items: center; gap: 16px; font-size: 10px; }
+        .footer-bottom > div:last-child { flex-wrap: wrap; justify-content: flex-end; }
+
+        .inline-icon { width: 15px; height: 15px; object-fit: contain; vertical-align: middle; }
+        .footer-icon { width: 14px; height: 14px; margin-right: 5px; filter: brightness(0) invert(1); vertical-align: middle; }
+
+        .contact-bubble {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            z-index: 1500;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 12px;
+        }
+        .contact-bubble summary {
+            width: 58px;
+            height: 58px;
+            display: grid;
+            place-items: center;
+            border-radius: 50%;
+            background: #0d9488;
+            box-shadow: 0 8px 24px rgba(15, 87, 78, .3);
+            color: #ffffff;
+            cursor: pointer;
+            list-style: none;
+            transition: background .2s, transform .2s;
+        }
+        .contact-bubble summary::-webkit-details-marker { display: none; }
+        .contact-bubble summary:hover { transform: translateY(-2px); background: #0f766e; }
+        .contact-bubble summary:focus-visible,
+        .contact-option:focus-visible { outline: 3px solid #f59e0b; outline-offset: 3px; }
+        .contact-bubble summary svg { width: 26px; height: 26px; }
+        .contact-options {
+            width: 226px;
+            display: grid;
+            gap: 9px;
+            padding: 14px;
+            border: 1px solid #e1ebe8;
+            border-radius: 16px;
+            background: #ffffff;
+            box-shadow: 0 10px 32px rgba(15, 45, 40, .18);
+        }
+        .contact-options[hidden] { display: none; }
+        .contact-options-title {
+            margin: 0 0 2px;
+            color: #526c67;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .contact-option {
+            min-height: 44px;
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 8px 10px;
+            border: 1px solid #e7eeec;
+            border-radius: 11px;
+            color: #183b36;
+            font-size: 13px;
+            font-weight: 650;
+            text-decoration: none;
+            transition: background .2s, border-color .2s;
+        }
+        .contact-option:hover { border-color: #b8dcd4; background: #f3faf8; }
+        .contact-option-icon {
+            width: 28px;
+            height: 28px;
+            flex: 0 0 28px;
+            display: grid;
+            place-items: center;
+            border-radius: 8px;
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 800;
+        }
+        .contact-option-icon.zalo { background: #1684ff; font-size: 10px; }
+        .contact-option-icon.facebook { background: #1877f2; font-family: Arial, sans-serif; font-size: 20px; }
+        .contact-option-icon.phone { background: #0d9488; }
+        .contact-option-icon.phone img { width: 16px; height: 16px; filter: brightness(0) invert(1); }
+
+        @media (max-width: 900px) {
+            header { flex-wrap: wrap; gap: 10px 20px; }
+            .search-bar { order: 3; flex: 1 0 100%; max-width: none; margin: 0; }
+            .hero { min-height: 0; gap: 32px; }
+            .hero-image { width: 100%; max-width: 540px; flex-basis: auto; }
+            .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .support-banner { margin: 8px 5% 36px; }
+            .footer-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+
+        @media (max-width: 600px) {
+            header { flex-wrap: wrap; gap: 10px; padding: 10px 5%; }
+            .search-bar { order: 3; flex: 1 0 100%; max-width: none; margin: 0; }
+            .header-actions { gap: 8px; }
+            .hotline { display: none; }
+            .header-actions .btn { padding: 8px 10px; font-size: 12px; }
+            .sub-nav { justify-content: flex-start; gap: 4px; overflow-x: auto; padding: 0 3%; }
+            .sub-nav a { padding: 11px 8px; font-size: 11px; white-space: nowrap; }
+            .hero { padding-top: 36px; padding-bottom: 34px; }
+            .hero-text h1 { font-size: 34px; }
+            .hero-text > div { flex-wrap: wrap; }
+            .hero .btn { font-size: 12px; }
+            .hero-image img { height: 260px; border-radius: 34px 14px; }
+            .floating-badge { left: 8px; }
+            .stats-bar { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+            .section { padding-top: 38px; padding-bottom: 38px; }
+            .section-title h2 { font-size: 24px; }
+            .section > div:first-child { align-items: flex-start !important; gap: 16px; flex-direction: column; }
+            .grid-4, .grid-3 { grid-template-columns: 1fr; }
+            .blog-card img { height: 190px; }
+            .clinic-container { grid-template-columns: 1fr; }
+            .support-banner { margin: 0 5% 32px; padding: 26px 22px; }
+            .support-banner h2 { font-size: 23px; }
+            .support-card { max-width: none; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px 16px; }
+            .footer-grid > div:first-child { grid-column: 1 / -1; }
+            .footer-bottom { flex-direction: column; align-items: flex-start; }
+            .footer-bottom > div:last-child { justify-content: flex-start; gap: 12px; }
+            .contact-bubble { right: 16px; bottom: 16px; }
+            .contact-bubble summary { width: 54px; height: 54px; }
+        }
     </style>
 </head>
 <body>
     <div class="toast-container" id="toast-container"></div>
 
-    <header>
-        <a class="logo" href="home.html">
+    <header id="top">
+        <a class="logo" href="citizen-care-search.html">
             <div class="logo-icon">+</div>
             CareRoute
         </a>
-        <div class="search-bar">
-            <input type="text" placeholder="Tìm nội dung, cơ sở, danh mục...">
-        </div>
+        <form class="search-bar" id="search-form" role="search">
+            <label class="sr-only" for="site-search-input">Tìm cơ sở y tế, bài viết hoặc nhập triệu chứng</label>
+            <input type="search" id="site-search-input" aria-describedby="search-help" placeholder="Nhập triệu chứng hoặc tìm cơ sở...">
+            <span class="sr-only" id="search-help">Nhấn Gợi ý hoặc Enter để phân tích triệu chứng. Kết quả tìm kiếm được lọc khi bạn nhập.</span>
+            <button class="search-submit" id="router-submit" type="submit">Gợi ý</button>
+            <span class="sr-only" id="site-search-status" role="status" aria-live="polite"></span>
+            <div class="router-popover" id="router-popover" hidden>
+                <div class="router-processing" id="router-processing" role="status" aria-live="polite" hidden>
+                    <span class="router-spinner" aria-hidden="true"></span>
+                    <span>Đang phân tích triệu chứng...</span>
+                </div>
+                <section class="router-result" id="router-result" aria-live="polite" aria-labelledby="router-result-title" hidden>
+                    <h3 id="router-result-title">Kết quả gợi ý</h3>
+                    <p id="router-specialty"></p>
+                    <p id="router-reason"></p>
+                    <p class="router-warning" id="router-emergency" hidden></p>
+                    <p class="router-disclaimer">Đây là gợi ý tham khảo, không thay thế chẩn đoán y khoa. Nếu có dấu hiệu cấp cứu, hãy gọi 115.</p>
+                    <div class="router-result-actions">
+                        <button class="btn" id="router-accept" type="button">Chấp nhận</button>
+                        <button class="router-edit" id="router-edit" type="button">Sửa</button>
+                    </div>
+                    <p class="router-accepted" id="router-accepted" role="status" hidden></p>
+                </section>
+            </div>
+        </form>
         <div class="header-actions">
             <div class="hotline">
-                📞 <span>Hotline<br><strong>0387.110.017</strong></span>
+                <img class="inline-icon" src="../assets/icons/headphones-round-svgrepo-com.svg" alt="">
+                <span>Hotline<br><strong>0387.110.017</strong></span>
             </div>
             <div id="auth-buttons-unlogged" style="display: flex; gap: 10px;">
                 <button class="btn btn-outline" onclick="openAuthModal('login')">Đăng nhập</button>
@@ -680,7 +1026,7 @@
                     <div class="user-avatar" id="header-avatar-letters">Q</div>
                     <div>
                         <div style="font-size: 13px; font-weight: 700;" id="header-username">Phạm Minh Quân</div>
-                        <div style="font-size: 11px; color: var(--text-light);" id="header-role-text">Bệnh nhân</div>
+                        <div style="font-size: 11px; color: var(--text-light);" id="header-role-text">Người dùng</div>
                     </div>
                     <span style="font-size: 10px; opacity: 0.5;">▼</span>
                     <div class="user-menu-dropdown" id="user-dropdown-menu">
@@ -689,7 +1035,7 @@
                             <span id="dropdown-email">quan.pm@email.com</span>
                             <div id="admin-badge-container"></div>
                         </div>
-                        <a class="user-menu-item" href="checklist.html">📋 Checklist cá nhân</a>
+                        <a class="user-menu-item" href="citizen-care-checklist.html">Checklist cá nhân</a>
                         <a class="user-menu-item" onclick="showToast('Chức năng lịch hẹn đang tải...')">📅 Lịch khám đã đặt</a>
                         <a class="user-menu-item" onclick="showToast('Hồ sơ sức khỏe đã bảo mật')">🔒 Hồ sơ y tế</a>
                         <div style="border-top: 1px solid var(--border-color); margin: 4px 0;"></div>
@@ -701,26 +1047,26 @@
     </header>
 
     <nav class="sub-nav">
-        <a class="active-nav" href="home.html">Tra cứu Dịch vụ</a>
-        <a href="checklist.html">Hồ sơ chuẩn bị</a>
-        <a href="clinic_detail.html">Dành cho Cơ sở y tế</a>
+        <a class="active-nav" href="citizen-care-search.html">Tra cứu Dịch vụ</a>
+        <a href="citizen-care-checklist.html">Hồ sơ chuẩn bị</a>
+        <a href="citizen-care-detail.html">Dành cho Cơ sở y tế</a>
     </nav>
 
     <main>
         <section class="hero">
             <div class="hero-text">
-                <span class="pill-tag">🛡️ Nền tảng y tế được các gia đình tin dùng</span>
+                <span class="pill-tag"><img src="../assets/icons/hospital-svgrepo-com.svg" alt="">Nền tảng y tế được các gia đình tin dùng</span>
                 <h1>Chăm sóc đúng nơi,<br>an tâm mỗi ngày</h1>
                 <p>Tìm bác sĩ phù hợp, đặt lịch nhanh và nhận hướng dẫn rõ ràng — từ những triệu chứng đầu tiên đến suốt hành trình điều trị.</p>
                 <div style="display: flex; gap: 12px;">
-                    <a class="btn" href="clinic_detail.html">Khám phá cơ sở y tế</a>
-                    <a class="btn btn-outline" href="checklist.html">Xem checklist của bạn</a>
+                    <a class="btn" href="citizen-care-detail.html">Khám phá cơ sở y tế</a>
+                    <a class="btn btn-outline" href="citizen-care-checklist.html">Xem checklist của bạn</a>
                 </div>
             </div>
             <div class="hero-image">
                 <img src="../assets/images/anh_bac_si.png" alt="Bác sĩ tư vấn">
                 <div class="floating-badge">
-                    <span>📅</span>
+                    <img src="../assets/icons/clock-two-svgrepo-com.svg" alt="">
                     <div>
                         <div style="font-size:12px; color:var(--text-light);">Trạng thái</div>
                         <div>Có lịch trong hôm nay</div>
@@ -748,76 +1094,76 @@
             </div>
         </section>
 
-        <section class="section">
+        <section class="section features-section">
             <div class="section-title">
                 <h2>Tại sao chọn CareRoute?</h2>
                 <p>Nền tảng được thiết kế để giúp người dân tiếp cận dịch vụ y tế dễ dàng và chính xác hơn.</p>
             </div>
             <div class="grid-4">
-                <div class="feature-card" onclick="location.href='clinic_detail.html'">
-                    <div class="feature-icon">🔍</div>
+                <div class="feature-card" onclick="location.href='citizen-care-detail.html'">
+                    <div class="feature-icon"><img src="../assets/icons/map-svgrepo-com.svg" alt=""></div>
                     <h4>Tìm đúng dịch vụ</h4>
                     <p>Tra cứu cơ sở y tế theo chuyên khoa, khu vực và giờ hoạt động trong vài giây.</p>
                 </div>
-                <div class="feature-card" onclick="location.href='checklist.html'">
-                    <div class="feature-icon">📋</div>
+                <div class="feature-card" onclick="location.href='citizen-care-checklist.html'">
+                    <div class="feature-icon"><img src="../assets/icons/clipboard-check-svgrepo-com.svg" alt=""></div>
                     <h4>Checklist chuẩn bị</h4>
                     <p>Nhận danh sách giấy tờ và hướng dẫn chuẩn bị chi tiết trước khi đến khám.</p>
                 </div>
-                <div class="feature-card" onclick="location.href='clinic_detail.html'">
-                    <div class="feature-icon">⏱️</div>
+                <div class="feature-card" onclick="location.href='citizen-care-detail.html'">
+                    <div class="feature-icon"><img src="../assets/icons/clock-two-svgrepo-com.svg" alt=""></div>
                     <h4>Thông tin cập nhật</h4>
                     <p>Giờ hoạt động, quy trình và hướng dẫn được kiểm duyệt bởi đội ngũ biên tập.</p>
                 </div>
-                <div class="feature-card" onclick="location.href='checklist.html'">
-                    <div class="feature-icon">✨</div>
-                    <h4>Gợi ý AI thông minh</h4>
-                    <p>AI phân tích triệu chứng và đề xuất chuyên khoa phù hợp nhất cho bạn.</p>
+                <div class="feature-card" onclick="location.href='citizen-care-checklist.html'">
+                    <div class="feature-icon"><img src="../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg" alt=""></div>
+                    <h4>Gợi ý điều phối thông minh</h4>
+                    <p>Care Information Router gợi ý chuyên khoa từ triệu chứng; kết quả chỉ mang tính tham khảo.</p>
                 </div>
             </div>
         </section>
 
-        <section class="section" style="background: var(--bg-light);">
+        <section class="section">
             <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
                 <div>
                     <span class="pill-tag">KIẾN THỨC DỄ HIỂU</span>
                     <h2 style="font-size: 26px;">Chủ động chăm sóc sức khỏe mỗi ngày</h2>
                     <p style="color: var(--text-gray); font-size: 14px;">Nội dung được kiểm duyệt bởi đội ngũ bác sĩ, trình bày ngắn gọn và dễ áp dụng.</p>
                 </div>
-                <a href="#" style="color: var(--primary-dark); font-weight: 700; text-decoration: none; font-size: 14px;">Xem toàn bộ cẩm nang →</a>
+                <a href="#articles" style="color: var(--primary-dark); font-weight: 700; text-decoration: none; font-size: 14px;">Xem toàn bộ cẩm nang →</a>
             </div>
 
-            <div class="grid-3">
-                <div class="blog-card" onclick="location.href='clinic_detail.html'">
+            <div class="grid-3" id="articles">
+                <div class="blog-card" onclick="location.href='citizen-care-detail.html'">
                     <img src="../assets/images/suc_khoe_tim_mach.png" alt="Sức khỏe tim mạch">
-                    <div class="blog-content">git rebase --abort
+                    <div class="blog-content">
                         <div class="blog-meta">
                             <span style="color:var(--primary-dark); font-weight:600;">Sức khỏe tim mạch</span>
-                            <span>⏱ 6 phút đọc</span>
+                            <span><img src="../assets/icons/clock-two-svgrepo-com.svg" alt=""> 6 phút đọc</span>
                         </div>
                         <div class="blog-title">7 dấu hiệu cơ thể nhắc bạn nên kiểm tra tim sớm</div>
                         <div class="blog-author">Cố vấn chuyên môn: BS. Nguyễn Minh An</div>
                     </div>
                 </div>
 
-                <div class="blog-card" onclick="location.href='clinic_detail.html'">
+                <div class="blog-card" onclick="location.href='citizen-care-detail.html'">
                     <img src="../assets/images/nhi_khoa.png" alt="Nhi khoa">
                     <div class="blog-content">
                         <div class="blog-meta">
                             <span style="color:var(--primary-dark); font-weight:600;">Nhi khoa</span>
-                            <span>⏱ 5 phút đọc</span>
+                            <span><img src="../assets/icons/clock-two-svgrepo-com.svg" alt=""> 5 phút đọc</span>
                         </div>
                         <div class="blog-title">Trẻ sốt: khi nào có thể theo dõi tại nhà?</div>
                         <div class="blog-author">Cố vấn chuyên môn: ThS.BS Trần Thảo Vy</div>
                     </div>
                 </div>
 
-                <div class="blog-card" onclick="location.href='clinic_detail.html'">
+                <div class="blog-card" onclick="location.href='citizen-care-detail.html'">
                     <img src="../assets/images/phong_benh.png" alt="Phòng bệnh">
                     <div class="blog-content">
                         <div class="blog-meta">
                             <span style="color:var(--primary-dark); font-weight:600;">Phòng bệnh</span>
-                            <span>⏱ 4 phút đọc</span>
+                            <span><img src="../assets/icons/clock-two-svgrepo-com.svg" alt=""> 4 phút đọc</span>
                         </div>
                         <div class="blog-title">Chuẩn bị gì trước buổi khám để bác sĩ hiểu bạn hơn</div>
                         <div class="blog-author">Cố vấn chuyên môn: Ban chuyên môn An Tâm</div>
@@ -826,28 +1172,47 @@
             </div>
         </section>
 
-        <section class="section">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <section class="section" id="facility-directory">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
                 <div>
                     <span class="pill-tag">CƠ SỞ GẦN BẠN</span>
                     <h2>Cơ sở y tế đáng tin cậy quanh đây</h2>
                 </div>
-                <button class="btn btn-outline" style="font-size: 13px;">📍 Quận 3, TP. Hồ Chí Minh ▾</button>
+                <button class="btn btn-outline" style="font-size: 13px;"><img class="inline-icon" src="../assets/icons/map-svgrepo-com.svg" alt=""> Quận 3, TP. Hồ Chí Minh ▾</button>
+            </div>
+            <div class="facility-filter" style="display: flex; flex-wrap: wrap; align-items: end; gap: 12px; margin-bottom: 20px;">
+                <div class="router-field" style="flex: 1 1 240px;">
+                    <label for="facility-search">Tìm cơ sở y tế</label>
+                    <input id="facility-search" type="search" placeholder="Tên cơ sở hoặc dịch vụ..." style="width: 100%; min-height: 42px; padding: 10px 12px; border: 1px solid #cbded8; border-radius: 9px;">
+                </div>
+                <div>
+                    <label for="facility-type-filter">Loại cơ sở</label>
+                    <select id="facility-type-filter" style="min-width: 180px; min-height: 42px; padding: 9px 12px; border: 1px solid #cbded8; border-radius: 9px; background: #fff;">
+                        <option value="">Tất cả loại cơ sở</option>
+                        <option value="clinic">Phòng khám</option>
+                        <option value="hospital">Bệnh viện</option>
+                        <option value="diagnostic">Chẩn đoán & xét nghiệm</option>
+                    </select>
+                </div>
+                <p id="facility-filter-status" role="status" aria-live="polite" style="margin: 0 0 11px; color: var(--text-light); font-size: 12px;"></p>
             </div>
 
             <div class="clinic-container">
-                <div class="featured-clinic" onclick="location.href='clinic_detail.html'">
-                    <img src="../assets/images/phong_kham.png" alt="Phòng khám">
-                    <div style="padding: 20px;">
-                        <span class="pill-tag" style="background: #fef3c7; color: #92400e;">PHÙ HỢP NHẤT • 1.2 km</span>
-                        <h3 style="font-size: 20px; margin: 8px 0;">Phòng khám Đa khoa An Khang</h3>
-                        <p style="color: var(--text-gray); font-size: 14px;">128 Võ Văn Tần, Phường 6, Quận 3</p>
+                <div class="featured-clinic" data-facility-type="clinic" onclick="location.href='citizen-care-detail.html'">
+                    <img src="../assets/images/co_so_y_te.png" alt="Phòng khám Đa khoa An Khang">
+                    <div class="featured-clinic-caption">
+                        <span class="pill-tag">PHÙ HỢP NHẤT <span>1,2 km</span></span>
+                        <h3>Phòng khám Đa khoa An Khang</h3>
+                        <p>128 Võ Văn Tần, Phường 6, Quận 3</p>
                     </div>
                 </div>
 
                 <div class="clinic-list-side">
-                    <div class="clinic-item-card" onclick="location.href='clinic_detail.html'">
+                    <div class="clinic-item-card" data-facility-type="clinic" onclick="location.href='citizen-care-detail.html'">
                         <div>
+                            <img class="clinic-icon" src="../assets/icons/hospital-svgrepo-com.svg" alt="">
+                        </div>
+                        <div class="clinic-item-copy">
                             <h4 style="font-size: 16px;">Phòng khám Đa khoa An Khang</h4>
                             <p style="font-size: 13px; color: var(--text-gray);">Đa khoa • 35 chuyên khoa</p>
                             <span style="font-size: 12px; color: #d97706;">⭐ 4.9 (428) • Mở cửa đến 20:00</span>
@@ -858,8 +1223,11 @@
                         </div>
                     </div>
 
-                    <div class="clinic-item-card" onclick="location.href='clinic_detail.html'">
+                    <div class="clinic-item-card" data-facility-type="hospital" onclick="location.href='citizen-care-detail.html'">
                         <div>
+                            <img class="clinic-icon" src="../assets/icons/hospital-svgrepo-com.svg" alt="">
+                        </div>
+                        <div class="clinic-item-copy">
                             <h4 style="font-size: 16px;">Bệnh viện Quốc tế CityCare</h4>
                             <p style="font-size: 13px; color: var(--text-gray);">Bệnh viện • Cấp cứu 24/7</p>
                             <span style="font-size: 12px; color: #d97706;">⭐ 4.8 • Đang mở cửa</span>
@@ -870,8 +1238,11 @@
                         </div>
                     </div>
 
-                    <div class="clinic-item-card" onclick="location.href='clinic_detail.html'">
+                    <div class="clinic-item-card" data-facility-type="diagnostic" onclick="location.href='citizen-care-detail.html'">
                         <div>
+                            <img class="clinic-icon" src="../assets/icons/hospital-svgrepo-com.svg" alt="">
+                        </div>
+                        <div class="clinic-item-copy">
                             <h4 style="font-size: 16px;">Trung tâm Y khoa Gia Định</h4>
                             <p style="font-size: 13px; color: var(--text-gray);">Chẩn đoán & Xét nghiệm</p>
                             <span style="font-size: 12px; color: #d97706;">⭐ 4.7 • Mở cửa đến 18:30</span>
@@ -885,14 +1256,14 @@
             </div>
         </section>
 
-        <div class="support-banner">
+        <div class="support-banner" id="support">
             <div>
                 <span style="font-size: 12px; letter-spacing: 1px; opacity: 0.8;">LUÔN CÓ NGƯỜI ĐỒNG HÀNH</span>
                 <h2>Chưa biết nên khám ở đâu?</h2>
                 <p>Điều phối viên CareRoute sẽ lắng nghe nhu cầu và gợi ý bước tiếp theo phù hợp. Hỗ trợ miễn phí mỗi ngày, từ 7:00–22:00.</p>
                 <div style="margin-top: 20px; display: flex; gap: 12px;">
                     <button class="btn" style="background: white; color: var(--footer-bg);" onclick="showToast('Đang kết nối với điều phối viên...')">Nhận tư vấn miễn phí</button>
-                    <button class="btn btn-outline" style="border-color: white; color: white;">📞 0387.110.017</button>
+                    <a class="btn btn-outline" href="tel:0387110017" style="border-color: white; color: white;"><img class="inline-icon" src="../assets/icons/headphones-round-svgrepo-com.svg" alt=""> 0387.110.017</a>
                 </div>
             </div>
 
@@ -910,45 +1281,45 @@
     <footer>
         <div class="footer-grid">
             <div>
-                <div class="logo" style="color: white; margin-bottom: 12px;">
+                <div class="logo footer-brand" style="margin-bottom: 12px;">
                     <div class="logo-icon">+</div>
                     CareRoute
                 </div>
                 <p style="line-height: 1.6;">Giúp mọi người dễ dàng tiếp cận dịch vụ chăm sóc sức khỏe phù hợp, minh bạch và đáng tin cậy.</p>
                 <br>
-                <p>📞 0387.110.017 - 7:00–22:00 mỗi ngày</p>
-                <p>✉️ quanquybut@CareRoute.vn</p>
+                <p><img class="footer-icon" src="../assets/icons/headphones-round-svgrepo-com.svg" alt="">0387.110.017 - 7:00–22:00 mỗi ngày</p>
+                <p><img class="footer-icon" src="../assets/icons/mail-svgrepo-com.svg" alt="">quanquybut@CareRoute.vn</p>
             </div>
 
             <div class="footer-col">
                 <h4>Dịch vụ</h4>
-                <a href="clinic_detail.html">Đặt lịch khám</a>
-                <a href="home.html">Tư vấn từ xa</a>
-                <a href="clinic_detail.html">Tìm cơ sở y tế</a>
-                <a href="checklist.html">Kiểm tra bảo hiểm</a>
+                <a href="citizen-care-detail.html">Đặt lịch khám</a>
+                <a href="#support">Tư vấn từ xa</a>
+                <a href="citizen-care-detail.html">Tìm cơ sở y tế</a>
+                <a href="citizen-care-checklist.html">Kiểm tra bảo hiểm</a>
             </div>
 
             <div class="footer-col">
                 <h4>Hồ sơ</h4>
-                <a href="checklist.html">Chuẩn bị trước hẹn</a>
-                <a href="checklist.html">Hồ sơ cần mang</a>
-                <a href="checklist.html">Kiểm tra trước khám</a>
-                <a href="checklist.html">Lưu ý khi đến khám</a>
+                <a href="citizen-care-checklist.html">Chuẩn bị trước hẹn</a>
+                <a href="citizen-care-checklist.html">Hồ sơ cần mang</a>
+                <a href="citizen-care-checklist.html">Kiểm tra trước khám</a>
+                <a href="citizen-care-checklist.html">Lưu ý khi đến khám</a>
             </div>
 
             <div class="footer-col">
                 <h4>Thông tin cập nhật</h4>
-                <a href="home.html">Tin tức chăm sóc sức khỏe</a>
-                <a href="home.html">Cập nhật dịch vụ</a>
-                <a href="home.html">Thông báo hệ thống</a>
-                <a href="home.html">Chính sách mới</a>
+                <a href="#articles">Tin tức chăm sóc sức khỏe</a>
+                <a href="citizen-care-search.html">Cập nhật dịch vụ</a>
+                <a href="citizen-care-search.html">Thông báo hệ thống</a>
+                <a href="citizen-care-search.html">Chính sách mới</a>
             </div>
 
             <div class="footer-col">
                 <h4>An toàn & bảo mật</h4>
-                <p>🛡️️ Bảo mật dữ liệu y tế</p>
-                <p>🛡️ Đối tác được xác minh</p>
-                <p>🛡️ Kết nối được mã hóa</p>
+                <p><img class="footer-icon" src="../assets/icons/lock-keyhole-svgrepo-com.svg" alt="">Bảo mật dữ liệu y tế</p>
+                <p><img class="footer-icon" src="../assets/icons/check-circle-svgrepo-com.svg" alt="">Đối tác được xác minh</p>
+                <p><img class="footer-icon" src="../assets/icons/lock-keyhole-svgrepo-com.svg" alt="">Kết nối được mã hóa</p>
             </div>
         </div>
 
@@ -962,6 +1333,30 @@
         </div>
     </footer>
 
+    <details class="contact-bubble">
+        <summary aria-label="Mở các kênh liên hệ">
+            <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 11.5a7.5 7.5 0 0 1-7.5 7.5 8 8 0 0 1-3.5-.8L4 20l1.3-4.1a7.5 7.5 0 1 1 14.7-4.4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M8.5 11.8h.01M12.5 11.8h.01M16.5 11.8h.01" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/>
+            </svg>
+        </summary>
+        <div class="contact-options" aria-label="Các kênh liên hệ CareRoute">
+            <p class="contact-options-title">Liên hệ với CareRoute</p>
+            <a class="contact-option" href="https://zalo.me/0387110017" target="_blank" rel="noopener noreferrer">
+                <span class="contact-option-icon zalo" aria-hidden="true">Zalo</span>
+                <span>Chat qua Zalo</span>
+            </a>
+            <a class="contact-option" href="https://www.facebook.com/minh.quan.530195" target="_blank" rel="noopener noreferrer">
+                <span class="contact-option-icon facebook" aria-hidden="true">f</span>
+                <span>Nhắn tin Facebook</span>
+            </a>
+            <a class="contact-option" href="tel:0387110017">
+                <span class="contact-option-icon phone" aria-hidden="true"><img src="../assets/icons/headphones-round-svgrepo-com.svg" alt=""></span>
+                <span>Gọi 0387.110.017</span>
+            </a>
+        </div>
+    </details>
+
     <!-- AUTHENTICATION MODAL -->
     <div class="modal-overlay" id="auth-modal">
         <div class="auth-modal">
@@ -973,17 +1368,36 @@
 
             <form id="form-login" onsubmit="handleLogin(event)">
                 <div class="role-selector">
-                    <button type="button" class="role-btn active" id="role-user-btn" onclick="selectLoginRole('user')">👤 Người dùng</button>
-                    <button type="button" class="role-btn" id="role-admin-btn" onclick="selectLoginRole('admin')">🔑 Quản trị viên</button>
+                    <div class="role-selector-label">Bạn đăng nhập với vai trò nào?</div>
+                    <button type="button" class="role-btn active" id="role-user-btn" aria-pressed="true" onclick="selectLoginRole('user')">
+                        <img src="../assets/icons/user-svgrepo-com.svg" alt="">
+                        <span class="role-btn-copy"><strong>Người dân</strong><small>Tìm dịch vụ, chuẩn bị khám</small></span>
+                        <span class="role-radio" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="role-btn" id="role-facility-btn" aria-pressed="false" onclick="selectLoginRole('facility')">
+                        <img src="../assets/icons/hospital-svgrepo-com.svg" alt="">
+                        <span class="role-btn-copy"><strong>Cơ sở y tế</strong><small>Quản lý dịch vụ và hồ sơ</small></span>
+                        <span class="role-radio" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="role-btn" id="role-reviewer-btn" aria-pressed="false" onclick="selectLoginRole('reviewer')">
+                        <img src="../assets/icons/clipboard-check-svgrepo-com.svg" alt="">
+                        <span class="role-btn-copy"><strong>Kiểm duyệt viên</strong><small>Kiểm duyệt thông tin y tế</small></span>
+                        <span class="role-radio" aria-hidden="true"></span>
+                    </button>
+                    <button type="button" class="role-btn" id="role-admin-btn" aria-pressed="false" onclick="selectLoginRole('admin')">
+                        <img src="../assets/icons/settings-svgrepo-com.svg" alt="">
+                        <span class="role-btn-copy"><strong>Quản trị viên</strong><small>Quản lý hệ thống</small></span>
+                        <span class="role-radio" aria-hidden="true"></span>
+                    </button>
                 </div>
                 <div class="form-group">
                     <label id="login-identifier-label">Email hoặc Số điện thoại</label>
-                    <input type="text" class="form-input" id="login-identifier" placeholder="Nhập email hoặc SĐT..." required>
+                    <input type="text" class="form-input" id="login-identifier" placeholder="Nhập email hoặc số điện thoại" required>
                 </div>
                 <div class="form-group">
                     <label>Mật khẩu</label>
                     <div class="form-input-wrap">
-                        <input type="password" class="form-input" id="login-password" placeholder="Nhập mật khẩu..." required>
+                        <input type="password" class="form-input" id="login-password" placeholder="Nhập mật khẩu của bạn" required>
                         <span class="toggle-password" onclick="togglePasswordVisibility('login-password')">👁</span>
                     </div>
                 </div>
@@ -1006,8 +1420,7 @@
 
             <form id="form-register" style="display: none;" onsubmit="handleRegister(event)">
                 <div class="role-selector">
-                    <button type="button" class="role-btn active" id="reg-role-patient" onclick="selectRegRole('patient')">🩺 Bệnh nhân</button>
-                    <button type="button" class="role-btn" id="reg-role-facility" onclick="selectRegRole('facility')">🏥 Cơ sở y tế</button>
+                    <button type="button" class="role-btn active" id="reg-role-user">👤 Người dùng</button>
                 </div>
                 <div class="form-group">
                     <label id="reg-name-label">Họ và tên người dùng</label>
@@ -1041,11 +1454,195 @@
 
     <script>
         let currentLoginRole = 'user';
-        let currentRegRole = 'patient';
 
         document.addEventListener('DOMContentLoaded', function() {
             checkUserSession();
+            setupCareInformationRouter();
+            setupSearchFilters();
         });
+
+        function normalizeSearchText(value) {
+            return value
+                .toLocaleLowerCase('vi')
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .replace(/đ/g, 'd')
+                .replace(/[^a-z0-9\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function setupCareInformationRouter() {
+            const form = document.getElementById('search-form');
+            const input = document.getElementById('site-search-input');
+            const processing = document.getElementById('router-processing');
+            const result = document.getElementById('router-result');
+            const popover = document.getElementById('router-popover');
+            const submit = document.getElementById('router-submit');
+            const specialtyOutput = document.getElementById('router-specialty');
+            const reasonOutput = document.getElementById('router-reason');
+            const emergencyOutput = document.getElementById('router-emergency');
+            const acceptedOutput = document.getElementById('router-accepted');
+            let latestSuggestion = null;
+
+            const emergencyTerms = [
+                'kho tho', 'dau nguc du doi', 'bat tinh', 'dot quy', 'meo mieng',
+                'yeu liet', 'chay mau nhieu', 'co giat', 'ngung tho'
+            ];
+            const containsTerm = (text, term) => (` ${text} `).includes(` ${term} `);
+            const routes = [
+                {
+                    specialty: 'Nhi khoa',
+                    keywords: ['tre em', 'em be', 'be bi', 'con toi', 'tre so sinh'],
+                    reason: 'Thông tin cho thấy người cần khám là trẻ em; chuyên khoa Nhi là điểm bắt đầu phù hợp.'
+                },
+                {
+                    specialty: 'Tim mạch',
+                    keywords: ['dau nguc', 'tuc nguc', 'tim dap nhanh', 'hoi hop', 'huyet ap'],
+                    reason: 'Các từ khóa về đau/tức ngực, nhịp tim hoặc huyết áp thường được điều phối đến chuyên khoa Tim mạch.'
+                },
+                {
+                    specialty: 'Thần kinh',
+                    keywords: ['dau dau', 'chong mat', 'te bi', 'run tay', 'mat ngu'],
+                    reason: 'Các từ khóa về đau đầu, chóng mặt hoặc tê bì thường được điều phối đến chuyên khoa Thần kinh.'
+                },
+                {
+                    specialty: 'Hô hấp',
+                    keywords: ['ho', 'sot', 'dau hong', 'so mui', 'kho khan khi tho'],
+                    reason: 'Các từ khóa về ho, sốt hoặc đau họng thường được điều phối đến chuyên khoa Hô hấp/Nội tổng quát.'
+                },
+                {
+                    specialty: 'Tiêu hóa',
+                    keywords: ['dau bung', 'buon non', 'tieu chay', 'tao bon', 'day bung'],
+                    reason: 'Các từ khóa về đau bụng hoặc rối loạn tiêu hóa thường được điều phối đến chuyên khoa Tiêu hóa.'
+                },
+                {
+                    specialty: 'Cơ xương khớp',
+                    keywords: ['dau khop', 'dau lung', 'dau co', 'sung khop', 'han che van dong'],
+                    reason: 'Các từ khóa về đau khớp, đau lưng hoặc hạn chế vận động thường được điều phối đến chuyên khoa Cơ xương khớp.'
+                },
+                {
+                    specialty: 'Da liễu',
+                    keywords: ['phat ban', 'ngua da', 'noi man', 'mun', 'bong troc'],
+                    reason: 'Các từ khóa về phát ban, ngứa hoặc tổn thương da thường được điều phối đến chuyên khoa Da liễu.'
+                }
+            ];
+
+            form.addEventListener('submit', event => {
+                event.preventDefault();
+                const symptoms = input.value.trim();
+                if (symptoms.length < 3) {
+                    showToast('Nhập ít nhất 3 ký tự để tìm kiếm hoặc mô tả triệu chứng.');
+                    input.focus();
+                    return;
+                }
+                input.dataset.routerMode = 'true';
+                document.dispatchEvent(new Event('care-router:submitted'));
+                const normalizedSymptoms = normalizeSearchText(symptoms);
+                const isEmergency = emergencyTerms.some(term => containsTerm(normalizedSymptoms, term));
+                const childTerms = ['tre em', 'em be', 'be bi', 'con toi', 'tre so sinh'];
+                const words = normalizedSymptoms.split(/\s+/);
+                const isChild = childTerms.some(term => containsTerm(normalizedSymptoms, term)) || words.some(word => word === 'tre' || word === 'be');
+                const matchedRoute = isChild
+                    ? routes[0]
+                    : routes.slice(1).find(route => route.keywords.some(term => containsTerm(normalizedSymptoms, term)));
+                latestSuggestion = {
+                    specialty: isEmergency ? 'Cần hỗ trợ y tế khẩn cấp' : (matchedRoute ? matchedRoute.specialty : 'Nội tổng quát'),
+                    reason: isEmergency
+                        ? 'Mô tả có từ khóa cảnh báo cần được nhân viên y tế đánh giá khẩn cấp. Hệ thống không cố gắng phân loại thành khám chuyên khoa thông thường.'
+                        : (matchedRoute ? matchedRoute.reason : 'Chưa có từ khóa chuyên khoa rõ ràng; khám Nội tổng quát là lựa chọn ban đầu để được đánh giá trực tiếp.'),
+                    isEmergency
+                };
+
+                result.hidden = true;
+                acceptedOutput.hidden = true;
+                popover.hidden = false;
+                processing.hidden = false;
+                submit.disabled = true;
+                window.setTimeout(() => {
+                    specialtyOutput.textContent = `Chuyên khoa/dịch vụ gợi ý: ${latestSuggestion.specialty}`;
+                    reasonOutput.textContent = `Vì sao có gợi ý này: ${latestSuggestion.reason}`;
+                    emergencyOutput.hidden = !latestSuggestion.isEmergency;
+                    emergencyOutput.textContent = latestSuggestion.isEmergency
+                        ? 'Dấu hiệu có thể cần cấp cứu: gọi 115 hoặc đến khoa Cấp cứu gần nhất ngay. Không chờ phản hồi trực tuyến.'
+                        : '';
+                    processing.hidden = true;
+                    result.hidden = false;
+                    submit.disabled = false;
+                }, 550);
+            });
+
+            input.addEventListener('input', () => {
+                input.dataset.routerMode = 'false';
+                result.hidden = true;
+                processing.hidden = true;
+                popover.hidden = true;
+                acceptedOutput.hidden = true;
+            });
+            document.getElementById('router-edit').addEventListener('click', () => {
+                popover.hidden = true;
+                input.focus();
+                input.select();
+            });
+            document.getElementById('router-accept').addEventListener('click', () => {
+                if (!latestSuggestion) return;
+                if (latestSuggestion.isEmergency) {
+                    showToast('Hãy gọi 115 hoặc đến khoa Cấp cứu gần nhất ngay.');
+                } else {
+                    showToast(`Đã chấp nhận gợi ý ${latestSuggestion.specialty}.`);
+                    input.value = '';
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    document.getElementById('facility-search').value = '';
+                    document.getElementById('facility-search').dispatchEvent(new Event('input', { bubbles: true }));
+                    document.getElementById('facility-directory').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+                popover.hidden = latestSuggestion.isEmergency ? false : true;
+            });
+        }
+
+        function setupSearchFilters() {
+            const siteSearch = document.getElementById('site-search-input');
+            const facilitySearch = document.getElementById('facility-search');
+            const typeFilter = document.getElementById('facility-type-filter');
+            const siteStatus = document.getElementById('site-search-status');
+            const facilityStatus = document.getElementById('facility-filter-status');
+            const facilityCards = Array.from(document.querySelectorAll('.clinic-container [data-facility-type]'));
+            const facilityListItems = Array.from(document.querySelectorAll('.clinic-item-card'));
+            const articles = Array.from(document.querySelectorAll('.blog-card'));
+
+            function applyFilters() {
+                const routerMode = siteSearch.dataset.routerMode === 'true';
+                const globalQuery = routerMode ? '' : normalizeSearchText(siteSearch.value);
+                const facilityQuery = normalizeSearchText(facilitySearch.value);
+                const selectedType = typeFilter.value;
+                facilityCards.forEach(card => {
+                    const text = normalizeSearchText(card.textContent);
+                    const query = [globalQuery, facilityQuery]
+                        .filter(Boolean)
+                        .flatMap(term => term.split(/\s+/));
+                    const matchesText = query.every(term => text.includes(term));
+                    const matchesType = !selectedType || card.dataset.facilityType === selectedType;
+                    card.hidden = !matchesText || !matchesType;
+                });
+                articles.forEach(article => {
+                    const text = normalizeSearchText(article.textContent);
+                    article.hidden = Boolean(globalQuery) && !globalQuery.split(/\s+/).every(term => text.includes(term));
+                });
+
+                const visibleFacilities = facilityListItems.filter(card => !card.hidden).length;
+                const visibleArticles = articles.filter(article => !article.hidden).length;
+                facilityStatus.textContent = `${visibleFacilities} cơ sở phù hợp`;
+                siteStatus.textContent = globalQuery
+                    ? `Tìm thấy ${visibleFacilities} cơ sở và ${visibleArticles} bài viết phù hợp với "${siteSearch.value.trim()}".`
+                    : '';
+            }
+
+            siteSearch.addEventListener('input', applyFilters);
+            document.addEventListener('care-router:submitted', applyFilters);
+            facilitySearch.addEventListener('input', applyFilters);
+            typeFilter.addEventListener('change', applyFilters);
+            applyFilters();
+        }
 
         function showToast(message) {
             const container = document.getElementById('toast-container');
@@ -1091,38 +1688,22 @@
 
         function selectLoginRole(role) {
             currentLoginRole = role;
-            const userBtn = document.getElementById('role-user-btn');
-            const adminBtn = document.getElementById('role-admin-btn');
+            const roleButtons = {
+                user: document.getElementById('role-user-btn'),
+                facility: document.getElementById('role-facility-btn'),
+                reviewer: document.getElementById('role-reviewer-btn'),
+                admin: document.getElementById('role-admin-btn')
+            };
             const adminCodeWrap = document.getElementById('admin-code-wrap');
 
-            if (role === 'admin') {
-                adminBtn.classList.add('active');
-                userBtn.classList.remove('active');
-                adminCodeWrap.classList.add('active');
-                document.getElementById('login-identifier-label').innerText = 'Tên tài khoản / Email Admin';
-            } else {
-                userBtn.classList.add('active');
-                adminBtn.classList.remove('active');
-                adminCodeWrap.classList.remove('active');
-                document.getElementById('login-identifier-label').innerText = 'Email hoặc Số điện thoại';
-            }
-        }
-
-        function selectRegRole(role) {
-            currentRegRole = role;
-            const patientBtn = document.getElementById('reg-role-patient');
-            const facilityBtn = document.getElementById('reg-role-facility');
-            const nameLabel = document.getElementById('reg-name-label');
-
-            if (role === 'facility') {
-                facilityBtn.classList.add('active');
-                patientBtn.classList.remove('active');
-                nameLabel.innerText = 'Tên Cơ sở y tế / Bệnh viện';
-            } else {
-                patientBtn.classList.add('active');
-                facilityBtn.classList.remove('active');
-                nameLabel.innerText = 'Họ và tên bệnh nhân';
-            }
+            Object.entries(roleButtons).forEach(([roleName, button]) => {
+                const isSelected = roleName === role;
+                button.classList.toggle('active', isSelected);
+                button.setAttribute('aria-pressed', String(isSelected));
+            });
+            adminCodeWrap.classList.toggle('active', role === 'admin');
+            document.getElementById('login-identifier-label').innerText =
+                role === 'admin' ? 'Tên tài khoản / Email Admin' : 'Email hoặc số điện thoại';
         }
 
         function togglePasswordVisibility(inputId) {
@@ -1146,9 +1727,20 @@
             } else {
                 const nameParts = identifier.split('@')[0];
                 const displayName = nameParts.charAt(0).toUpperCase() + nameParts.slice(1);
-                const user = { name: identifier.includes('@') ? displayName : 'Khách hàng ' + identifier.slice(-4), email: identifier, role: 'patient', letters: displayName.substring(0, 2).toUpperCase() };
+                const roleNames = {
+                    user: 'Người dân',
+                    facility: 'Cơ sở y tế',
+                    reviewer: 'Kiểm duyệt viên'
+                };
+                const user = {
+                    name: identifier.includes('@') ? displayName : 'Khách hàng ' + identifier.slice(-4),
+                    email: identifier,
+                    role: currentLoginRole,
+                    roleName: roleNames[currentLoginRole],
+                    letters: displayName.substring(0, 2).toUpperCase()
+                };
                 localStorage.setItem('careroute_user', JSON.stringify(user));
-                showToast('✅ Đăng nhập thành công! Chào mừng trở lại.');
+                showToast(`✅ Đăng nhập ${roleNames[currentLoginRole]} thành công!`);
             }
             closeAuthModal();
             checkUserSession();
@@ -1165,7 +1757,7 @@
                 showToast('❌ Mật khẩu xác nhận không khớp!');
                 return;
             }
-            const newUser = { name: fullname, email: email, role: currentRegRole === 'facility' ? 'Cơ sở Y tế' : 'Bệnh nhân', letters: fullname.charAt(0).toUpperCase() };
+            const newUser = { name: fullname, email: email, role: 'user', letters: fullname.charAt(0).toUpperCase() };
             localStorage.setItem('careroute_user', JSON.stringify(newUser));
             showToast('🎉 Đăng ký tài khoản thành công!');
             closeAuthModal();
@@ -1186,11 +1778,19 @@
                 document.getElementById('dropdown-fullname').innerText = user.name;
                 document.getElementById('dropdown-email').innerText = user.email || 'N/A';
                 const badgeContainer = document.getElementById('admin-badge-container');
+                const roleNames = {
+                    user: 'Người dùng',
+                    facility: 'Cơ sở y tế',
+                    reviewer: 'Kiểm duyệt viên',
+                    admin: 'Quản trị viên',
+                    'Cơ sở Y tế': 'Cơ sở y tế'
+                };
                 if (user.role === 'admin') {
-                    document.getElementById('header-role-text').innerText = 'Quản trị viên';
+                    document.getElementById('header-role-text').innerText = roleNames.admin;
                     badgeContainer.innerHTML = '<span class="admin-badge-pill">ADMINISTRATOR</span>';
                 } else {
-                    document.getElementById('header-role-text').innerText = user.role === 'Cơ sở Y tế' ? 'Cơ sở y tế' : 'Bệnh nhân';
+                    document.getElementById('header-role-text').innerText =
+                        user.roleName || roleNames[user.role] || roleNames.user;
                     badgeContainer.innerHTML = '';
                 }
             } else {

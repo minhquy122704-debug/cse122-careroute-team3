@@ -20,6 +20,8 @@
 
         * { box-sizing: border-box; }
         body {
+            display: flex;
+            flex-direction: column;
             min-height: 100vh;
             margin: 0;
             color: var(--text);
@@ -33,8 +35,8 @@
         [hidden] { display: none !important; }
 
         .site-header {
-            height: 68px;
-            padding: 0 max(28px, calc((100% - 1160px) / 2));
+            min-height: 68px;
+            padding: 8px max(28px, calc((100% - 1160px) / 2));
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -45,19 +47,19 @@
         .brand {
             display: inline-flex;
             align-items: center;
-            gap: 9px;
+            gap: 10px;
             flex: 0 0 auto;
             color: var(--text);
-            font-size: 17px;
-            font-weight: 750;
+            font-size: 18px;
+            font-weight: 700;
             text-decoration: none;
         }
         .brand-mark {
-            width: 29px;
-            height: 29px;
+            width: 32px;
+            height: 32px;
             display: grid;
             place-items: center;
-            border-radius: 7px;
+            border-radius: 8px;
             background: var(--primary);
             color: white;
             font-size: 23px;
@@ -69,36 +71,38 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 34px;
+            gap: 18px;
         }
         .top-nav a {
             height: 100%;
             display: inline-flex;
             align-items: center;
-            border-bottom: 2px solid transparent;
+            padding: 0 10px;
+            border-bottom: 3px solid transparent;
             color: #475569;
-            font-size: 12px;
+            font-size: 14px;
+            font-weight: 500;
             text-decoration: none;
             white-space: nowrap;
         }
         .top-nav a:hover, .top-nav a.active { color: var(--primary); }
         .top-nav a.active { border-bottom-color: var(--primary); font-weight: 700; }
-        .header-actions { display: flex; align-items: center; gap: 14px; }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
         .icon-button {
             width: 34px;
             height: 34px;
             display: grid;
             place-items: center;
-            border: 1px solid transparent;
+            border: 1px solid #e8eef0;
             border-radius: 50%;
             background: #f8fafc;
             color: var(--muted);
         }
         .icon-button:hover { border-color: var(--border); color: var(--primary); }
-        .icon-button img { width: 16px; height: 16px; opacity: .62; }
+        .icon-button img { width: 17px; height: 17px; opacity: .62; }
         .avatar {
-            width: 33px;
-            height: 33px;
+            width: 34px;
+            height: 34px;
             display: grid;
             place-items: center;
             overflow: hidden;
@@ -109,10 +113,19 @@
         .avatar img { width: 20px; height: 20px; opacity: .65; }
 
         main {
+            flex: 1 0 auto;
             width: min(1160px, calc(100% - 32px));
-            min-height: calc(100vh - 68px);
-            margin: 0 auto;
+            min-height: 0;
+            margin: 16px auto 0;
             background: var(--canvas);
+        }
+        .site-footer {
+            background: #064e3b;
+            color: #ecfdf5;
+            padding: 22px 5%;
+            margin-top: auto;
+            font-size: 12px;
+            text-align: center;
         }
         .intro {
             min-height: 114px;
@@ -286,45 +299,40 @@
             clip-path: inset(50%);
         }
 
-        .ai-note {
-            min-height: 86px;
-            padding: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border: 1px solid #5dc7bd;
-            border-radius: 10px;
+        .recommendation-section {
+            width: min(1160px, calc(100% - 32px));
+            margin: 0 auto 28px;
+            padding: 22px 32px;
+            border: 1px solid #cde8e3;
+            border-radius: 12px;
             background: #effbf9;
         }
-        .ai-icon {
-            width: 27px;
-            height: 27px;
-            flex: 0 0 27px;
-            display: grid;
-            place-items: center;
-            border-radius: 6px;
-            background: var(--primary);
+        .recommendation-section h2 {
+            margin: 0 0 6px;
+            color: #173b36;
+            font-size: 17px;
         }
-        .ai-icon img { width: 16px; height: 16px; filter: invert(1); }
-        .ai-copy { min-width: 0; flex: 1; }
-        .ai-copy strong { display: block; margin-bottom: 3px; color: #273548; font-size: 11px; }
-        .ai-copy p { margin: 0; color: #718096; font-size: 10px; line-height: 1.5; }
-        .ai-tools { display: flex; flex: 0 0 auto; align-items: center; gap: 7px; }
-        .ai-tools .button { min-height: 30px; padding: 6px 9px; font-size: 10px; }
-
-        dialog {
-            width: min(440px, calc(100% - 28px));
-            padding: 0;
-            border: 0;
-            border-radius: 14px;
-            box-shadow: 0 20px 60px rgba(15, 23, 42, .25);
+        .recommendation-section > p {
+            margin: 0 0 16px;
+            color: #718096;
+            font-size: 12px;
+            line-height: 1.5;
         }
-        dialog::backdrop { background: rgba(15, 23, 42, .42); }
-        .dialog-content { padding: 22px; }
-        .dialog-content h2 { margin: 0 0 6px; font-size: 18px; }
-        .dialog-content > p { margin: 0 0 17px; color: var(--muted); font-size: 12px; line-height: 1.5; }
-        .dialog-fields { display: grid; gap: 13px; }
-        .dialog-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 8px; }
+        .recommendation-form {
+            display: flex;
+            align-items: end;
+            gap: 12px;
+        }
+        .recommendation-form .field label { font-size: 11px; }
+        .recommendation-form .field input { min-height: 40px; font-size: 13px; }
+        .recommendation-form .button { min-height: 40px; white-space: nowrap; }
+        .recommendation-status {
+            min-height: 17px;
+            margin-top: 10px;
+            color: #0f766e;
+            font-size: 11px;
+        }
+        .recommendation-status.error { color: var(--danger); }
 
         .toast-container { position: fixed; right: 18px; bottom: 18px; z-index: 10; display: grid; gap: 8px; }
         .toast {
@@ -339,23 +347,28 @@
         }
 
         @media (max-width: 760px) {
-            .site-header { height: auto; min-height: 62px; padding: 10px 16px; flex-wrap: wrap; gap: 4px 14px; }
-            .brand { font-size: 15px; }
-            .top-nav { height: 40px; order: 3; width: 100%; justify-content: space-between; gap: 12px; }
-            .top-nav a { font-size: 11px; }
-            main { width: 100%; min-height: calc(100vh - 102px); }
+            .site-header { min-height: 0; padding: 10px 16px 0; display: flex; flex-wrap: wrap; gap: 0 14px; }
+            .brand { font-size: 19px; }
+            .brand-mark { width: 36px; height: 36px; border-radius: 9px; font-size: 25px; }
+            .header-actions { margin-left: auto; gap: 8px; }
+            .icon-button, .avatar { width: 38px; height: 38px; }
+            .icon-button img { width: 18px; height: 18px; }
+            .avatar img { width: 21px; height: 21px; }
+            .top-nav { height: 46px; order: 3; width: 100%; justify-content: center; gap: 18px; }
+            .top-nav a { font-size: 13px; }
+            main { width: 100%; }
             .intro { padding: 19px 18px; align-items: flex-start; }
             h1 { font-size: 18px; }
             .progress-area { min-width: 108px; padding-top: 22px; }
             .progress-caption { font-size: 10px; white-space: nowrap; }
             .content { padding: 17px 18px 28px; }
             .checklist-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-            .ai-note { align-items: flex-start; flex-wrap: wrap; }
-            .ai-tools { margin-left: 39px; }
+            .recommendation-section { width: calc(100% - 32px); padding: 19px 18px; }
+            .recommendation-form { align-items: stretch; flex-direction: column; }
+            .recommendation-form .button { align-self: flex-start; }
         }
         @media (max-width: 520px) {
-            .header-actions { margin-left: auto; }
-            .top-nav { overflow-x: auto; justify-content: flex-start; gap: 22px; }
+            .top-nav { gap: 8px; }
             .intro { display: block; }
             .progress-area { margin-top: 14px; padding: 0; text-align: left; }
             .progress-track { margin-left: 0; }
@@ -366,7 +379,6 @@
             .actions-row { align-items: flex-start; flex-direction: column; justify-content: center; padding: 7px 0; }
             .add-form { align-items: stretch; flex-direction: column; }
             .add-form .button { align-self: flex-start; }
-            .ai-tools { width: 100%; margin-left: 39px; }
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
@@ -388,15 +400,40 @@
 
         <div class="header-actions">
             <button class="icon-button" type="button" aria-label="Thông báo">
-                <img src="../../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg" alt="">
+                <img src="../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg" alt="">
             </button>
             <div class="avatar" aria-label="Tài khoản người dùng">
-                <img src="../../assets/icons/user-svgrepo-com.svg" alt="">
+                <img src="../assets/icons/user-svgrepo-com.svg" alt="">
             </div>
         </div>
     </header>
 
     <main>
+        <section class="recommendation-section" aria-labelledby="recommendation-title">
+            <h2 id="recommendation-title">Bạn sắp khám chuyên khoa nào?</h2>
+            <p>Tìm hoặc chọn chuyên khoa để cập nhật checklist giấy tờ, việc cần chuẩn bị và lưu ý phù hợp.</p>
+            <form class="recommendation-form" id="recommendation-form">
+                <div class="field">
+                    <label for="specialty-search">Chuyên khoa</label>
+                    <input id="specialty-search" name="specialty" type="search" list="specialty-options" placeholder="Ví dụ: Tim mạch, Nhi khoa..." autocomplete="off" required>
+                    <datalist id="specialty-options">
+                        <option value="Thần kinh">
+                        <option value="Nhi khoa">
+                        <option value="Tim mạch">
+                        <option value="Xương khớp">
+                        <option value="Sản phụ khoa">
+                        <option value="Khám tổng quát">
+                    </datalist>
+                </div>
+                <div class="field">
+                    <label for="procedure-search">Dịch vụ hoặc thủ thuật (không bắt buộc)</label>
+                    <input id="procedure-search" name="procedure" type="search" placeholder="Ví dụ: MRI, xét nghiệm máu">
+                </div>
+                <button class="button button-primary" type="submit">Gợi ý chuẩn bị</button>
+            </form>
+            <p class="recommendation-status" id="recommendation-status" role="status" aria-live="polite"></p>
+        </section>
+
         <section class="intro" aria-labelledby="checklist-title">
             <div>
                 <div class="eyebrow">Checklist cá nhân hóa</div>
@@ -419,7 +456,7 @@
                     <span aria-hidden="true">＋</span> Thêm công việc thủ công
                 </button>
                 <span class="save-hint" id="save-status" role="status">
-                    <img src="../../assets/icons/check-circle-svgrepo-com.svg" alt="">
+                    <img src="../assets/icons/check-circle-svgrepo-com.svg" alt="">
                     <span>Đã lưu tự động vào thiết bị cá nhân</span>
                 </span>
             </div>
@@ -440,47 +477,13 @@
                 <button class="button button-primary" type="submit">Thêm mục</button>
             </form>
 
-            <aside class="ai-note" aria-label="Gợi ý từ CareRoute AI">
-                <span class="ai-icon" aria-hidden="true">
-                    <img src="../../assets/icons/clipboard-check-svgrepo-com.svg" alt="">
-                </span>
-                <div class="ai-copy">
-                    <strong>Checklist được đề xuất tự động bởi Trí Tuệ Nhân Tạo CareRoute AI</strong>
-                    <p id="ai-description">Nội dung chuẩn bị được điều chỉnh theo loại khám và dịch vụ dự kiến. Gợi ý chỉ mang tính tham khảo; hãy xác nhận hướng dẫn chuyên môn với cơ sở y tế.</p>
-                </div>
-                <div class="ai-tools">
-                    <button class="button" id="customize-ai" type="button">Điều chỉnh AI-2</button>
-                </div>
-            </aside>
         </section>
+
     </main>
 
-    <dialog id="ai-dialog" aria-labelledby="ai-dialog-title">
-        <form class="dialog-content" id="ai-form">
-            <h2 id="ai-dialog-title">Tạo checklist với AI-2</h2>
-            <p>Chọn chuyên khoa và dịch vụ để CareRoute gợi ý các mục chuẩn bị phù hợp hơn.</p>
-            <div class="dialog-fields">
-                <div class="field">
-                    <label for="specialty">Chuyên khoa</label>
-                    <select id="specialty" name="specialty">
-                        <option value="Thần kinh">Thần kinh</option>
-                        <option value="Tim mạch">Tim mạch</option>
-                        <option value="Xương khớp">Xương khớp</option>
-                        <option value="Sản phụ khoa">Sản phụ khoa</option>
-                        <option value="Khám tổng quát">Khám tổng quát</option>
-                    </select>
-                </div>
-                <div class="field">
-                    <label for="procedure">Dịch vụ/thủ thuật (không bắt buộc)</label>
-                    <input id="procedure" name="procedure" type="text" maxlength="100" placeholder="Ví dụ: MRI, xét nghiệm máu">
-                </div>
-            </div>
-            <div class="dialog-actions">
-                <button class="button" id="cancel-ai" type="button">Hủy</button>
-                <button class="button button-primary" type="submit">✨ Tạo checklist</button>
-            </div>
-        </form>
-    </dialog>
+    <footer class="site-footer">
+        © 2026 CareRoute Health. Thông tin trên nền tảng không thay thế chẩn đoán y khoa.
+    </footer>
 
     <div class="toast-container" id="toast-container" aria-live="polite"></div>
 
@@ -490,21 +493,25 @@
             const categories = {
                 documents: {
                     title: 'Giấy tờ cần mang',
-                    icon: '../../assets/icons/list-svgrepo-com.svg'
+                    icon: '../assets/icons/list-svgrepo-com.svg'
                 },
                 preparation: {
                     title: 'Chuẩn bị trước khám',
-                    icon: '../../assets/icons/briefcase-svgrepo-com.svg'
+                    icon: '../assets/icons/briefcase-svgrepo-com.svg'
                 },
                 notes: {
                     title: 'Lưu ý đặc biệt',
-                    icon: '../../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg'
+                    icon: '../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg'
                 }
             };
             const specialtySuggestions = {
                 'Thần kinh': {
                     preparation: ['Ghi lại các triệu chứng đau đầu chi tiết'],
                     notes: ['Không đeo đồ trang sức kim loại khi đi chụp MRI', 'Nên đi cùng người thân nếu có chụp thuốc cản quang']
+                },
+                'Nhi khoa': {
+                    preparation: ['Ghi lại diễn biến triệu chứng, nhiệt độ và thuốc trẻ đã dùng'],
+                    notes: ['Mang theo sổ tiêm chủng và hồ sơ khám bệnh trước đây của trẻ']
                 },
                 'Tim mạch': {
                     preparation: ['Ghi lại các triệu chứng như đau ngực, hồi hộp hoặc khó thở'],
@@ -525,8 +532,10 @@
             };
             const grid = document.getElementById('checklist-grid');
             const addForm = document.getElementById('add-form');
-            const aiDialog = document.getElementById('ai-dialog');
-            const aiForm = document.getElementById('ai-form');
+            const recommendationForm = document.getElementById('recommendation-form');
+            const specialtySearch = document.getElementById('specialty-search');
+            const procedureSearch = document.getElementById('procedure-search');
+            const recommendationStatus = document.getElementById('recommendation-status');
             let checklist = {
                 specialty: 'Thần kinh',
                 procedure: '',
@@ -721,6 +730,40 @@
                 window.setTimeout(() => toast.remove(), 2800);
             }
 
+            recommendationForm.addEventListener('submit', event => {
+                event.preventDefault();
+                const specialty = specialtySearch.value.trim();
+                if (!Object.prototype.hasOwnProperty.call(specialtySuggestions, specialty)) {
+                    recommendationStatus.textContent = 'Chọn một chuyên khoa trong danh sách gợi ý để tạo checklist phù hợp.';
+                    recommendationStatus.classList.add('error');
+                    specialtySearch.setAttribute('aria-invalid', 'true');
+                    specialtySearch.focus();
+                    return;
+                }
+
+                const procedure = procedureSearch.value.trim();
+                const completed = new Map(checklist.tasks.map(task => [`${task.category}:${task.text}`, task.done]));
+                const customTasks = checklist.tasks.filter(task => task.custom);
+                const generated = generateTasks(specialty, procedure);
+                generated.forEach(task => {
+                    if (completed.has(`${task.category}:${task.text}`)) {
+                        task.done = completed.get(`${task.category}:${task.text}`);
+                    }
+                });
+                checklist = { specialty, procedure, tasks: [...generated, ...customTasks] };
+                saveChecklist();
+                renderChecklist();
+                specialtySearch.setAttribute('aria-invalid', 'false');
+                recommendationStatus.classList.remove('error');
+                recommendationStatus.textContent = `Đã cập nhật checklist gợi ý cho chuyên khoa ${specialty}.`;
+                grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            specialtySearch.addEventListener('input', () => {
+                specialtySearch.removeAttribute('aria-invalid');
+                recommendationStatus.textContent = '';
+                recommendationStatus.classList.remove('error');
+            });
+
             document.getElementById('toggle-add-form').addEventListener('click', event => {
                 const isOpen = !addForm.hidden;
                 addForm.hidden = isOpen;
@@ -747,34 +790,6 @@
                 renderChecklist();
                 showToast('Đã thêm công việc vào checklist.');
                 document.getElementById('new-task').focus();
-            });
-
-            document.getElementById('customize-ai').addEventListener('click', () => {
-                document.getElementById('specialty').value = checklist.specialty;
-                document.getElementById('procedure').value = checklist.procedure;
-                aiDialog.showModal();
-            });
-            document.getElementById('cancel-ai').addEventListener('click', () => aiDialog.close());
-            aiDialog.addEventListener('click', event => {
-                if (event.target === aiDialog) aiDialog.close();
-            });
-            aiForm.addEventListener('submit', event => {
-                event.preventDefault();
-                const specialty = document.getElementById('specialty').value;
-                const procedure = document.getElementById('procedure').value.trim();
-                const completed = new Map(checklist.tasks.map(task => [`${task.category}:${task.text}`, task.done]));
-                const customTasks = checklist.tasks.filter(task => task.custom);
-                const generated = generateTasks(specialty, procedure);
-                generated.forEach(task => {
-                    if (completed.has(`${task.category}:${task.text}`)) {
-                        task.done = completed.get(`${task.category}:${task.text}`);
-                    }
-                });
-                checklist = { specialty, procedure, tasks: [...generated, ...customTasks] };
-                saveChecklist();
-                renderChecklist();
-                aiDialog.close();
-                showToast('AI-2 đã cập nhật checklist theo thông tin khám.');
             });
 
             if (!loadChecklist()) {
