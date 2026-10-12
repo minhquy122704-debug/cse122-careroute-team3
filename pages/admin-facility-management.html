@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản Lý Cơ Sở Y Tế Toàn Quốc - CareRoute Admin</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#e8f5e9',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="min-h-screen flex bg-[#f8fafc] text-slate-800 antialiased">
+
+  <!-- Sidebar Admin -->
+  <aside id="appSidebar" class="w-72 bg-slate-900 text-white flex flex-col justify-between shrink-0 transition-transform lg:translate-x-0 -translate-x-full fixed lg:static top-0 bottom-0 z-40">
+    <div>
+      <div class="p-6 border-b border-slate-800 flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-blue-600/30">
+          <i data-lucide="shield" class="w-6 h-6 stroke-[2.5]"></i>
+        </div>
+        <div class="overflow-hidden">
+          <h2 class="font-bold text-sm text-white truncate">CareRoute Central</h2>
+          <p class="text-xs text-blue-400 font-medium">Quản trị viên Hệ thống</p>
+        </div>
+      </div>
+
+      <nav class="p-4 space-y-1.5">
+        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
+          <i data-lucide="layout-grid" class="w-5 h-5"></i>
+          <span>Bảng điều khiển</span>
+        </a>
+        <a href="admin-facility-management.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-white bg-blue-600 shadow-md shadow-blue-600/20 transition-all">
+          <i data-lucide="building" class="w-5 h-5"></i>
+          <span>Quản lý Cơ sở Y tế</span>
+        </a>
+        <a href="admin-category-management.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
+          <i data-lucide="tags" class="w-5 h-5"></i>
+          <span>Phân loại Taxonomy</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-4 border-t border-slate-800">
+      <a href="../index.html" class="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Về Cổng thông tin chung
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900">Danh Sách Cơ Sở Y Tế Toàn Quốc</h1>
+          <p class="text-xs text-slate-500">Cấp phép hoạt động, phân tuyến kỹ thuật và cấp huy hiệu xác thực Verified</p>
+        </div>
+      </div>
+
+      <button onclick="openCreateFacilityModal()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-600/20 transition-all transform active:scale-95">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span>Thêm CSYT Mới</span>
+      </button>
+    </header>
+
+    <main class="p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+      
+      <!-- Facility Table Container -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase">
+                <th class="py-3.5 px-6">Tên Cơ sở y tế</th>
+                <th class="py-3.5 px-6">Phân tuyến & Loại hình</th>
+                <th class="py-3.5 px-6">Địa chỉ & Liên hệ</th>
+                <th class="py-3.5 px-6">Đánh giá</th>
+                <th class="py-3.5 px-6">Xác thực</th>
+                <th class="py-3.5 px-6 text-right">Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="facilitiesTableBody" class="divide-y divide-slate-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Facility Modal (Add & Edit) -->
+  <div id="facilityModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-in">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <h3 id="facilityModalTitle" class="font-bold text-lg text-slate-900">Thêm Cơ Sở Y Tế Mới</h3>
+        <button onclick="closeModal('facilityModal')" class="p-2 text-slate-400 hover:text-slate-700 rounded-xl">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="facilityForm" onsubmit="handleSaveFacility(event)" class="p-6 space-y-4 overflow-y-auto flex-1">
+        <input type="hidden" id="facilityId">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Tên đầy đủ Cơ sở y tế <span class="text-rose-500">*</span></label>
+          <input type="text" id="facilityName" required placeholder="VD: Bệnh viện Đa khoa Tâm Anh..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Loại hình</label>
+            <input type="text" id="facilityType" placeholder="VD: Bệnh viện Công lập / Tư nhân..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Phân tuyến kỹ thuật</label>
+            <input type="text" id="facilityTier" placeholder="VD: Tuyến Đặc biệt, Tuyến 1..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Địa chỉ trụ sở <span class="text-rose-500">*</span></label>
+          <input type="text" id="facilityAddress" required placeholder="Số nhà, phố, quận/huyện, tỉnh/thành..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Hotline tiếp đón</label>
+            <input type="text" id="facilityPhone" placeholder="1900 xxxx hoặc 024 xxxx..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Giờ làm việc</label>
+            <input type="text" id="facilityHours" placeholder="07:00 - 17:00 (Thứ 2 - T7)..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="flex items-center gap-2.5 cursor-pointer pt-2">
+            <input type="checkbox" id="facilityVerified" class="w-4 h-4 rounded text-blue-600 focus:ring-blue-500 border-slate-300">
+            <span class="text-xs font-bold text-slate-800">Cấp huy hiệu xác thực chính thức (Verified Badge)</span>
+          </label>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <button type="button" onclick="closeModal('facilityModal')" class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Hủy</button>
+          <button type="submit" class="px-5 py-2.5 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-600/20">Lưu Thông Tin</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderFacilitiesTable();
+    });
+
+    function renderFacilitiesTable() {
+      const facilities = CareRouteDB.getFacilities();
+      const tbody = document.getElementById('facilitiesTableBody');
+
+      tbody.innerHTML = facilities.map(f => `
+        <tr class="hover:bg-slate-50/80 transition-colors">
+          <td class="py-4 px-6">
+            <div class="font-bold text-slate-900">${f.name}</div>
+            <div class="text-xs text-slate-400 mt-0.5">${f.email || 'contact@hospital.vn'}</div>
+          </td>
+          <td class="py-4 px-6">
+            <div class="font-medium text-slate-800 text-xs">${f.type}</div>
+            <div class="text-[11px] text-blue-600 font-semibold mt-0.5">${f.tier}</div>
+          </td>
+          <td class="py-4 px-6 text-xs text-slate-600">
+            <div>${f.address}</div>
+            <div class="font-semibold text-slate-900 mt-0.5">Hotline: ${f.phone}</div>
+          </td>
+          <td class="py-4 px-6 text-xs">
+            <span class="font-bold text-amber-500">★ ${f.rating}</span>
+            <span class="text-slate-400">(${f.reviewCount} lượt)</span>
+          </td>
+          <td class="py-4 px-6">
+            ${f.verified ? `
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                <i data-lucide="badge-check" class="w-3.5 h-3.5"></i> Đã xác thực
+              </span>
+            ` : `
+              <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 text-slate-600">
+                Chờ duyệt
+              </span>
+            `}
+          </td>
+          <td class="py-4 px-6 text-right space-x-2">
+            <button onclick="editFacility('${f.id}')" class="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50 transition-colors" title="Chỉnh sửa">
+              <i data-lucide="edit-3" class="w-4 h-4"></i>
+            </button>
+          </td>
+        </tr>
+      `).join('');
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function openCreateFacilityModal() {
+      document.getElementById('facilityForm').reset();
+      document.getElementById('facilityId').value = '';
+      document.getElementById('facilityModalTitle').innerText = 'Thêm Cơ Sở Y Tế Mới';
+      openModal('facilityModal');
+    }
+
+    function editFacility(id) {
+      const f = CareRouteDB.getFacilityById(id);
+      if (!f) return;
+
+      document.getElementById('facilityId').value = f.id;
+      document.getElementById('facilityName').value = f.name;
+      document.getElementById('facilityType').value = f.type;
+      document.getElementById('facilityTier').value = f.tier;
+      document.getElementById('facilityAddress').value = f.address;
+      document.getElementById('facilityPhone').value = f.phone;
+      document.getElementById('facilityHours').value = f.workingHours;
+      document.getElementById('facilityVerified').checked = f.verified || false;
+      document.getElementById('facilityModalTitle').innerText = 'Chỉnh sửa Cơ Sở Y Tế';
+
+      openModal('facilityModal');
+    }
+
+    function handleSaveFacility(e) {
+      e.preventDefault();
+      const id = document.getElementById('facilityId').value;
+      const data = {
+        id: id || undefined,
+        name: document.getElementById('facilityName').value,
+        type: document.getElementById('facilityType').value,
+        tier: document.getElementById('facilityTier').value,
+        address: document.getElementById('facilityAddress').value,
+        phone: document.getElementById('facilityPhone').value,
+        workingHours: document.getElementById('facilityHours').value,
+        verified: document.getElementById('facilityVerified').checked,
+        status: 'active'
+      };
+
+      CareRouteDB.saveFacility(data);
+      closeModal('facilityModal');
+      renderFacilitiesTable();
+      showToast(id ? 'Cập nhật cơ sở y tế thành công!' : 'Đã thêm cơ sở y tế mới vào hệ thống!', 'success');
+    }
+  </script>
+</body>
+</html>

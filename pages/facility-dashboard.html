@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Điều Khiển Cơ Sở Y Tế - CareRoute</title>
+  
+  <!-- Google Fonts: Be Vietnam Pro & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Be Vietnam Pro"', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#e8f5e9',
+              200: '#bbf7d0',
+              500: '#10b981',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+              900: '#134e4a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="../css/style.css">
+  
+  <style>
+    body {
+      background-color: #f8fafc;
+      font-family: 'Be Vietnam Pro', sans-serif;
+    }
+    .chart-container {
+      height: 220px;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex bg-[#f8fafc] text-slate-800 antialiased">
+
+  <!-- Left Sidebar (Khớp mockup) -->
+  <aside id="appSidebar" class="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transition-transform lg:translate-x-0 -translate-x-full fixed lg:static top-0 bottom-0 z-40">
+    <div>
+      <!-- Facility Brand Header -->
+      <div class="p-6 border-b border-slate-100 flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-teal-50 border border-teal-100 text-teal-600 flex items-center justify-center shrink-0 shadow-xs">
+          <i data-lucide="cross" class="w-6 h-6 stroke-[2.5]"></i>
+        </div>
+        <div class="overflow-hidden">
+          <h2 class="font-bold text-sm text-slate-900 truncate" title="Bệnh viện Đa khoa Tâm Anh">Bệnh viện Đa khoa Tâm A...</h2>
+          <p class="text-xs text-slate-400 font-medium">Quản trị viên</p>
+        </div>
+      </div>
+
+      <!-- Navigation Menu -->
+      <nav class="p-4 space-y-1.5">
+        <!-- Bảng điều khiển (Active) -->
+        <a href="facility-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-teal-800 bg-[#e8f5e9] transition-all">
+          <i data-lucide="layout-grid" class="w-5 h-5 text-teal-700"></i>
+          <span>Bảng điều khiển</span>
+        </a>
+
+        <!-- Quản lý Dịch vụ -->
+        <a href="facility-service-management.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all">
+          <i data-lucide="shopping-bag" class="w-5 h-5 text-slate-400"></i>
+          <span>Quản lý Dịch vụ</span>
+        </a>
+
+        <!-- Quy trình hướng dẫn -->
+        <a href="facility-guidance-management.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all">
+          <i data-lucide="map" class="w-5 h-5 text-slate-400"></i>
+          <span>Quy trình hướng dẫn</span>
+        </a>
+
+        <!-- Phản hồi & Đánh giá -->
+        <a href="reviewer-feedback-review.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all">
+          <i data-lucide="message-square" class="w-5 h-5 text-slate-400"></i>
+          <span>Phản hồi & Đánh giá</span>
+        </a>
+      </nav>
+    </div>
+
+    <!-- Bottom Account & Hub Info -->
+    <div class="p-4 border-t border-slate-100">
+      <div class="bg-teal-50/70 border border-teal-100/80 rounded-2xl p-3.5 flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span>
+          <span class="text-xs font-semibold text-teal-900">Cổng trực tuyến 24/7</span>
+        </div>
+        <span class="text-[10px] bg-teal-600 text-white font-bold px-2 py-0.5 rounded-full">Active</span>
+      </div>
+      <a href="../index.html" class="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Về Cổng thông tin chung
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content Wrapper -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    
+    <!-- Top Mobile Bar -->
+    <div class="lg:hidden bg-white border-b border-slate-200 px-4 py-3 flex items-center justify-between">
+      <button id="sidebarToggle" class="p-2 text-slate-600 hover:bg-slate-100 rounded-xl">
+        <i data-lucide="menu" class="w-6 h-6"></i>
+      </button>
+      <span class="font-bold text-slate-800 text-sm">CareRoute CSYT</span>
+      <div class="w-8 h-8 rounded-full bg-teal-600 text-white flex items-center justify-center font-bold text-xs">TA</div>
+    </div>
+
+    <!-- Dashboard Content (Khớp 100% Mockup) -->
+    <main class="p-6 lg:p-10 max-w-7xl mx-auto w-full space-y-8">
+      
+      <!-- Top Title Bar -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 class="text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">Bảng Điều Khiển</h1>
+          <p class="text-slate-500 text-sm mt-1">Theo dõi hiệu quả hoạt động cơ sở y tế của bạn trên CareRoute</p>
+        </div>
+        <div>
+          <button onclick="handleExportReport()" class="inline-flex items-center gap-2 px-5 py-2.5 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 text-sm font-semibold rounded-xl shadow-xs transition-all">
+            <i data-lucide="download" class="w-4 h-4 text-slate-500"></i>
+            <span>Xuất báo cáo</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 Stat Metric Cards (Khớp mockup) -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <!-- Metric 1: Tổng lượt tra cứu -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs hover:border-teal-200 transition-all">
+          <p class="text-xs font-semibold text-slate-500 tracking-wide">Tổng lượt tra cứu</p>
+          <h3 id="statTotalSearches" class="text-3xl font-extrabold text-slate-900 mt-2 tracking-tight">12.480</h3>
+          <p class="text-xs font-bold text-emerald-600 mt-2 flex items-center gap-1">
+            <span>+15% so với tháng trước</span>
+          </p>
+        </div>
+
+        <!-- Metric 2: Dịch vụ đang hoạt động -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs hover:border-teal-200 transition-all">
+          <p class="text-xs font-semibold text-slate-500 tracking-wide">Dịch vụ đang hoạt động</p>
+          <h3 id="statActiveServices" class="text-3xl font-extrabold text-slate-900 mt-2 tracking-tight">24</h3>
+          <p class="text-xs font-medium text-slate-400 mt-2">Không thay đổi</p>
+        </div>
+
+        <!-- Metric 3: Đánh giá trung bình -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs hover:border-teal-200 transition-all">
+          <p class="text-xs font-semibold text-slate-500 tracking-wide">Đánh giá trung bình</p>
+          <h3 id="statRating" class="text-3xl font-extrabold text-slate-900 mt-2 tracking-tight">4.9/5</h3>
+          <p class="text-xs font-bold text-emerald-600 mt-2">Cực kỳ tích cực</p>
+        </div>
+
+        <!-- Metric 4: Phản hồi chờ xử lý -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs hover:border-teal-200 transition-all">
+          <p class="text-xs font-semibold text-slate-500 tracking-wide">Phản hồi chờ xử lý</p>
+          <h3 id="statPendingReviews" class="text-3xl font-extrabold text-rose-500 mt-2 tracking-tight">8</h3>
+          <p class="text-xs font-bold text-rose-500 mt-2">Cần giải quyết ngay</p>
+        </div>
+
+      </div>
+
+      <!-- Charts & Top Services Row (Khớp mockup) -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Lượt tra cứu theo tháng (Bar Chart Canvas/HTML) -->
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs">
+          <div class="flex items-center justify-between mb-6">
+            <h4 class="font-bold text-base text-slate-900">Lượt tra cứu theo tháng</h4>
+            <span class="text-xs text-slate-400 font-medium">Năm 2026</span>
+          </div>
+
+          <!-- Custom Clean CSS Bar Chart matching mockup -->
+          <div class="h-64 flex items-end justify-between gap-3 sm:gap-6 pt-8 pb-4 px-2 sm:px-6 border-b border-slate-100">
+            
+            <!-- T5 -->
+            <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
+              <div class="text-[11px] font-semibold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">4.2k</div>
+              <div class="w-full max-w-[42px] bg-teal-100/90 group-hover:bg-teal-200 rounded-t-lg transition-all" style="height: 38%;"></div>
+              <span class="text-xs font-medium text-slate-400 mt-2">T5</span>
+            </div>
+
+            <!-- T6 -->
+            <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
+              <div class="text-[11px] font-semibold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">6.1k</div>
+              <div class="w-full max-w-[42px] bg-teal-100/90 group-hover:bg-teal-200 rounded-t-lg transition-all" style="height: 52%;"></div>
+              <span class="text-xs font-medium text-slate-400 mt-2">T6</span>
+            </div>
+
+            <!-- T7 -->
+            <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
+              <div class="text-[11px] font-semibold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">8.3k</div>
+              <div class="w-full max-w-[42px] bg-teal-100/90 group-hover:bg-teal-200 rounded-t-lg transition-all" style="height: 68%;"></div>
+              <span class="text-xs font-medium text-slate-400 mt-2">T7</span>
+            </div>
+
+            <!-- T8 -->
+            <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
+              <div class="text-[11px] font-semibold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">6.9k</div>
+              <div class="w-full max-w-[42px] bg-teal-100/90 group-hover:bg-teal-200 rounded-t-lg transition-all" style="height: 58%;"></div>
+              <span class="text-xs font-medium text-slate-400 mt-2">T8</span>
+            </div>
+
+            <!-- T9 -->
+            <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
+              <div class="text-[11px] font-semibold text-slate-400 opacity-0 group-hover:opacity-100 transition-opacity">10.8k</div>
+              <div class="w-full max-w-[42px] bg-teal-600 group-hover:bg-teal-700 rounded-t-lg transition-all" style="height: 85%;"></div>
+              <span class="text-xs font-medium text-slate-400 mt-2">T9</span>
+            </div>
+
+            <!-- T10 (Current Highest Bar) -->
+            <div class="flex-1 flex flex-col items-center gap-2 group cursor-pointer h-full justify-end">
+              <div class="text-[11px] font-semibold text-teal-700 opacity-0 group-hover:opacity-100 transition-opacity">12.4k</div>
+              <div class="w-full max-w-[42px] bg-teal-700 group-hover:bg-teal-800 rounded-t-lg shadow-sm transition-all" style="height: 100%;"></div>
+              <span class="text-xs font-bold text-teal-900 mt-2">T10</span>
+            </div>
+
+          </div>
+
+          <div class="mt-4 flex items-center justify-between text-xs text-slate-500">
+            <span class="flex items-center gap-2"><span class="w-2.5 h-2.5 rounded-sm bg-teal-700"></span> Tháng hiện tại (T10)</span>
+            <span class="text-emerald-600 font-semibold">+35% tăng trưởng quý này</span>
+          </div>
+        </div>
+
+        <!-- Right: Top dịch vụ tìm kiếm (Khớp mockup) -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs flex flex-col justify-between">
+          <div>
+            <h4 class="font-bold text-base text-slate-900 mb-6">Top dịch vụ tìm kiếm</h4>
+            
+            <div class="space-y-6">
+              <!-- Item 1 -->
+              <div>
+                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-2">
+                  <span>Chụp sọ não MRI</span>
+                  <span class="text-slate-400">3.840 lượt</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-600 rounded-full transition-all duration-700" style="width: 85%;"></div>
+                </div>
+              </div>
+
+              <!-- Item 2 -->
+              <div>
+                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-2">
+                  <span>Khám tổng quát</span>
+                  <span class="text-slate-400">2.950 lượt</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-600 rounded-full transition-all duration-700" style="width: 65%;"></div>
+                </div>
+              </div>
+
+              <!-- Item 3 -->
+              <div>
+                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-2">
+                  <span>Nội soi tiêu hóa</span>
+                  <span class="text-slate-400">2.110 lượt</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-600 rounded-full transition-all duration-700" style="width: 50%;"></div>
+                </div>
+              </div>
+
+              <!-- Item 4 -->
+              <div>
+                <div class="flex justify-between text-xs font-semibold text-slate-700 mb-2">
+                  <span>Siêu âm tim Doppler</span>
+                  <span class="text-slate-400">1.890 lượt</span>
+                </div>
+                <div class="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden">
+                  <div class="h-full bg-teal-600 rounded-full transition-all duration-700" style="width: 40%;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="pt-6 border-t border-slate-100 mt-6">
+            <a href="facility-service-management.html" class="inline-flex items-center gap-1.5 text-xs font-bold text-teal-700 hover:text-teal-900 transition-colors">
+              <span>Xem chi tiết danh sách dịch vụ</span>
+              <i data-lucide="arrow-right" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Live Activities & Fast Actions -->
+      <div class="bg-white rounded-2xl p-6 border border-slate-200/90 shadow-xs">
+        <div class="flex items-center justify-between mb-4">
+          <h4 class="font-bold text-base text-slate-900">Hoạt động điều phối gần đây</h4>
+          <span class="text-xs bg-emerald-100 text-emerald-800 font-bold px-2.5 py-1 rounded-full">Đồng bộ tức thời</span>
+        </div>
+        <div class="divide-y divide-slate-100 text-sm">
+          <div class="py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-xs">
+                <i data-lucide="check" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-slate-800">Cập nhật giá gói Chụp sọ não MRI 3.0 Tesla</p>
+                <p class="text-xs text-slate-400">Gửi tới ban kiểm duyệt lúc 14:30 hôm nay</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-amber-600 bg-amber-50 px-2.5 py-1 rounded-lg">Đang chờ duyệt</span>
+          </div>
+          <div class="py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">
+                <i data-lucide="sparkles" class="w-4 h-4"></i>
+              </div>
+              <div>
+                <p class="font-semibold text-slate-800">AI-1 Điều hướng thành công 120 lượt tra cứu mới</p>
+                <p class="text-xs text-slate-400">Người dân tìm kiếm liên quan đến chuyên khoa Thần kinh & Tiêu hóa</p>
+              </div>
+            </div>
+            <span class="text-xs font-semibold text-emerald-600 bg-emerald-50 px-2.5 py-1 rounded-lg">Tự động</span>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Scripts -->
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    function handleExportReport() {
+      showToast('Đang tạo báo cáo hiệu suất cơ sở y tế tháng 10/2026...', 'info');
+      setTimeout(() => {
+        showToast('Xuất báo cáo PDF thành công!', 'success');
+      }, 1200);
+    }
+  </script>
+</body>
+</html>

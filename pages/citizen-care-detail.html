@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chi Tiết Dịch Vụ & Cơ Sở Y Tế - CareRoute</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#e8f5e9',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="min-h-screen bg-[#f8fafc] text-slate-800 antialiased flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 px-4 lg:px-8 py-3.5 flex items-center justify-between">
+    <a href="../index.html" class="flex items-center gap-3">
+      <div class="w-10 h-10 bg-emerald-600 rounded-2xl flex items-center justify-center text-white shadow-md shadow-emerald-600/20">
+        <i data-lucide="plus" class="w-6 h-6 stroke-[3]"></i>
+      </div>
+      <div>
+        <span class="text-xl font-bold tracking-tight text-slate-900 leading-none">CareRoute</span>
+        <span class="text-[10px] block font-semibold text-emerald-600 uppercase tracking-wider mt-0.5">Chi Tiết Dịch Vụ Y Tế</span>
+      </div>
+    </a>
+
+    <div class="flex items-center gap-3">
+      <a href="citizen-care-search.html" class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold text-slate-700 hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Quay lại tìm kiếm
+      </a>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-4 py-8 w-full space-y-8 flex-1">
+    
+    <!-- Hero / Breadcrumb Header -->
+    <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs flex flex-col md:flex-row gap-6 justify-between items-start md:items-center">
+      <div class="space-y-2 flex-1">
+        <div class="flex flex-wrap items-center gap-2">
+          <span id="detailCategoryBadge" class="px-3 py-1 bg-teal-50 text-teal-700 border border-teal-100 text-xs font-bold rounded-lg">Chẩn đoán hình ảnh</span>
+          <span class="px-2.5 py-1 bg-emerald-50 text-emerald-700 border border-emerald-100 text-xs font-bold rounded-lg flex items-center gap-1">
+            <i data-lucide="badge-check" class="w-3.5 h-3.5"></i> Đã kiểm duyệt
+          </span>
+        </div>
+        <h1 id="detailServiceName" class="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">Chụp cộng hưởng từ sọ não (MRI Não 3.0 Tesla)</h1>
+        <p id="detailFacilityName" class="text-sm font-semibold text-teal-700 flex items-center gap-1.5">
+          <i data-lucide="building-2" class="w-4 h-4"></i> Bệnh viện Đa khoa Tâm Anh Hà Nội
+        </p>
+      </div>
+
+      <!-- Action Button: Tạo Checklist -->
+      <div class="flex flex-col sm:flex-row items-center gap-3 w-full md:w-auto">
+        <a id="btnGoToChecklist" href="citizen-care-checklist.html" class="w-full sm:w-auto px-6 py-3.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-2xl shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all transform active:scale-95">
+          <i data-lucide="check-square" class="w-4 h-4"></i>
+          <span>Lập Checklist Chuẩn Bị</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Main Grid Content -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      
+      <!-- Left 2 Cols: Details, Prep, Process -->
+      <div class="lg:col-span-2 space-y-6">
+        
+        <!-- Summary Info Box -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-6">
+          <div>
+            <h3 class="font-bold text-lg text-slate-900 mb-3">Mô tả Dịch vụ & Kỹ thuật</h3>
+            <p id="detailDescription" class="text-sm text-slate-600 leading-relaxed"></p>
+          </div>
+
+          <!-- Price & Coverage Info -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-4 border-t border-slate-100">
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+              <span class="text-xs font-semibold text-slate-400 block mb-1">Chi phí niêm yết</span>
+              <span id="detailPrice" class="text-xl font-bold text-slate-900">2.800.000đ - 3.500.000đ</span>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-200/80">
+              <span class="text-xs font-semibold text-slate-400 block mb-1">Chính sách BHYT</span>
+              <span id="detailBhyt" class="text-sm font-semibold text-teal-800">Hỗ trợ 80% nếu có chỉ định đúng tuyến</span>
+            </div>
+          </div>
+
+          <!-- Patient Preparation Notes -->
+          <div class="pt-4 border-t border-slate-100">
+            <h4 class="font-bold text-sm text-slate-900 mb-2 flex items-center gap-2">
+              <i data-lucide="clipboard-list" class="w-4 h-4 text-emerald-600"></i>
+              Lưu ý Chuẩn bị trước khi đi khám
+            </h4>
+            <div id="detailPrepBox" class="bg-amber-50/80 border border-amber-200/80 rounded-2xl p-4 text-xs sm:text-sm text-amber-900 leading-relaxed font-medium"></div>
+          </div>
+        </div>
+
+        <!-- Reviews Section -->
+        <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-lg text-slate-900">Đánh giá từ người bệnh</h3>
+            <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">4.9 / 5 (12.4k đánh giá)</span>
+          </div>
+          <div class="space-y-3 pt-2">
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-slate-800">Nguyễn Văn An (Hà Nội)</span>
+                <span class="text-amber-500 font-bold">★★★★★</span>
+              </div>
+              <p class="text-xs text-slate-600">Quy trình chụp MRI rất nhanh, phòng máy hiện đại không bị ồn nhiều. Điều dưỡng hướng dẫn tận tình các bước tháo tư trang.</p>
+            </div>
+            <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 space-y-1.5">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-bold text-slate-800">Trần Thị Thu (Bắc Ninh)</span>
+                <span class="text-amber-500 font-bold">★★★★★</span>
+              </div>
+              <p class="text-xs text-slate-600">Nhờ có tính năng Checklist của CareRoute mà mình đã chuẩn bị sẵn giấy chuyển tuyến BHYT và kết quả cũ, làm thủ tục chỉ mất 10 phút!</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Right 1 Col: Facility Info & Quick Contact -->
+      <div class="space-y-6">
+        
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-xs space-y-5">
+          <h3 class="font-bold text-base text-slate-900">Thông tin Cơ Sở Tiếp Nhận</h3>
+          
+          <div class="space-y-3 text-xs text-slate-600">
+            <div class="flex items-start gap-2.5">
+              <i data-lucide="map-pin" class="w-4 h-4 text-teal-600 shrink-0 mt-0.5"></i>
+              <span id="detailAddress">108 Phố Hoàng Như Tiếp, Bồ Đề, Long Biên, Hà Nội</span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="phone" class="w-4 h-4 text-teal-600 shrink-0"></i>
+              <span id="detailPhone" class="font-semibold text-slate-900">1800 6858</span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="clock" class="w-4 h-4 text-teal-600 shrink-0"></i>
+              <span id="detailHours">07:00 - 19:30 (Thứ 2 - CN)</span>
+            </div>
+            <div class="flex items-center gap-2.5">
+              <i data-lucide="ambulance" class="w-4 h-4 text-rose-500 shrink-0"></i>
+              <span class="font-bold text-rose-600">Cấp cứu 24/7</span>
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-slate-100">
+            <a href="tel:18006858" class="w-full py-2.5 bg-teal-50 hover:bg-teal-100 text-teal-800 font-bold text-xs rounded-xl flex items-center justify-center gap-2 transition-colors">
+              <i data-lucide="phone-call" class="w-3.5 h-3.5"></i> Gọi điện tư vấn trực tiếp
+            </a>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const serviceId = urlParams.get('serviceId') || 'srv-1';
+      loadServiceDetail(serviceId);
+    });
+
+    function loadServiceDetail(id) {
+      const s = CareRouteDB.getServiceById(id) || CareRouteDB.getServices()[0];
+      const f = CareRouteDB.getFacilityById(s.facilityId) || CareRouteDB.getFacilities()[0];
+
+      document.getElementById('detailCategoryBadge').innerText = s.category;
+      document.getElementById('detailServiceName').innerText = s.name;
+      document.getElementById('detailFacilityName').innerHTML = `<i data-lucide="building-2" class="w-4 h-4"></i> ${f.name}`;
+      document.getElementById('detailDescription').innerText = s.description || 'Dịch vụ được thực hiện bởi đội ngũ bác sĩ chuyên khoa đầu ngành cùng hệ thống trang thiết bị hiện đại.';
+      document.getElementById('detailPrice').innerText = s.price;
+      document.getElementById('detailBhyt').innerText = s.bhytCoverage || 'Áp dụng theo quy định hiện hành';
+      document.getElementById('detailPrepBox').innerText = s.preparation || 'Mang theo đầy đủ giấy tờ tùy thân và sổ khám bệnh cũ.';
+
+      document.getElementById('detailAddress').innerText = f.address;
+      document.getElementById('detailPhone').innerText = f.phone;
+      document.getElementById('detailHours').innerText = f.workingHours;
+
+      document.getElementById('btnGoToChecklist').href = `citizen-care-checklist.html?serviceId=${s.id}`;
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+  </script>
+</body>
+</html>

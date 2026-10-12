@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bảng Điều Khiển Quản Trị Hệ Thống - CareRoute Admin</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#e8f5e9',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="min-h-screen flex bg-[#f8fafc] text-slate-800 antialiased">
+
+  <!-- Sidebar Admin -->
+  <aside id="appSidebar" class="w-72 bg-slate-900 text-white flex flex-col justify-between shrink-0 transition-transform lg:translate-x-0 -translate-x-full fixed lg:static top-0 bottom-0 z-40">
+    <div>
+      <div class="p-6 border-b border-slate-800 flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-blue-600/30">
+          <i data-lucide="shield" class="w-6 h-6 stroke-[2.5]"></i>
+        </div>
+        <div class="overflow-hidden">
+          <h2 class="font-bold text-sm text-white truncate">CareRoute Central</h2>
+          <p class="text-xs text-blue-400 font-medium">Quản trị viên Hệ thống</p>
+        </div>
+      </div>
+
+      <nav class="p-4 space-y-1.5">
+        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-white bg-blue-600 shadow-md shadow-blue-600/20 transition-all">
+          <i data-lucide="layout-grid" class="w-5 h-5"></i>
+          <span>Bảng điều khiển</span>
+        </a>
+        <a href="admin-facility-management.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
+          <i data-lucide="building" class="w-5 h-5"></i>
+          <span>Quản lý Cơ sở Y tế</span>
+        </a>
+        <a href="admin-category-management.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
+          <i data-lucide="tags" class="w-5 h-5"></i>
+          <span>Phân loại Taxonomy</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-4 border-t border-slate-800">
+      <a href="../index.html" class="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Về Cổng thông tin chung
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900">Quản Trị Toàn Hệ Thống</h1>
+          <p class="text-xs text-slate-500">Giám sát hiệu suất vận hành, cấp phép cơ sở và điều phối luồng y tế số</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="resetSystemData()" class="px-3.5 py-2 text-xs font-semibold text-rose-600 hover:bg-rose-50 border border-rose-200 rounded-xl transition-colors">
+          Đặt lại Dữ liệu Mẫu
+        </button>
+      </div>
+    </header>
+
+    <main class="p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+      
+      <!-- 4 Stat Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-400">Tổng Cơ sở Liên kết</span>
+          <h3 class="text-3xl font-extrabold text-slate-900 mt-2">4 CSYT</h3>
+          <p class="text-xs font-bold text-emerald-600 mt-2 flex items-center gap-1">
+            <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> 100% đã xác minh Verified
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-400">Lượt tra cứu toàn quốc</span>
+          <h3 class="text-3xl font-extrabold text-slate-900 mt-2">128.5k</h3>
+          <p class="text-xs font-bold text-emerald-600 mt-2">+24% so với tháng trước</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-400">Chuẩn hóa dữ liệu</span>
+          <h3 class="text-3xl font-extrabold text-blue-600 mt-2">98.4%</h3>
+          <p class="text-xs font-semibold text-slate-400 mt-2">Đạt chuẩn tiêu chí BYT</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-400">Hiệu suất AI Router</span>
+          <h3 class="text-3xl font-extrabold text-teal-600 mt-2">96.8%</h3>
+          <p class="text-xs font-bold text-emerald-600 mt-2">Độ hài lòng người dân</p>
+        </div>
+
+      </div>
+
+      <!-- Facility Overview & Audit Logs -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        
+        <!-- Left: Quick Facilities List -->
+        <div class="lg:col-span-2 bg-white rounded-2xl p-6 border border-slate-200 shadow-xs space-y-4">
+          <div class="flex items-center justify-between">
+            <h3 class="font-bold text-base text-slate-900">Mạng Lưới Cơ Sở Y Tế Tuyến Đầu</h3>
+            <a href="admin-facility-management.html" class="text-xs font-bold text-blue-600 hover:text-blue-700">Quản lý chi tiết →</a>
+          </div>
+
+          <div id="adminFacilitiesList" class="space-y-3">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Right: Audit Trail Logs -->
+        <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-xs flex flex-col justify-between">
+          <div>
+            <h3 class="font-bold text-base text-slate-900 mb-4">Nhật Ký Kiểm Toán Hệ Thống</h3>
+            <div id="adminAuditLogs" class="space-y-3 text-xs">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+          <div class="pt-4 border-t border-slate-100 mt-4 text-center">
+            <span class="text-[11px] text-slate-400">Ghi nhận bảo mật bất biến theo chuẩn ISO</span>
+          </div>
+        </div>
+
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderAdminDashboard();
+    });
+
+    function renderAdminDashboard() {
+      const facilities = CareRouteDB.getFacilities();
+      const logs = CareRouteDB.getAuditLogs();
+
+      // Render facilities
+      document.getElementById('adminFacilitiesList').innerHTML = facilities.map(f => `
+        <div class="p-4 bg-slate-50 rounded-2xl border border-slate-100 flex items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-blue-100 text-blue-700 flex items-center justify-center font-bold text-sm">
+              <i data-lucide="building-2" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-1.5">
+                <h4 class="font-bold text-sm text-slate-900">${f.name}</h4>
+                <span class="w-4 h-4 text-emerald-500" title="Đã xác thực"><i data-lucide="badge-check" class="w-4 h-4"></i></span>
+              </div>
+              <p class="text-xs text-slate-500">${f.tier} • ${f.address}</p>
+            </div>
+          </div>
+          <span class="text-xs font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shrink-0">
+            Hoạt động
+          </span>
+        </div>
+      `).join('');
+
+      // Render Logs
+      document.getElementById('adminAuditLogs').innerHTML = logs.map(l => `
+        <div class="p-3 bg-slate-50/80 rounded-xl border border-slate-100 space-y-1">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-slate-800">${l.user}</span>
+            <span class="text-slate-400">${l.time}</span>
+          </div>
+          <p class="text-slate-600 font-medium">${l.action}: <span class="text-slate-900">${l.target}</span></p>
+        </div>
+      `).join('');
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function resetSystemData() {
+      if (confirm('Bạn có muốn đặt lại toàn bộ dữ liệu mẫu ban đầu cho toàn hệ thống không?')) {
+        CareRouteDB.resetAll();
+        renderAdminDashboard();
+        showToast('Đã khôi phục dữ liệu hệ thống mặc định!', 'success');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phân Loại Taxonomy & Chuyên Khoa - CareRoute Admin</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#e8f5e9',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="min-h-screen flex bg-[#f8fafc] text-slate-800 antialiased">
+
+  <!-- Sidebar Admin -->
+  <aside id="appSidebar" class="w-72 bg-slate-900 text-white flex flex-col justify-between shrink-0 transition-transform lg:translate-x-0 -translate-x-full fixed lg:static top-0 bottom-0 z-40">
+    <div>
+      <div class="p-6 border-b border-slate-800 flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-lg shadow-blue-600/30">
+          <i data-lucide="shield" class="w-6 h-6 stroke-[2.5]"></i>
+        </div>
+        <div class="overflow-hidden">
+          <h2 class="font-bold text-sm text-white truncate">CareRoute Central</h2>
+          <p class="text-xs text-blue-400 font-medium">Quản trị viên Hệ thống</p>
+        </div>
+      </div>
+
+      <nav class="p-4 space-y-1.5">
+        <a href="admin-dashboard.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
+          <i data-lucide="layout-grid" class="w-5 h-5"></i>
+          <span>Bảng điều khiển</span>
+        </a>
+        <a href="admin-facility-management.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-400 hover:text-white hover:bg-slate-800 transition-all">
+          <i data-lucide="building" class="w-5 h-5"></i>
+          <span>Quản lý Cơ sở Y tế</span>
+        </a>
+        <a href="admin-category-management.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-white bg-blue-600 shadow-md shadow-blue-600/20 transition-all">
+          <i data-lucide="tags" class="w-5 h-5"></i>
+          <span>Phân loại Taxonomy</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-4 border-t border-slate-800">
+      <a href="../index.html" class="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-400 hover:text-white hover:bg-slate-800 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Về Cổng thông tin chung
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <div>
+          <h1 class="text-xl font-bold text-slate-900">Quản Lý Phân Loại & Danh Mục Taxonomy</h1>
+          <p class="text-xs text-slate-500">Cấu trúc cây chuyên khoa y tế và bộ từ khóa điều hướng cho AI-1 Router</p>
+        </div>
+      </div>
+
+      <button onclick="openCreateCategoryModal()" class="inline-flex items-center gap-2 px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm rounded-xl shadow-md shadow-blue-600/20 transition-all transform active:scale-95">
+        <i data-lucide="plus" class="w-4 h-4"></i>
+        <span>Thêm Chuyên Khoa Mới</span>
+      </button>
+    </header>
+
+    <main class="p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+      
+      <!-- Category Grid List -->
+      <div id="categoryGridContainer" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <!-- Rendered via JS -->
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Category Modal (Add / Edit) -->
+  <div id="categoryModal" class="fixed inset-0 z-50 bg-slate-900/40 backdrop-blur-xs hidden items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-lg w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden animate-slide-in">
+      <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+        <h3 id="categoryModalTitle" class="font-bold text-lg text-slate-900">Thêm Chuyên Khoa Mới</h3>
+        <button onclick="closeModal('categoryModal')" class="p-2 text-slate-400 hover:text-slate-700 rounded-xl">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <form id="categoryForm" onsubmit="handleSaveCategory(event)" class="p-6 space-y-4 overflow-y-auto flex-1">
+        <input type="hidden" id="categoryId">
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Tên Chuyên khoa <span class="text-rose-500">*</span></label>
+          <input type="text" id="catName" required placeholder="VD: Tim mạch & Mạch máu..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none">
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Mã Code Taxonomy <span class="text-rose-500">*</span></label>
+            <input type="text" id="catCode" required placeholder="VD: CARD, IMG, GI..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none uppercase">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Icon đại diện</label>
+            <input type="text" id="catIcon" placeholder="heart-pulse, scan, shield..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-bold text-slate-700 mb-1.5">Mô tả & Từ khóa liên kết (AI Keywords)</label>
+          <textarea id="catDescription" rows="3" placeholder="Liệt kê các kỹ thuật, triệu chứng: Siêu âm tim, đo điện tim, đau ngực..." class="w-full px-4 py-2.5 text-sm bg-slate-50 focus:bg-white border border-slate-200 focus:border-blue-500 rounded-xl outline-none"></textarea>
+        </div>
+
+        <div class="flex items-center justify-end gap-3 pt-4 border-t border-slate-100">
+          <button type="button" onclick="closeModal('categoryModal')" class="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:bg-slate-100 rounded-xl">Hủy</button>
+          <button type="submit" class="px-5 py-2.5 text-sm font-semibold bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md shadow-blue-600/20">Lưu Chuyên Khoa</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      renderCategoryGrid();
+    });
+
+    function renderCategoryGrid() {
+      const categories = CareRouteDB.getCategories();
+      const container = document.getElementById('categoryGridContainer');
+
+      container.innerHTML = categories.map(cat => `
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs flex flex-col justify-between space-y-4 hover:border-blue-300 transition-all">
+          <div>
+            <div class="flex items-center justify-between gap-2 mb-2">
+              <span class="px-2.5 py-0.5 rounded-md text-[11px] font-extrabold bg-blue-50 text-blue-700 border border-blue-100">
+                #${cat.code}
+              </span>
+              <span class="text-xs font-semibold text-slate-400">${cat.count || 0} dịch vụ</span>
+            </div>
+            <h3 class="font-bold text-base text-slate-900">${cat.name}</h3>
+            <p class="text-xs text-slate-500 mt-1 leading-relaxed">${cat.description || 'Chưa có mô tả'}</p>
+          </div>
+
+          <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+            <span class="text-[11px] text-slate-400">Điều hướng AI: Kích hoạt</span>
+            <div class="space-x-1">
+              <button onclick="editCategory('${cat.id}')" class="p-1.5 text-slate-400 hover:text-blue-600 rounded-lg hover:bg-blue-50" title="Chỉnh sửa">
+                <i data-lucide="edit-3" class="w-4 h-4"></i>
+              </button>
+              <button onclick="deleteCategory('${cat.id}')" class="p-1.5 text-slate-400 hover:text-rose-600 rounded-lg hover:bg-rose-50" title="Xóa">
+                <i data-lucide="trash-2" class="w-4 h-4"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function openCreateCategoryModal() {
+      document.getElementById('categoryForm').reset();
+      document.getElementById('categoryId').value = '';
+      document.getElementById('categoryModalTitle').innerText = 'Thêm Chuyên Khoa Mới';
+      openModal('categoryModal');
+    }
+
+    function editCategory(id) {
+      const cat = CareRouteDB.getCategories().find(c => c.id === id);
+      if (!cat) return;
+
+      document.getElementById('categoryId').value = cat.id;
+      document.getElementById('catName').value = cat.name;
+      document.getElementById('catCode').value = cat.code;
+      document.getElementById('catIcon').value = cat.icon || '';
+      document.getElementById('catDescription').value = cat.description || '';
+      document.getElementById('categoryModalTitle').innerText = 'Chỉnh sửa Chuyên Khoa';
+
+      openModal('categoryModal');
+    }
+
+    function handleSaveCategory(e) {
+      e.preventDefault();
+      const id = document.getElementById('categoryId').value;
+      const data = {
+        id: id || undefined,
+        name: document.getElementById('catName').value,
+        code: document.getElementById('catCode').value.toUpperCase(),
+        icon: document.getElementById('catIcon').value || 'activity',
+        description: document.getElementById('catDescription').value
+      };
+
+      CareRouteDB.saveCategory(data);
+      closeModal('categoryModal');
+      renderCategoryGrid();
+      showToast(id ? 'Cập nhật danh mục thành công!' : 'Đã thêm chuyên khoa mới!', 'success');
+    }
+
+    function deleteCategory(id) {
+      if (confirm('Bạn có chắc chắn muốn xóa chuyên khoa này?')) {
+        CareRouteDB.deleteCategory(id);
+        renderCategoryGrid();
+        showToast('Đã xóa chuyên khoa.', 'info');
+      }
+    }
+  </script>
+</body>
+</html>

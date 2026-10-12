@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Giám Sát Độ Mới Nội Dung (AI-3 Freshness Assistant) - CareRoute</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Be Vietnam Pro"', 'Inter', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f0fdf4',
+              100: '#e8f5e9',
+              600: '#0d9488',
+              700: '#0f766e',
+              800: '#115e59',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body class="min-h-screen flex bg-[#f8fafc] text-slate-800 antialiased">
+
+  <!-- Sidebar Reviewer -->
+  <aside id="appSidebar" class="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 transition-transform lg:translate-x-0 -translate-x-full fixed lg:static top-0 bottom-0 z-40">
+    <div>
+      <div class="p-6 border-b border-slate-100 flex items-center gap-3.5">
+        <div class="w-11 h-11 rounded-2xl bg-amber-50 border border-amber-100 text-amber-600 flex items-center justify-center shrink-0 shadow-xs">
+          <i data-lucide="shield-check" class="w-6 h-6 stroke-[2.5]"></i>
+        </div>
+        <div class="overflow-hidden">
+          <h2 class="font-bold text-sm text-slate-900 truncate">Ban Kiểm Duyệt Nội Dung</h2>
+          <p class="text-xs text-slate-400 font-medium">Biên tập viên</p>
+        </div>
+      </div>
+
+      <nav class="p-4 space-y-1.5">
+        <a href="reviewer-review-queue.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all">
+          <i data-lucide="list-checks" class="w-5 h-5 text-slate-400"></i>
+          <span>Hàng chờ duyệt</span>
+        </a>
+        <a href="reviewer-feedback-review.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-all">
+          <i data-lucide="message-square-diff" class="w-5 h-5 text-slate-400"></i>
+          <span>Đánh giá & Phản hồi</span>
+        </a>
+        <a href="reviewer-freshness-monitor.html" class="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-amber-900 bg-amber-50 border border-amber-200/60 transition-all">
+          <i data-lucide="sparkles" class="w-5 h-5 text-amber-600"></i>
+          <span>Giám sát độ mới (AI-3)</span>
+        </a>
+      </nav>
+    </div>
+
+    <div class="p-4 border-t border-slate-100">
+      <a href="../index.html" class="flex items-center justify-center gap-2 w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors">
+        <i data-lucide="arrow-left" class="w-4 h-4"></i> Về Cổng thông tin chung
+      </a>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+    
+    <header class="bg-white border-b border-slate-200 px-6 py-4 flex items-center justify-between sticky top-0 z-30">
+      <div class="flex items-center gap-3">
+        <button id="sidebarToggle" class="lg:hidden p-2 text-slate-600 hover:bg-slate-100 rounded-xl">
+          <i data-lucide="menu" class="w-6 h-6"></i>
+        </button>
+        <div>
+          <div class="flex items-center gap-2">
+            <h1 class="text-xl font-bold text-slate-900">AI-3 Freshness Assistant</h1>
+            <span class="text-[10px] font-bold bg-amber-100 text-amber-800 px-2 py-0.5 rounded-full">Trợ lý Kiểm soát Lỗi thời</span>
+          </div>
+          <p class="text-xs text-slate-500">Tự động phát hiện thông tin dịch vụ & quy trình quá hạn để đảm bảo an toàn y khoa</p>
+        </div>
+      </div>
+
+      <button onclick="triggerAIScan()" id="btnScanAI" class="inline-flex items-center gap-2 px-4 py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold text-sm rounded-xl shadow-md shadow-amber-500/20 transition-all transform active:scale-95">
+        <i data-lucide="sparkles" class="w-4 h-4"></i>
+        <span>Quét Độ Mới Bằng AI</span>
+      </button>
+    </header>
+
+    <main class="p-6 lg:p-8 max-w-7xl mx-auto w-full space-y-6">
+      
+      <!-- 3 Metrics Card -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-400">Tổng nội dung giám sát</span>
+          <h3 id="statTotalScanned" class="text-2xl font-bold text-slate-900 mt-1">6 dịch vụ</h3>
+          <p class="text-xs text-slate-500 mt-1 flex items-center gap-1">
+            <i data-lucide="check" class="w-3.5 h-3.5 text-emerald-500"></i> Quét định kỳ 24h/lần
+          </p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-400">Nội dung nguy cơ cao (>9 tháng)</span>
+          <h3 id="statOutdated" class="text-2xl font-bold text-rose-600 mt-1">1 mục</h3>
+          <p class="text-xs text-rose-500 font-semibold mt-1">Cần yêu cầu CSYT cập nhật ngay</p>
+        </div>
+
+        <div class="bg-white rounded-2xl p-5 border border-slate-200 shadow-xs">
+          <span class="text-xs font-semibold text-slate-400">Cảnh báo nhắc nhở (5-9 tháng)</span>
+          <h3 id="statWarning" class="text-2xl font-bold text-amber-600 mt-1">1 mục</h3>
+          <p class="text-xs text-amber-600 font-semibold mt-1">Nên gửi thông báo rà soát</p>
+        </div>
+      </div>
+
+      <!-- Freshness Table Container -->
+      <div class="bg-white rounded-2xl border border-slate-200 shadow-xs overflow-hidden">
+        <div class="p-4 border-b border-slate-100 flex items-center justify-between">
+          <h3 class="font-bold text-sm text-slate-900">Bảng Đánh Giá Độ Mới & Phân Tích Rủi Ro AI</h3>
+          <span class="text-xs text-slate-400">Thời gian hiện tại mô phỏng: 10/2026</span>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-sm border-collapse">
+            <thead>
+              <tr class="bg-slate-50/80 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase">
+                <th class="py-3 px-6">Dịch vụ & Cơ sở y tế</th>
+                <th class="py-3 px-6">Lần sửa cuối</th>
+                <th class="py-3 px-6">Thời gian chưa cập nhật</th>
+                <th class="py-3 px-6">Điểm độ mới</th>
+                <th class="py-3 px-6">Phân tích & Đề xuất AI</th>
+                <th class="py-3 px-6 text-right">Xử lý</th>
+              </tr>
+            </thead>
+            <tbody id="freshnessTableBody" class="divide-y divide-slate-100">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="../js/api.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      triggerAIScan();
+    });
+
+    async function triggerAIScan() {
+      const btn = document.getElementById('btnScanAI');
+      btn.innerHTML = `<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i> <span>Đang quét AI...</span>`;
+      if (window.lucide) window.lucide.createIcons();
+
+      const result = await CareRouteDB.scanFreshnessAI();
+
+      document.getElementById('statTotalScanned').innerText = `${result.totalScanned} dịch vụ`;
+      document.getElementById('statOutdated').innerText = `${result.outdatedCount} mục`;
+      document.getElementById('statWarning').innerText = `${result.warningCount} mục`;
+
+      const tbody = document.getElementById('freshnessTableBody');
+      tbody.innerHTML = result.items.map(item => `
+        <tr class="hover:bg-slate-50/80 transition-colors">
+          <td class="py-4 px-6">
+            <div class="font-bold text-slate-900">${item.title}</div>
+            <div class="text-xs text-teal-700 font-semibold mt-0.5">${item.facilityName}</div>
+          </td>
+          <td class="py-4 px-6 text-xs text-slate-500 font-medium">${item.lastUpdated}</td>
+          <td class="py-4 px-6">
+            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${item.riskLevel === 'critical' ? 'bg-rose-50 text-rose-700 border border-rose-200' : item.riskLevel === 'warning' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
+              <span class="w-1.5 h-1.5 rounded-full ${item.riskLevel === 'critical' ? 'bg-rose-500' : item.riskLevel === 'warning' ? 'bg-amber-500' : 'bg-emerald-500'}"></span>
+              ${item.diffMonths === 0 ? 'Trong tháng này' : item.diffMonths + ' tháng trước'}
+            </span>
+          </td>
+          <td class="py-4 px-6">
+            <div class="flex items-center gap-2">
+              <span class="font-bold text-sm ${item.score < 60 ? 'text-rose-600' : item.score < 80 ? 'text-amber-600' : 'text-emerald-600'}">${item.score}/100</span>
+            </div>
+          </td>
+          <td class="py-4 px-6 max-w-xs">
+            <p class="text-xs text-slate-600 leading-relaxed">${item.aiAdvice}</p>
+          </td>
+          <td class="py-4 px-6 text-right space-x-2">
+            ${item.riskLevel !== 'fresh' ? `
+              <button onclick="sendReminder('${item.facilityName}', '${item.title}')" class="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-900 font-bold text-xs rounded-xl border border-amber-200 transition-colors">
+                Gửi nhắc nhở
+              </button>
+            ` : `
+              <span class="text-xs text-emerald-600 font-semibold flex items-center justify-end gap-1">
+                <i data-lucide="check" class="w-3.5 h-3.5"></i> Chuẩn
+              </span>
+            `}
+          </td>
+        </tr>
+      `).join('');
+
+      btn.innerHTML = `<i data-lucide="sparkles" class="w-4 h-4"></i> <span>Quét Độ Mới Bằng AI</span>`;
+      if (window.lucide) window.lucide.createIcons();
+    }
+
+    function sendReminder(facilityName, serviceTitle) {
+      showToast(`Đã gửi thông báo yêu cầu cập nhật bài viết "${serviceTitle}" tới ${facilityName}!`, 'success');
+    }
+  </script>
+</body>
+</html>
