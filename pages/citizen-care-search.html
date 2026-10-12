@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareRoute - Trang Chủ Tra Cứu Dịch Vụ</title>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-light: #ccfbf1;
+            --primary-bg: #e6fffa;
+            --dark-header: #1e293b;
+            --footer-bg: #064e3b;
+            --text-dark: #0f172a;
+            --text-gray: #475569;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --card-bg: #ffffff;
+            --bg-light: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f1f5f9;
+            color: var(--text-dark);
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* TOP HEADER */
+        header {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 5%;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 700;
+            font-size: 22px;
+            color: var(--primary-dark);
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            background: var(--primary);
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 20px;
+        }
+
+        .search-bar {
+            flex: 1;
+            max-width: 550px;
+            margin: 0 30px;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            padding: 10px 18px 10px 42px;
+            border: 1px solid #cbd5e1;
+            border-radius: 99px;
+            outline: none;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: #f8fafc;
+        }
+
+        .search-bar input:focus {
+            background: #ffffff;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
+        }
+
+        .search-bar::before {
+            content: "🔍";
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            opacity: 0.5;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hotline {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            color: var(--text-gray);
+        }
+
+        .hotline strong {
+            color: var(--text-dark);
+        }
+
+        .user-nav-profile {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        .user-menu-dropdown {
+            position: absolute;
+            top: 110%;
+            right: 0;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 220px;
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1100;
+        }
+
+        .user-menu-dropdown.show {
+            display: flex;
+        }
+
+        .user-menu-header {
+            padding: 12px 16px;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .user-menu-header strong {
+            display: block;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .user-menu-header span {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .admin-badge-pill {
+            display: inline-block;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-top: 4px;
+        }
+
+        .user-menu-item {
+            padding: 10px 16px;
+            font-size: 13px;
+            color: var(--text-gray);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+        }
+
+        .user-menu-item:hover {
+            background: var(--primary-bg);
+            color: var(--primary-dark);
+        }
+
+        /* SUB NAVIGATION */
+        .sub-nav {
+            background: var(--dark-header);
+            color: white;
+            padding: 0 5%;
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+
+        .sub-nav a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 14px 10px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .sub-nav a:hover, .sub-nav a.active-nav {
+            color: #ffffff;
+            border-bottom-color: var(--primary);
+        }
+
+        /* BUTTONS */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 9px 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            transition: background 0.2s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: var(--primary-light);
+            color: var(--primary-dark);
+        }
+
+        main {
+            flex: 1;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+            background: #ffffff;
+            box-shadow: 0 0 15px rgba(0,0,0,0.03);
+        }
+
+        .section {
+            padding: 40px 5%;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 35px;
+        }
+
+        .section-title h2 {
+            font-size: 28px;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .section-title p {
+            color: var(--text-gray);
+            font-size: 15px;
+        }
+
+        .pill-tag {
+            background: #e6fffa;
+            color: var(--primary-dark);
+            font-size: 12px;
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-block;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        /* HERO & FEATURES */
+        .hero {
+            background: linear-gradient(135deg, #f0fdf4 0%, #e6fffa 100%);
+            padding: 50px 5%;
+            display: flex;
+            align-items: center;
+            gap: 40px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .hero-text {
+            flex: 1.2;
+        }
+
+        .hero-text h1 {
+            font-size: 38px;
+            line-height: 1.25;
+            color: var(--text-dark);
+            margin: 15px 0;
+            font-weight: 800;
+        }
+
+        .hero-text p {
+            color: var(--text-gray);
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .hero-image {
+            flex: 1;
+            position: relative;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            object-fit: cover;
+        }
+
+        .floating-badge {
+            position: absolute;
+            bottom: 15px;
+            left: -20px;
+            background: white;
+            padding: 12px 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .stats-bar {
+            background: #80ebd3;
+            padding: 25px 5%;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+            text-align: center;
+        }
+
+        .stat-item h3 {
+            font-size: 30px;
+            font-weight: 800;
+            color: #044e42;
+        }
+
+        .stat-item p {
+            font-size: 13px;
+            color: #0f6c5c;
+            font-weight: 600;
+        }
+
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .feature-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 24px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 20px -5px rgba(0,0,0,0.08);
+            border-color: var(--primary);
+        }
+
+        .feature-icon {
+            width: 44px;
+            height: 44px;
+            background: var(--primary-bg);
+            color: var(--primary);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h4 {
+            font-size: 17px;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            font-size: 14px;
+            color: var(--text-gray);
+            line-height: 1.5;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+        }
+
+        .blog-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            background: white;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .blog-card:hover {
+            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
+        }
+
+        .blog-card img {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+
+        .blog-content {
+            padding: 18px;
+        }
+
+        .blog-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-bottom: 8px;
+        }
+
+        .blog-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+
+        .blog-author {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .clinic-container {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .featured-clinic {
+            border: 1px solid #e2e8f0;
+            border-radius: 16px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .featured-clinic:hover {
+            box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+        }
+
+        .featured-clinic img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+        }
+
+        .clinic-list-side {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .clinic-item-card {
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .clinic-item-card:hover {
+            border-color: var(--primary);
+            background: #fafafa;
+        }
+
+        .support-banner {
+            background: var(--footer-bg);
+            color: white;
+            border-radius: 20px;
+            padding: 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 40px 5%;
+        }
+
+        .support-banner h2 {
+            font-size: 26px;
+            margin-bottom: 8px;
+        }
+
+        .support-banner p {
+            color: #a7f3d0;
+            font-size: 14px;
+            max-width: 500px;
+        }
+
+        .support-card {
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+            padding: 20px;
+            border-radius: 14px;
+            border: 1px solid rgba(255,255,255,0.2);
+            max-width: 320px;
+        }
+
+        /* MODAL & TOAST */
+        .toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .toast {
+            background: white;
+            border-left: 4px solid var(--primary);
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.active { display: flex; }
+
+        .auth-modal {
+            background: white;
+            width: 100%;
+            max-width: 440px;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .auth-tabs { display: flex; border-bottom: 2px solid #f1f5f9; margin-bottom: 20px; }
+        .auth-tab { flex: 1; text-align: center; padding: 10px; font-weight: 600; font-size: 15px; color: var(--text-light); cursor: pointer; border-bottom: 2px solid transparent; }
+        .auth-tab.active { color: var(--primary); border-bottom-color: var(--primary); }
+        .role-selector { display: flex; background: var(--bg-light); padding: 4px; border-radius: 10px; margin-bottom: 20px; gap: 4px; }
+        .role-btn { flex: 1; border: none; background: transparent; padding: 8px; font-size: 13px; font-weight: 600; border-radius: 8px; cursor: pointer; color: var(--text-gray); }
+        .role-btn.active { background: white; color: var(--primary-dark); box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; margin-bottom: 6px; }
+        .form-input-wrap { position: relative; }
+        .form-input { width: 100%; padding: 11px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 14px; outline: none; }
+        .toggle-password { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; }
+        .admin-code-field { display: none; background: #fef2f2; padding: 12px; border-radius: 10px; border: 1px dashed #fca5a5; margin-bottom: 16px; }
+        .admin-code-field.active { display: block; }
+
+        footer {
+            background: var(--footer-bg);
+            color: #ecfdf5;
+            padding: 40px 5% 20px 5%;
+            margin-top: auto;
+        }
+
+        .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1.5fr; gap: 30px; margin-bottom: 30px; }
+        .footer-col h4 { font-size: 15px; margin-bottom: 15px; color: #ffffff; }
+        .footer-col a, .footer-col p { font-size: 13px; color: #a7f3d0; text-decoration: none; display: block; margin-bottom: 8px; }
+        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 20px; display: flex; justify-content: space-between; font-size: 12px; color: #a7f3d0; }
+
+        @media (max-width: 900px) {
+            .hero { flex-direction: column; }
+            .clinic-container { grid-template-columns: 1fr; }
+            .footer-grid { grid-template-columns: 1fr 1fr; }
+            .support-banner { flex-direction: column; gap: 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="toast-container" id="toast-container"></div>
+
+    <header>
+        <a class="logo" href="home.html">
+            <div class="logo-icon">+</div>
+            CareRoute
+        </a>
+        <div class="search-bar">
+            <input type="text" placeholder="Tìm nội dung, cơ sở, danh mục...">
+        </div>
+        <div class="header-actions">
+            <div class="hotline">
+                📞 <span>Hotline<br><strong>0387.110.017</strong></span>
+            </div>
+            <div id="auth-buttons-unlogged" style="display: flex; gap: 10px;">
+                <button class="btn btn-outline" onclick="openAuthModal('login')">Đăng nhập</button>
+                <button class="btn" onclick="openAuthModal('register')">Đăng ký</button>
+            </div>
+            <div id="auth-user-logged" style="display: none;">
+                <div class="user-nav-profile" onclick="toggleUserMenu()">
+                    <div class="user-avatar" id="header-avatar-letters">Q</div>
+                    <div>
+                        <div style="font-size: 13px; font-weight: 700;" id="header-username">Phạm Minh Quân</div>
+                        <div style="font-size: 11px; color: var(--text-light);" id="header-role-text">Bệnh nhân</div>
+                    </div>
+                    <span style="font-size: 10px; opacity: 0.5;">▼</span>
+                    <div class="user-menu-dropdown" id="user-dropdown-menu">
+                        <div class="user-menu-header">
+                            <strong id="dropdown-fullname">Phạm Minh Quân</strong>
+                            <span id="dropdown-email">quan.pm@email.com</span>
+                            <div id="admin-badge-container"></div>
+                        </div>
+                        <a class="user-menu-item" href="checklist.html">📋 Checklist cá nhân</a>
+                        <a class="user-menu-item" onclick="showToast('Chức năng lịch hẹn đang tải...')">📅 Lịch khám đã đặt</a>
+                        <a class="user-menu-item" onclick="showToast('Hồ sơ sức khỏe đã bảo mật')">🔒 Hồ sơ y tế</a>
+                        <div style="border-top: 1px solid var(--border-color); margin: 4px 0;"></div>
+                        <a class="user-menu-item" style="color: #ef4444;" onclick="logout()">🚪 Đăng xuất</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <nav class="sub-nav">
+        <a class="active-nav" href="home.html">Tra cứu Dịch vụ</a>
+        <a href="checklist.html">Hồ sơ chuẩn bị</a>
+        <a href="clinic_detail.html">Dành cho Cơ sở y tế</a>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="hero-text">
+                <span class="pill-tag">🛡️ Nền tảng y tế được các gia đình tin dùng</span>
+                <h1>Chăm sóc đúng nơi,<br>an tâm mỗi ngày</h1>
+                <p>Tìm bác sĩ phù hợp, đặt lịch nhanh và nhận hướng dẫn rõ ràng — từ những triệu chứng đầu tiên đến suốt hành trình điều trị.</p>
+                <div style="display: flex; gap: 12px;">
+                    <a class="btn" href="clinic_detail.html">Khám phá cơ sở y tế</a>
+                    <a class="btn btn-outline" href="checklist.html">Xem checklist của bạn</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="../assets/images/anh_bac_si.png" alt="Bác sĩ tư vấn">
+                <div class="floating-badge">
+                    <span>📅</span>
+                    <div>
+                        <div style="font-size:12px; color:var(--text-light);">Trạng thái</div>
+                        <div>Có lịch trong hôm nay</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-bar">
+            <div class="stat-item">
+                <h3>2,400+</h3>
+                <p>Cơ sở y tế</p>
+            </div>
+            <div class="stat-item">
+                <h3>85+</h3>
+                <p>Chuyên khoa</p>
+            </div>
+            <div class="stat-item">
+                <h3>180,000+</h3>
+                <p>Lượt truy cập</p>
+            </div>
+            <div class="stat-item">
+                <h3>98%</h3>
+                <p>Đánh giá tích cực</p>
+            </div>
+        </section>
+
+        <section class="section">
+            <div class="section-title">
+                <h2>Tại sao chọn CareRoute?</h2>
+                <p>Nền tảng được thiết kế để giúp người dân tiếp cận dịch vụ y tế dễ dàng và chính xác hơn.</p>
+            </div>
+            <div class="grid-4">
+                <div class="feature-card" onclick="location.href='clinic_detail.html'">
+                    <div class="feature-icon">🔍</div>
+                    <h4>Tìm đúng dịch vụ</h4>
+                    <p>Tra cứu cơ sở y tế theo chuyên khoa, khu vực và giờ hoạt động trong vài giây.</p>
+                </div>
+                <div class="feature-card" onclick="location.href='checklist.html'">
+                    <div class="feature-icon">📋</div>
+                    <h4>Checklist chuẩn bị</h4>
+                    <p>Nhận danh sách giấy tờ và hướng dẫn chuẩn bị chi tiết trước khi đến khám.</p>
+                </div>
+                <div class="feature-card" onclick="location.href='clinic_detail.html'">
+                    <div class="feature-icon">⏱️</div>
+                    <h4>Thông tin cập nhật</h4>
+                    <p>Giờ hoạt động, quy trình và hướng dẫn được kiểm duyệt bởi đội ngũ biên tập.</p>
+                </div>
+                <div class="feature-card" onclick="location.href='checklist.html'">
+                    <div class="feature-icon">✨</div>
+                    <h4>Gợi ý AI thông minh</h4>
+                    <p>AI phân tích triệu chứng và đề xuất chuyên khoa phù hợp nhất cho bạn.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section" style="background: var(--bg-light);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 25px;">
+                <div>
+                    <span class="pill-tag">KIẾN THỨC DỄ HIỂU</span>
+                    <h2 style="font-size: 26px;">Chủ động chăm sóc sức khỏe mỗi ngày</h2>
+                    <p style="color: var(--text-gray); font-size: 14px;">Nội dung được kiểm duyệt bởi đội ngũ bác sĩ, trình bày ngắn gọn và dễ áp dụng.</p>
+                </div>
+                <a href="#" style="color: var(--primary-dark); font-weight: 700; text-decoration: none; font-size: 14px;">Xem toàn bộ cẩm nang →</a>
+            </div>
+
+            <div class="grid-3">
+                <div class="blog-card" onclick="location.href='clinic_detail.html'">
+                    <img src="../assets/images/suc_khoe_tim_mach.png" alt="Sức khỏe tim mạch">
+                    <div class="blog-content">git rebase --abort
+                        <div class="blog-meta">
+                            <span style="color:var(--primary-dark); font-weight:600;">Sức khỏe tim mạch</span>
+                            <span>⏱ 6 phút đọc</span>
+                        </div>
+                        <div class="blog-title">7 dấu hiệu cơ thể nhắc bạn nên kiểm tra tim sớm</div>
+                        <div class="blog-author">Cố vấn chuyên môn: BS. Nguyễn Minh An</div>
+                    </div>
+                </div>
+
+                <div class="blog-card" onclick="location.href='clinic_detail.html'">
+                    <img src="../assets/images/nhi_khoa.png" alt="Nhi khoa">
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span style="color:var(--primary-dark); font-weight:600;">Nhi khoa</span>
+                            <span>⏱ 5 phút đọc</span>
+                        </div>
+                        <div class="blog-title">Trẻ sốt: khi nào có thể theo dõi tại nhà?</div>
+                        <div class="blog-author">Cố vấn chuyên môn: ThS.BS Trần Thảo Vy</div>
+                    </div>
+                </div>
+
+                <div class="blog-card" onclick="location.href='clinic_detail.html'">
+                    <img src="../assets/images/phong_benh.png" alt="Phòng bệnh">
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span style="color:var(--primary-dark); font-weight:600;">Phòng bệnh</span>
+                            <span>⏱ 4 phút đọc</span>
+                        </div>
+                        <div class="blog-title">Chuẩn bị gì trước buổi khám để bác sĩ hiểu bạn hơn</div>
+                        <div class="blog-author">Cố vấn chuyên môn: Ban chuyên môn An Tâm</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+                <div>
+                    <span class="pill-tag">CƠ SỞ GẦN BẠN</span>
+                    <h2>Cơ sở y tế đáng tin cậy quanh đây</h2>
+                </div>
+                <button class="btn btn-outline" style="font-size: 13px;">📍 Quận 3, TP. Hồ Chí Minh ▾</button>
+            </div>
+
+            <div class="clinic-container">
+                <div class="featured-clinic" onclick="location.href='clinic_detail.html'">
+                    <img src="../assets/images/phong_kham.png" alt="Phòng khám">
+                    <div style="padding: 20px;">
+                        <span class="pill-tag" style="background: #fef3c7; color: #92400e;">PHÙ HỢP NHẤT • 1.2 km</span>
+                        <h3 style="font-size: 20px; margin: 8px 0;">Phòng khám Đa khoa An Khang</h3>
+                        <p style="color: var(--text-gray); font-size: 14px;">128 Võ Văn Tần, Phường 6, Quận 3</p>
+                    </div>
+                </div>
+
+                <div class="clinic-list-side">
+                    <div class="clinic-item-card" onclick="location.href='clinic_detail.html'">
+                        <div>
+                            <h4 style="font-size: 16px;">Phòng khám Đa khoa An Khang</h4>
+                            <p style="font-size: 13px; color: var(--text-gray);">Đa khoa • 35 chuyên khoa</p>
+                            <span style="font-size: 12px; color: #d97706;">⭐ 4.9 (428) • Mở cửa đến 20:00</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="color: var(--primary-dark);">1.2 km</strong>
+                            <div style="font-size: 18px; color: var(--text-light);">›</div>
+                        </div>
+                    </div>
+
+                    <div class="clinic-item-card" onclick="location.href='clinic_detail.html'">
+                        <div>
+                            <h4 style="font-size: 16px;">Bệnh viện Quốc tế CityCare</h4>
+                            <p style="font-size: 13px; color: var(--text-gray);">Bệnh viện • Cấp cứu 24/7</p>
+                            <span style="font-size: 12px; color: #d97706;">⭐ 4.8 • Đang mở cửa</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="color: var(--primary-dark);">2.8 km</strong>
+                            <div style="font-size: 18px; color: var(--text-light);">›</div>
+                        </div>
+                    </div>
+
+                    <div class="clinic-item-card" onclick="location.href='clinic_detail.html'">
+                        <div>
+                            <h4 style="font-size: 16px;">Trung tâm Y khoa Gia Định</h4>
+                            <p style="font-size: 13px; color: var(--text-gray);">Chẩn đoán & Xét nghiệm</p>
+                            <span style="font-size: 12px; color: #d97706;">⭐ 4.7 • Mở cửa đến 18:30</span>
+                        </div>
+                        <div style="text-align: right;">
+                            <strong style="color: var(--primary-dark);">4.1 km</strong>
+                            <div style="font-size: 18px; color: var(--text-light);">›</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="support-banner">
+            <div>
+                <span style="font-size: 12px; letter-spacing: 1px; opacity: 0.8;">LUÔN CÓ NGƯỜI ĐỒNG HÀNH</span>
+                <h2>Chưa biết nên khám ở đâu?</h2>
+                <p>Điều phối viên CareRoute sẽ lắng nghe nhu cầu và gợi ý bước tiếp theo phù hợp. Hỗ trợ miễn phí mỗi ngày, từ 7:00–22:00.</p>
+                <div style="margin-top: 20px; display: flex; gap: 12px;">
+                    <button class="btn" style="background: white; color: var(--footer-bg);" onclick="showToast('Đang kết nối với điều phối viên...')">Nhận tư vấn miễn phí</button>
+                    <button class="btn btn-outline" style="border-color: white; color: white;">📞 0387.110.017</button>
+                </div>
+            </div>
+
+            <div class="support-card">
+                <div style="display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 10px;">
+                    <span style="width: 8px; height: 8px; background: #34d399; border-radius: 50%;"></span>
+                    Đang trực tuyến
+                </div>
+                <h4 style="font-size: 18px; margin-bottom: 8px;">Phản hồi trong khoảng 2 phút</h4>
+                <p style="font-size: 12px; line-height: 1.5; opacity: 0.9;">Không chẩn đoán thay bác sĩ. Chúng tôi giúp bạn tìm đúng dịch vụ và chuẩn bị tốt hơn.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-grid">
+            <div>
+                <div class="logo" style="color: white; margin-bottom: 12px;">
+                    <div class="logo-icon">+</div>
+                    CareRoute
+                </div>
+                <p style="line-height: 1.6;">Giúp mọi người dễ dàng tiếp cận dịch vụ chăm sóc sức khỏe phù hợp, minh bạch và đáng tin cậy.</p>
+                <br>
+                <p>📞 0387.110.017 - 7:00–22:00 mỗi ngày</p>
+                <p>✉️ quanquybut@CareRoute.vn</p>
+            </div>
+
+            <div class="footer-col">
+                <h4>Dịch vụ</h4>
+                <a href="clinic_detail.html">Đặt lịch khám</a>
+                <a href="home.html">Tư vấn từ xa</a>
+                <a href="clinic_detail.html">Tìm cơ sở y tế</a>
+                <a href="checklist.html">Kiểm tra bảo hiểm</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Hồ sơ</h4>
+                <a href="checklist.html">Chuẩn bị trước hẹn</a>
+                <a href="checklist.html">Hồ sơ cần mang</a>
+                <a href="checklist.html">Kiểm tra trước khám</a>
+                <a href="checklist.html">Lưu ý khi đến khám</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Thông tin cập nhật</h4>
+                <a href="home.html">Tin tức chăm sóc sức khỏe</a>
+                <a href="home.html">Cập nhật dịch vụ</a>
+                <a href="home.html">Thông báo hệ thống</a>
+                <a href="home.html">Chính sách mới</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>An toàn & bảo mật</h4>
+                <p>🛡️️ Bảo mật dữ liệu y tế</p>
+                <p>🛡️ Đối tác được xác minh</p>
+                <p>🛡️ Kết nối được mã hóa</p>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <div>© 2026 CareRoute Health. Thông tin trên nền tảng không thay thế chẩn đoán y khoa.</div>
+            <div style="display: flex; gap: 20px;">
+                <a href="#" style="color: #a7f3d0; text-decoration: none;">Điều khoản sử dụng</a>
+                <a href="#" style="color: #a7f3d0; text-decoration: none;">Chính sách quyền riêng tư</a>
+                <span>🌐 Tiếng Việt</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- AUTHENTICATION MODAL -->
+    <div class="modal-overlay" id="auth-modal">
+        <div class="auth-modal">
+            <button class="modal-close" onclick="closeAuthModal()">✕</button>
+            <div class="auth-tabs">
+                <div class="auth-tab active" id="tab-btn-login" onclick="switchAuthTab('login')">Đăng nhập</div>
+                <div class="auth-tab" id="tab-btn-register" onclick="switchAuthTab('register')">Đăng ký</div>
+            </div>
+
+            <form id="form-login" onsubmit="handleLogin(event)">
+                <div class="role-selector">
+                    <button type="button" class="role-btn active" id="role-user-btn" onclick="selectLoginRole('user')">👤 Người dùng</button>
+                    <button type="button" class="role-btn" id="role-admin-btn" onclick="selectLoginRole('admin')">🔑 Quản trị viên</button>
+                </div>
+                <div class="form-group">
+                    <label id="login-identifier-label">Email hoặc Số điện thoại</label>
+                    <input type="text" class="form-input" id="login-identifier" placeholder="Nhập email hoặc SĐT..." required>
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <div class="form-input-wrap">
+                        <input type="password" class="form-input" id="login-password" placeholder="Nhập mật khẩu..." required>
+                        <span class="toggle-password" onclick="togglePasswordVisibility('login-password')">👁</span>
+                    </div>
+                </div>
+                <div class="admin-code-field" id="admin-code-wrap">
+                    <label style="color: #991b1b; display: block; margin-bottom: 4px; font-size: 12px; font-weight: 700;">
+                        🔒 Mã bảo mật Admin (Thử nghiệm: ADMIN2026)
+                    </label>
+                    <input type="text" class="form-input" id="admin-code" placeholder="Mã xác thực Quản trị viên...">
+                </div>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 12px;">
+                    <label style="display: flex; align-items: center; gap: 6px; cursor: pointer;">
+                        <input type="checkbox" id="remember-me" checked> Ghi nhớ đăng nhập
+                    </label>
+                    <a href="#" style="color: var(--primary); text-decoration: none;" onclick="showToast('Vui lòng liên hệ Hotline 0387.110.017 để khôi phục mật khẩu')">Quên mật khẩu?</a>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; justify-content: center; padding: 12px; font-size: 15px;">
+                    Đăng nhập
+                </button>
+            </form>
+
+            <form id="form-register" style="display: none;" onsubmit="handleRegister(event)">
+                <div class="role-selector">
+                    <button type="button" class="role-btn active" id="reg-role-patient" onclick="selectRegRole('patient')">🩺 Bệnh nhân</button>
+                    <button type="button" class="role-btn" id="reg-role-facility" onclick="selectRegRole('facility')">🏥 Cơ sở y tế</button>
+                </div>
+                <div class="form-group">
+                    <label id="reg-name-label">Họ và tên người dùng</label>
+                    <input type="text" class="form-input" id="reg-fullname" placeholder="Nguyễn Văn A" required>
+                </div>
+                <div class="form-group">
+                    <label>Số điện thoại</label>
+                    <input type="tel" class="form-input" id="reg-phone" placeholder="09xxxxxxx" required>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" class="form-input" id="reg-email" placeholder="example@email.com" required>
+                </div>
+                <div class="form-group">
+                    <label>Mật khẩu</label>
+                    <div class="form-input-wrap">
+                        <input type="password" class="form-input" id="reg-password" placeholder="Tối thiểu 6 ký tự..." required>
+                        <span class="toggle-password" onclick="togglePasswordVisibility('reg-password')">👁️</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Xác nhận mật khẩu</label>
+                    <input type="password" class="form-input" id="reg-confirm-password" placeholder="Nhập lại mật khẩu..." required>
+                </div>
+                <button type="submit" class="btn" style="width: 100%; justify-content: center; padding: 12px; font-size: 15px;">
+                    Tạo tài khoản mới
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let currentLoginRole = 'user';
+        let currentRegRole = 'patient';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            checkUserSession();
+        });
+
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerHTML = `<span>ℹ️</span> <div>${message}</div>`;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(50px)';
+                toast.style.transition = 'all 0.3s';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        function openAuthModal(defaultTab = 'login') {
+            document.getElementById('auth-modal').classList.add('active');
+            switchAuthTab(defaultTab);
+        }
+
+        function closeAuthModal() {
+            document.getElementById('auth-modal').classList.remove('active');
+        }
+
+        function switchAuthTab(tab) {
+            const loginBtn = document.getElementById('tab-btn-login');
+            const regBtn = document.getElementById('tab-btn-register');
+            const loginForm = document.getElementById('form-login');
+            const regForm = document.getElementById('form-register');
+
+            if (tab === 'login') {
+                loginBtn.classList.add('active');
+                regBtn.classList.remove('active');
+                loginForm.style.display = 'block';
+                regForm.style.display = 'none';
+            } else {
+                regBtn.classList.add('active');
+                loginBtn.classList.remove('active');
+                regForm.style.display = 'block';
+                loginForm.style.display = 'none';
+            }
+        }
+
+        function selectLoginRole(role) {
+            currentLoginRole = role;
+            const userBtn = document.getElementById('role-user-btn');
+            const adminBtn = document.getElementById('role-admin-btn');
+            const adminCodeWrap = document.getElementById('admin-code-wrap');
+
+            if (role === 'admin') {
+                adminBtn.classList.add('active');
+                userBtn.classList.remove('active');
+                adminCodeWrap.classList.add('active');
+                document.getElementById('login-identifier-label').innerText = 'Tên tài khoản / Email Admin';
+            } else {
+                userBtn.classList.add('active');
+                adminBtn.classList.remove('active');
+                adminCodeWrap.classList.remove('active');
+                document.getElementById('login-identifier-label').innerText = 'Email hoặc Số điện thoại';
+            }
+        }
+
+        function selectRegRole(role) {
+            currentRegRole = role;
+            const patientBtn = document.getElementById('reg-role-patient');
+            const facilityBtn = document.getElementById('reg-role-facility');
+            const nameLabel = document.getElementById('reg-name-label');
+
+            if (role === 'facility') {
+                facilityBtn.classList.add('active');
+                patientBtn.classList.remove('active');
+                nameLabel.innerText = 'Tên Cơ sở y tế / Bệnh viện';
+            } else {
+                patientBtn.classList.add('active');
+                facilityBtn.classList.remove('active');
+                nameLabel.innerText = 'Họ và tên bệnh nhân';
+            }
+        }
+
+        function togglePasswordVisibility(inputId) {
+            const input = document.getElementById(inputId);
+            input.type = input.type === 'password' ? 'text' : 'password';
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('login-identifier').value.trim();
+            const adminCode = document.getElementById('admin-code').value.trim();
+
+            if (currentLoginRole === 'admin') {
+                if (adminCode !== 'ADMIN2026' && adminCode !== 'admin') {
+                    showToast('❌ Mã xác thực Admin không hợp lệ! (Thử: ADMIN2026)');
+                    return;
+                }
+                const adminUser = { name: 'Phạm Minh Quân (Admin)', email: identifier || 'admin@careroute.vn', role: 'admin', letters: 'AD' };
+                localStorage.setItem('careroute_user', JSON.stringify(adminUser));
+                showToast('🔑 Đăng nhập Quản trị viên thành công!');
+            } else {
+                const nameParts = identifier.split('@')[0];
+                const displayName = nameParts.charAt(0).toUpperCase() + nameParts.slice(1);
+                const user = { name: identifier.includes('@') ? displayName : 'Khách hàng ' + identifier.slice(-4), email: identifier, role: 'patient', letters: displayName.substring(0, 2).toUpperCase() };
+                localStorage.setItem('careroute_user', JSON.stringify(user));
+                showToast('✅ Đăng nhập thành công! Chào mừng trở lại.');
+            }
+            closeAuthModal();
+            checkUserSession();
+        }
+
+        function handleRegister(e) {
+            e.preventDefault();
+            const fullname = document.getElementById('reg-fullname').value.trim();
+            const email = document.getElementById('reg-email').value.trim();
+            const pass = document.getElementById('reg-password').value;
+            const confirmPass = document.getElementById('reg-confirm-password').value;
+
+            if (pass !== confirmPass) {
+                showToast('❌ Mật khẩu xác nhận không khớp!');
+                return;
+            }
+            const newUser = { name: fullname, email: email, role: currentRegRole === 'facility' ? 'Cơ sở Y tế' : 'Bệnh nhân', letters: fullname.charAt(0).toUpperCase() };
+            localStorage.setItem('careroute_user', JSON.stringify(newUser));
+            showToast('🎉 Đăng ký tài khoản thành công!');
+            closeAuthModal();
+            checkUserSession();
+        }
+
+        function checkUserSession() {
+            const savedUser = localStorage.getItem('careroute_user');
+            const unloggedBox = document.getElementById('auth-buttons-unlogged');
+            const loggedBox = document.getElementById('auth-user-logged');
+
+            if (savedUser) {
+                const user = JSON.parse(savedUser);
+                unloggedBox.style.display = 'none';
+                loggedBox.style.display = 'block';
+                document.getElementById('header-username').innerText = user.name;
+                document.getElementById('header-avatar-letters').innerText = user.letters || 'U';
+                document.getElementById('dropdown-fullname').innerText = user.name;
+                document.getElementById('dropdown-email').innerText = user.email || 'N/A';
+                const badgeContainer = document.getElementById('admin-badge-container');
+                if (user.role === 'admin') {
+                    document.getElementById('header-role-text').innerText = 'Quản trị viên';
+                    badgeContainer.innerHTML = '<span class="admin-badge-pill">ADMINISTRATOR</span>';
+                } else {
+                    document.getElementById('header-role-text').innerText = user.role === 'Cơ sở Y tế' ? 'Cơ sở y tế' : 'Bệnh nhân';
+                    badgeContainer.innerHTML = '';
+                }
+            } else {
+                unloggedBox.style.display = 'flex';
+                loggedBox.style.display = 'none';
+            }
+        }
+
+        function toggleUserMenu() {
+            document.getElementById('user-dropdown-menu').classList.toggle('show');
+        }
+
+        function logout() {
+            localStorage.removeItem('careroute_user');
+            document.getElementById('user-dropdown-menu').classList.remove('show');
+            showToast('👋 Đã đăng xuất khỏi tài khoản!');
+            checkUserSession();
+        }
+    </script>
+</body>
+</html>

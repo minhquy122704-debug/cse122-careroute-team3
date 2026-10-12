@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareRoute - Chi Tiết Cơ Sở Y Tế</title>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-bg: #e6fffa;
+            --dark-header: #1e293b;
+            --footer-bg: #064e3b;
+            --text-dark: #0f172a;
+            --text-gray: #475569;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f1f5f9; color: var(--text-dark); display: flex; flex-direction: column; min-height: 100vh; }
+
+        header { background: #ffffff; border-bottom: 1px solid var(--border-color); padding: 12px 5%; display: flex; align-items: center; justify-content: space-between; }
+        .logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 22px; color: var(--primary-dark); text-decoration: none; }
+        .logo-icon { background: var(--primary); color: white; width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+
+        .sub-nav { background: var(--dark-header); color: white; padding: 0 5%; display: flex; justify-content: center; gap: 40px; }
+        .sub-nav a { color: #cbd5e1; text-decoration: none; font-size: 14px; font-weight: 500; padding: 14px 10px; }
+        .sub-nav a.active-nav { color: #ffffff; border-bottom: 3px solid var(--primary); }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 9px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; }
+
+        main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; background: #ffffff; box-shadow: 0 0 15px rgba(0,0,0,0.03); }
+
+        .clinic-hero {
+            position: relative;
+            height: 240px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=1200&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 30px 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .clinic-hero h1 { font-size: 32px; margin-bottom: 8px; }
+
+        .clinic-body { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; padding: 30px 5%; }
+        .info-card { border: 1px solid #e2e8f0; border-radius: 16px; padding: 24px; margin-bottom: 24px; background: white; }
+        .info-card h3 { font-size: 18px; margin-bottom: 16px; border-bottom: 2px solid var(--primary-bg); padding-bottom: 8px; color: var(--primary-dark); }
+
+        .price-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .price-table th, .price-table td { padding: 12px; text-align: left; border-bottom: 1px solid #f1f5f9; font-size: 14px; }
+        .price-table th { background: var(--bg-light); color: var(--text-gray); }
+
+        .booking-box { border: 2px solid var(--primary); border-radius: 16px; padding: 24px; background: #ffffff; position: sticky; top: 90px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .pill-tag { background: #e6fffa; color: var(--primary-dark); font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; }
+
+        .timeline-step { display: flex; gap: 15px; margin-bottom: 16px; }
+        .step-num { width: 28px; height: 28px; background: var(--primary-bg); color: var(--primary-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+
+        footer { background: var(--footer-bg); color: #ecfdf5; padding: 30px 5%; margin-top: auto; font-size: 13px; text-align: center; }
+
+        @media (max-width: 900px) {
+            .clinic-body { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a class="logo" href="home.html">
+            <div class="logo-icon">+</div>
+            CareRoute
+        </a>
+    </header>
+
+    <nav class="sub-nav">
+        <a href="home.html">Tra cứu Dịch vụ</a>
+        <a href="checklist.html">Hồ sơ chuẩn bị</a>
+        <a class="active-nav" href="clinic_detail.html">Dành cho Cơ sở y tế</a>
+    </nav>
+
+    <main>
+        <div class="clinic-hero">
+            <div style="font-size: 13px; opacity: 0.9; margin-bottom: 8px;">
+                <a href="home.html" style="color: white; text-decoration: none;">Trang chủ</a> / 
+                Bệnh viện Đa khoa Tâm Anh
+            </div>
+            <h1>Bệnh viện Đa khoa Tâm Anh</h1>
+            <div style="display: flex; gap: 15px; font-size: 14px; align-items: center;">
+                <span style="background: #059669; padding: 3px 10px; border-radius: 4px; font-size: 12px;">Chính xác & Xác thực</span>
+                <span>⭐ 4.9 (428 đánh giá)</span>
+                <span>📍 108 Hoàng Văn Thụ, Phường 2, Tân Bình, TP. HCM</span>
+            </div>
+        </div>
+
+        <div class="clinic-body">
+            <div>
+                <!-- Thông tin chung -->
+                <div class="info-card">
+                    <h3>Thông tin chung</h3>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <div style="font-size: 13px; color: var(--text-light);">Giờ hoạt động</div>
+                            <strong>07:30 - 19:00 (Thứ 2 - Chủ Nhật)</strong>
+                        </div>
+                        <div>
+                            <div style="font-size: 13px; color: var(--text-light);">Số điện thoại hotline</div>
+                            <strong style="color: var(--primary);">1800 6858</strong>
+                        </div>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        <div style="font-size: 13px; color: var(--text-light);">Chuyên khoa thế mạnh</div>
+                        <strong>Thần kinh, Tim mạch, Xương khớp, Sản phụ khoa</strong>
+                    </div>
+                </div>
+
+                <!-- Bảng giá dịch vụ -->
+                <div class="info-card">
+                    <h3>Dịch vụ cung cấp & Bảng giá</h3>
+                    <table class="price-table">
+                        <thead>
+                            <tr>
+                                <th>Tên dịch vụ</th>
+                                <th>Bảng giá ước tính</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Khám Tổng quát Thần kinh</td>
+                                <td><strong style="color: var(--primary-dark);">350.000 đ</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Chụp Cộng hưởng từ MRI sọ nào</td>
+                                <td><strong style="color: var(--primary-dark);">2.200.000 đ</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Đo điện não đồ (EEG)</td>
+                                <td><strong style="color: var(--primary-dark);">450.000 đ</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Siêu âm tim Doppler màu</td>
+                                <td><strong style="color: var(--primary-dark);">500.000 đ</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Quy trình hướng dẫn -->
+                <div class="info-card">
+                    <h3>Quy trình khám hướng dẫn tại viện</h3>
+                    <div class="timeline-step">
+                        <div class="step-num">1</div>
+                        <div>
+                            <strong>Đăng ký thông tin tại Quầy lễ tân tầng 1</strong>
+                            <p style="font-size: 13px; color: var(--text-gray);">Xuất trình CCCD/Bảo hiểm y tế. Nhận số thứ tự phòng khám chuyên khoa.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-num">2</div>
+                        <div>
+                            <strong>Khám lâm sàng tại Phòng 204</strong>
+                            <p style="font-size: 13px; color: var(--text-gray);">Bác sĩ chuyên khoa thần kinh trực tiếp thăm khám và chỉ định chụp chiếu nếu cần.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-num">3</div>
+                        <div>
+                            <strong>Thực hiện cận lâm sàng (MRI / Xét nghiệm)</strong>
+                            <p style="font-size: 13px; color: var(--text-gray);">Di chuyển theo sự hướng dẫn của điều dưỡng đến khu kỹ thuật cao Tầng 3.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột đặt lịch bên phải -->
+            <div>
+                <div class="booking-box">
+                    <span class="pill-tag">ĐẶT LỊCH TIỆN LỢI</span>
+                    <h3 style="font-size: 20px; margin-bottom: 10px; margin-top: 10px;">Đặt lịch khám trực tuyến</h3>
+                    <p style="font-size: 13px; color: var(--text-gray); margin-bottom: 20px;">
+                        Đặt chỗ nhanh chóng qua CareRoute để nhận checklist chuẩn bị riêng biệt bằng AI miễn phí.
+                    </p>
+                    <a class="btn" style="width: 100%; justify-content: center; padding: 12px;" href="checklist.html">
+                        Đặt lịch khám ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 CareRoute Health. Tất cả quyền được bảo lưu.</p>
+    </footer>
+</body>
+</html>
