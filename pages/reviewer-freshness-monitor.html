@@ -58,6 +58,7 @@
     .button-primary { border-color: var(--teal); color: var(--white); background: var(--teal); font-weight: 600; }
     .button-primary:hover { border-color: var(--teal-dark); color: var(--white); background: var(--teal-dark); }
     .button-primary:disabled { opacity: .7; cursor: wait; }
+    .button:focus-visible, .icon-button:focus-visible, input:focus-visible, textarea:focus-visible { outline: 2px solid var(--teal); outline-offset: 2px; }
 
     .ai-status { display: flex; min-height: 54px; align-items: center; gap: 12px; margin-bottom: 15px; padding: 10px 12px; border: 1px solid #77b7ab; border-radius: 8px; background: #f3fbf9; }
     .ai-icon { display: grid; width: 28px; height: 28px; flex: 0 0 28px; place-items: center; border-radius: 5px; color: white; background: var(--teal); }
@@ -78,10 +79,20 @@
     .data-value.strong { color: #354158; font-weight: 650; }
     .warning-badge { justify-self: start; padding: 5px 8px; border-radius: 4px; color: #b17d20; background: #fff4d0; font-size: 9px; line-height: 1; }
     .row-actions { display: flex; align-items: center; gap: 6px; }
+    .row-actions { flex-wrap: wrap; }
     .row-actions .button { min-height: 27px; padding: 0 8px; font-size: 9px; }
     .button-update { border-color: transparent; color: #3f9185; background: #eff9f7; font-weight: 600; }
     .button-update:hover { border-color: #c9e5df; background: #e7f5f2; }
     .button-dismiss { color: #4f5c71; }
+    .button-remind { color: #806117; background: #fff8e6; }
+    .button-remind.sent { color: #37775e; background: #eff9f2; }
+    .warning-badge.critical { color: #b54444; background: #fff0ef; }
+    .warning-badge.attention { color: #a97819; background: #fff4d0; }
+    .dismissed-row { opacity: .72; }
+    .panel-tools { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .panel-tools .section-heading { margin-bottom: 11px; }
+    .text-button { padding: 0; border: 0; color: #378578; background: transparent; font-size: 10px; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+    .text-button[hidden] { display: none; }
 
     .summary-panel { padding: 14px 15px 13px; }
     .summary-panel .section-heading { margin-bottom: 11px; }
@@ -103,6 +114,15 @@
     .toast.visible { opacity: 1; transform: translateY(0); }
     .toast strong { display: block; margin-bottom: 2px; font-size: 11px; }
     .toast span { font-size: 10px; }
+    dialog { width: min(440px, calc(100vw - 28px)); padding: 0; border: 1px solid var(--line); border-radius: 10px; color: var(--ink); box-shadow: 0 18px 60px #17263a30; }
+    dialog::backdrop { background: #17263a66; }
+    .dialog-form { display: grid; gap: 13px; padding: 20px; }
+    .dialog-form h2 { margin: 0; font-size: 16px; }
+    .dialog-form p { margin: -8px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    .field-label { display: grid; gap: 5px; color: #536078; font-size: 10px; font-weight: 600; }
+    .field-label input, .field-label textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--line); border-radius: 6px; color: var(--ink); background: #fff; font-weight: 400; }
+    .field-label textarea { min-height: 92px; resize: vertical; }
+    .dialog-actions { display: flex; justify-content: flex-end; gap: 8px; }
 
     @media (min-width: 1200px) {
       .main { padding-right: 32px; padding-left: 32px; }
@@ -190,7 +210,10 @@
         </section>
 
         <section class="warning-panel" aria-labelledby="warningHeading">
-          <h2 class="section-heading" id="warningHeading">Danh sách nội dung cảnh báo</h2>
+          <div class="panel-tools">
+            <h2 class="section-heading" id="warningHeading">Danh sách nội dung cảnh báo</h2>
+            <button class="text-button" id="toggleDismissedButton" type="button" hidden></button>
+          </div>
           <div class="warning-list" id="warningList" aria-live="polite"></div>
           <div class="empty-state" id="emptyState">Không còn nội dung cảnh báo trong danh sách.</div>
         </section>
@@ -216,25 +239,121 @@
 
   <div class="toast" id="toast" role="status" aria-live="polite"><strong id="toastTitle"></strong><span id="toastMessage"></span></div>
 
+  <dialog id="updateDialog" aria-labelledby="updateDialogTitle">
+    <form class="dialog-form" id="updateForm">
+      <h2 id="updateDialogTitle">Cập nhật nội dung thủ công</h2>
+      <p id="updateContentName"></p>
+      <label class="field-label" for="updateDate">Ngày cập nhật
+        <input id="updateDate" name="updateDate" type="date" required>
+      </label>
+      <label class="field-label" for="updateNote">Mô tả nội dung đã cập nhật
+        <textarea id="updateNote" name="updateNote" maxlength="500" required placeholder="Ví dụ: Xác nhận lại giá dịch vụ và thời gian áp dụng."></textarea>
+      </label>
+      <div class="dialog-actions">
+        <button class="button" id="cancelUpdateButton" type="button">Hủy</button>
+        <button class="button button-primary" type="submit">Lưu cập nhật</button>
+      </div>
+    </form>
+  </dialog>
+
   <script>
     (() => {
       const warningList = document.getElementById("warningList");
       const emptyState = document.getElementById("emptyState");
       const toast = document.getElementById("toast");
+      const scanButton = document.getElementById("scanButton");
+      const statusTitle = document.getElementById("aiStatusTitle");
+      const statusText = document.getElementById("aiStatusText");
+      const toggleDismissedButton = document.getElementById("toggleDismissedButton");
+      const updateDialog = document.getElementById("updateDialog");
+      const updateForm = document.getElementById("updateForm");
+      const updateDate = document.getElementById("updateDate");
+      const updateNote = document.getElementById("updateNote");
+      const storageKey = "careroute-freshness-state";
+      const dayMilliseconds = 24 * 60 * 60 * 1000;
       let toastTimer;
+      let records = [];
+      let dismissedIds = new Set();
+      let reminders = {};
+      let activeRecordId = null;
+      let showDismissed = false;
+      let scanTimer;
 
-      function renderWarnings(warnings) {
+      function readSavedState() {
+        try {
+          const saved = JSON.parse(window.localStorage.getItem(storageKey) || "{}");
+          if (saved === null || typeof saved !== "object" || Array.isArray(saved)) {
+            throw new Error("Dữ liệu lưu trữ không đúng định dạng.");
+          }
+          return saved;
+        } catch (error) {
+          console.error("Không thể đọc trạng thái giám sát đã lưu:", error);
+          showToast("Không thể đọc dữ liệu đã lưu", "Trang sẽ sử dụng dữ liệu mặc định cho phiên này.");
+          return {};
+        }
+      }
+
+      const savedState = readSavedState();
+      if (Array.isArray(savedState.dismissedIds)) dismissedIds = new Set(savedState.dismissedIds);
+      if (savedState.reminders && typeof savedState.reminders === "object" && !Array.isArray(savedState.reminders)) {
+        reminders = savedState.reminders;
+      }
+      const savedUpdates = savedState.updates && typeof savedState.updates === "object" && !Array.isArray(savedState.updates)
+        ? savedState.updates
+        : {};
+
+      function persistState() {
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify({
+            dismissedIds: [...dismissedIds],
+            reminders,
+            updates: Object.fromEntries(records
+              .filter((record) => record.manual_update_note)
+              .map((record) => [record.id, {
+                last_updated_at: record.last_updated_at,
+                manual_update_note: record.manual_update_note
+              }]))
+          }));
+          return true;
+        } catch (error) {
+          console.error("Không thể lưu trạng thái giám sát:", error);
+          showToast("Không thể lưu thay đổi", "Vui lòng kiểm tra cài đặt lưu trữ của trình duyệt và thử lại.");
+          return false;
+        }
+      }
+
+      function todayIsoDate() {
+        const now = new Date();
+        return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}-${String(now.getDate()).padStart(2, "0")}`;
+      }
+
+      function getAgeDays(dateString) {
+        const updatedAt = new Date(`${dateString}T00:00:00`);
+        const today = new Date(`${todayIsoDate()}T00:00:00`);
+        if (Number.isNaN(updatedAt.getTime()) || updatedAt > today) return null;
+        return Math.floor((today.getTime() - updatedAt.getTime()) / dayMilliseconds);
+      }
+
+      function isStale(record) {
+        const age = getAgeDays(record.last_updated_at);
+        return age !== null && age >= 90;
+      }
+
+      function renderWarnings() {
+        const warnings = records.filter((record) => isStale(record) && (showDismissed || !dismissedIds.has(record.id)));
         warningList.replaceChildren(...warnings.map((warning) => {
           const row = document.createElement("article");
           row.className = "warning-row";
-          row.dataset.content = warning.content_title;
+          row.dataset.id = warning.id;
+          const isDismissed = dismissedIds.has(warning.id);
+          if (isDismissed) row.classList.add("dismissed-row");
           const content = document.createElement("div");
           const title = document.createElement("h3");
           title.className = "content-title";
           title.textContent = warning.content_title;
           const source = document.createElement("p");
           source.className = "content-source";
-          source.textContent = warning.facility_name;
+          source.textContent = `${warning.content_type} · ${warning.facility_name}`;
           content.append(title, source);
 
           const dateCell = document.createElement("div");
@@ -255,27 +374,88 @@
           ageLabel.textContent = "Số ngày cũ";
           const ageValue = document.createElement("span");
           ageValue.className = "data-value strong";
-          ageValue.textContent = `${warning.age_days} ngày`;
+          ageValue.textContent = `${getAgeDays(warning.last_updated_at)} ngày`;
           ageCell.append(ageLabel, ageValue);
 
           const badge = document.createElement("span");
           badge.className = "warning-badge";
-          badge.textContent = warning.severity;
+          const critical = getAgeDays(warning.last_updated_at) > 180;
+          badge.classList.add(critical ? "critical" : "attention");
+          badge.textContent = critical ? "Nghiêm trọng" : "Cần lưu ý";
           const actions = document.createElement("div");
           actions.className = "row-actions";
-          [["update", "Yêu cầu cập nhật", "button button-update"], ["dismiss", "Bỏ qua", "button button-dismiss"]]
-            .forEach(([action, label, className]) => {
+          const actionOptions = isDismissed
+            ? [["restore", "Khôi phục", "button button-update"]]
+            : [
+              ["update", "Cập nhật thủ công", "button button-update"],
+              ["remind", reminders[warning.id] ? "Đã gửi nhắc nhở" : "Gửi nhắc nhở", `button button-remind${reminders[warning.id] ? " sent" : ""}`],
+              ["dismiss", "Bỏ qua", "button button-dismiss"]
+            ];
+          actionOptions.forEach(([action, label, className]) => {
               const button = document.createElement("button");
               button.type = "button";
               button.dataset.action = action;
               button.className = className;
               button.textContent = label;
+              if (action === "remind" && reminders[warning.id]) {
+                button.title = `Đã nhắc lần cuối: ${new Date(reminders[warning.id]).toLocaleString("vi-VN")}`;
+              }
               actions.append(button);
             });
           row.append(content, dateCell, ageCell, badge, actions);
           return row;
         }));
+        emptyState.textContent = showDismissed
+          ? "Không có cảnh báo nào trong danh sách này."
+          : "Không còn nội dung cảnh báo. Hãy quét lại để kiểm tra dữ liệu mới.";
         emptyState.classList.toggle("visible", warnings.length === 0);
+        const dismissedCount = records.filter((record) => isStale(record) && dismissedIds.has(record.id)).length;
+        toggleDismissedButton.hidden = dismissedCount === 0 && !showDismissed;
+        toggleDismissedButton.textContent = showDismissed
+          ? "Ẩn nội dung đã bỏ qua"
+          : `Hiện nội dung đã bỏ qua (${dismissedCount})`;
+        updateSummary();
+      }
+
+      function updateSummary() {
+        const groups = { fresh: 0, attention: 0, stale: 0 };
+        records.forEach((record) => {
+          const age = getAgeDays(record.last_updated_at);
+          if (age === null) return;
+          if (age < 90) groups.fresh += 1;
+          else if (age <= 180) groups.attention += 1;
+          else groups.stale += 1;
+        });
+        const total = groups.fresh + groups.attention + groups.stale;
+        const percentages = { fresh: 0, attention: 0, stale: 0 };
+        if (total > 0) {
+          const remainders = [];
+          ["fresh", "attention", "stale"].forEach((group) => {
+            const exactPercentage = groups[group] / total * 100;
+            percentages[group] = Math.floor(exactPercentage);
+            remainders.push({ group, remainder: exactPercentage - percentages[group] });
+          });
+          remainders.sort((left, right) => right.remainder - left.remainder);
+          for (let remaining = 100 - Object.values(percentages).reduce((sum, value) => sum + value, 0), index = 0;
+            remaining > 0;
+            remaining -= 1, index += 1) {
+            percentages[remainders[index % remainders.length].group] += 1;
+          }
+        }
+        ["fresh", "attention", "stale"].forEach((group) => {
+          const value = document.querySelector(`.meter-value.${group}`);
+          const track = document.querySelector(`.meter-track[aria-label="${{
+            fresh: "Nội dung mới",
+            attention: "Nội dung cần lưu ý",
+            stale: "Nội dung nghiêm trọng"
+          }[group]}"]`);
+          value.textContent = `${percentages[group]}%`;
+          track.setAttribute("aria-valuenow", String(percentages[group]));
+          track.querySelector(".meter-fill").style.width = `${percentages[group]}%`;
+        });
+        const activeWarnings = records.filter((record) => isStale(record) && !dismissedIds.has(record.id)).length;
+        statusTitle.textContent = "Trợ lý giám sát AI hoạt động tốt";
+        statusText.textContent = `Đang theo dõi ${total} nội dung/dịch vụ. Phát hiện ${activeWarnings} cảnh báo cần xử lý (từ 90 ngày chưa cập nhật).`;
       }
 
       function showToast(title, message) {
@@ -286,39 +466,118 @@
         toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 3200);
       }
 
+      function validateRecords(data) {
+        if (!Array.isArray(data)) throw new Error("freshness.json phải chứa một danh sách.");
+        data.forEach((record, index) => {
+          if (!record || typeof record !== "object" ||
+              typeof record.id !== "string" ||
+              typeof record.content_title !== "string" ||
+              typeof record.facility_name !== "string" ||
+              typeof record.content_type !== "string" ||
+              typeof record.last_updated_at !== "string" ||
+              getAgeDays(record.last_updated_at) === null) {
+            throw new Error(`Mục dữ liệu số ${index + 1} thiếu thông tin hợp lệ hoặc có ngày cập nhật không hợp lệ.`);
+          }
+        });
+      }
+
+      function openUpdateDialog(record) {
+        activeRecordId = record.id;
+        document.getElementById("updateContentName").textContent = `${record.content_title} — ${record.facility_name}`;
+        updateDate.value = todayIsoDate();
+        updateDate.max = todayIsoDate();
+        updateNote.value = record.manual_update_note || "";
+        updateDialog.showModal();
+        updateNote.focus();
+      }
+
       warningList.addEventListener("click", (event) => {
         const button = event.target.closest("button[data-action]");
         if (!button) return;
         const row = button.closest(".warning-row");
-        const content = row.dataset.content;
+        const record = records.find((item) => item.id === row.dataset.id);
+        if (!record) return;
 
         if (button.dataset.action === "update") {
-          showToast("Đã gửi yêu cầu cập nhật", `Cơ sở phụ trách "${content}" sẽ nhận được thông báo.`);
-        } else {
-          row.remove();
-          if (warningList.querySelectorAll(".warning-row").length === 0) {
-            emptyState.classList.add("visible");
+          openUpdateDialog(record);
+        } else if (button.dataset.action === "remind") {
+          const previousReminder = reminders[record.id];
+          reminders[record.id] = new Date().toISOString();
+          if (persistState()) {
+            renderWarnings();
+            showToast("Đã gửi nhắc nhở", `Đã ghi nhận nhắc nhở cập nhật cho ${record.facility_name}.`);
+          } else if (previousReminder) {
+            reminders[record.id] = previousReminder;
+          } else {
+            delete reminders[record.id];
           }
-          showToast("Đã bỏ qua cảnh báo", "Nội dung đã được gỡ khỏi danh sách cảnh báo.");
+        } else if (button.dataset.action === "dismiss") {
+          dismissedIds.add(record.id);
+          if (persistState()) {
+            renderWarnings();
+            showToast("Đã bỏ qua cảnh báo", "Cảnh báo được lưu vào danh sách đã bỏ qua và ẩn khỏi danh sách chính.");
+          } else {
+            dismissedIds.delete(record.id);
+          }
+        } else if (button.dataset.action === "restore") {
+          dismissedIds.delete(record.id);
+          if (persistState()) {
+            renderWarnings();
+            showToast("Đã khôi phục cảnh báo", "Nội dung đã trở lại danh sách cần xử lý.");
+          } else {
+            dismissedIds.add(record.id);
+          }
         }
       });
 
-      document.getElementById("scanButton").addEventListener("click", (event) => {
-        const button = event.currentTarget;
-        const title = document.getElementById("aiStatusTitle");
-        const text = document.getElementById("aiStatusText");
-        button.disabled = true;
-        button.textContent = "Đang quét...";
-        title.textContent = "AI đang quét dữ liệu";
-        text.textContent = "Hệ thống đang rà soát độ mới của nội dung y tế. Kết quả quét sẽ được cập nhật ngay sau khi hoàn tất.";
+      toggleDismissedButton.addEventListener("click", () => {
+        showDismissed = !showDismissed;
+        renderWarnings();
+      });
 
-        window.setTimeout(() => {
-          button.disabled = false;
-          button.textContent = "Quét lại toàn hệ thống";
-          title.textContent = "Trợ lý giám sát AI hoạt động tốt";
-          text.textContent = `Đã quét thành công 1.280 bài viết. ${warningList.querySelectorAll(".warning-row").length} nội dung cảnh báo đang hiển thị trong danh sách.`;
-          showToast("Quét hoàn tất", "Dữ liệu giám sát nội dung đã được cập nhật.");
-        }, 900);
+      document.getElementById("cancelUpdateButton").addEventListener("click", () => updateDialog.close());
+
+      updateForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const record = records.find((item) => item.id === activeRecordId);
+        if (!record || !updateForm.reportValidity()) return;
+        const previousValues = {
+          last_updated_at: record.last_updated_at,
+          manual_update_note: record.manual_update_note
+        };
+        record.last_updated_at = updateDate.value;
+        record.manual_update_note = updateNote.value.trim();
+        if (!record.manual_update_note) {
+          updateNote.setCustomValidity("Vui lòng mô tả nội dung đã cập nhật.");
+          updateNote.reportValidity();
+          updateNote.setCustomValidity("");
+          record.last_updated_at = previousValues.last_updated_at;
+          record.manual_update_note = previousValues.manual_update_note;
+          return;
+        }
+        if (!persistState()) {
+          record.last_updated_at = previousValues.last_updated_at;
+          record.manual_update_note = previousValues.manual_update_note;
+          return;
+        }
+        updateDialog.close();
+        showDismissed = false;
+        renderWarnings();
+        showToast("Đã cập nhật nội dung", "Ngày cập nhật đã được ghi nhận; cảnh báo sẽ xuất hiện lại khi nội dung cũ từ 90 ngày.");
+      });
+
+      scanButton.addEventListener("click", () => {
+        window.clearTimeout(scanTimer);
+        scanButton.disabled = true;
+        scanButton.textContent = "Đang quét...";
+        statusTitle.textContent = "AI đang quét dữ liệu";
+        statusText.textContent = "Đang tính thời gian kể từ lần cập nhật gần nhất và phân loại nội dung/dịch vụ cần chú ý.";
+        scanTimer = window.setTimeout(() => {
+          renderWarnings();
+          scanButton.disabled = false;
+          scanButton.textContent = "Quét lại toàn hệ thống";
+          showToast("Quét hoàn tất", `Tìm thấy ${records.filter((record) => isStale(record) && !dismissedIds.has(record.id)).length} cảnh báo cần xử lý.`);
+        }, 500);
       });
 
       fetch("../assets/data/freshness.json")
@@ -326,13 +585,19 @@
           if (!response.ok) throw new Error(`HTTP ${response.status}`);
           return response.json();
         })
-        .then((warnings) => {
-          if (!Array.isArray(warnings)) throw new Error("freshness.json phải chứa một danh sách.");
-          renderWarnings(warnings);
+        .then((data) => {
+          validateRecords(data);
+          records = data.map((record) => ({
+            ...record,
+            ...(savedUpdates[record.id] || {})
+          }));
+          renderWarnings();
         })
         .catch((error) => {
           console.error("Không thể tải dữ liệu giám sát nội dung:", error);
-          emptyState.textContent = "Không thể tải danh sách cảnh báo. Vui lòng thử tải lại trang.";
+          statusTitle.textContent = "Không thể tải dữ liệu giám sát";
+          statusText.textContent = "Vui lòng kiểm tra kết nối dữ liệu và tải lại trang để quét nội dung.";
+          emptyState.textContent = `Không thể tải danh sách cảnh báo: ${error.message}`;
           emptyState.classList.add("visible");
         });
     })();
