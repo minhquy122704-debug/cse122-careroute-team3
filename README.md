@@ -43,8 +43,8 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 | 14 | Trang báo lỗi không tìm thấy trang | `404.html` | Dùng chung | Cả nhóm |
 
 ## Tính năng AI
-- **AI-1 (Care Information Router):** Phân tích triệu chứng hoặc từ khóa do người dân nhập vào để điều phối, gợi ý danh mục dịch vụ và cơ sở y tế phù hợp nhất.
-- **AI-2 (Checklist Generator):** Tự động sinh danh sách các giấy tờ, thủ tục và bước chuẩn bị cần thiết cho người dân dựa trên dịch vụ y tế đã chọn.
+- *AI-1 (Care Information Router):* Phân tích triệu chứng hoặc từ khóa do người dân nhập vào để điều phối, gợi ý danh mục dịch vụ và cơ sở y tế phù hợp nhất.
+- *AI-2 (Checklist Generator):* Tự động sinh danh sách các giấy tờ, thủ tục và bước chuẩn bị cần thiết cho người dân dựa trên dịch vụ y tế đã chọn.
 - **AI-3 (Freshness Assistant):** Hỗ trợ biên tập viên quét các bài viết/hướng dẫn cũ, lâu ngày chưa cập nhật để đưa ra cảnh báo và đề xuất chỉnh sửa.
 
 ## Công nghệ
