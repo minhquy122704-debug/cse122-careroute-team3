@@ -177,16 +177,16 @@
   <div class="app">
     <aside class="sidebar" aria-label="Điều hướng cơ sở y tế">
       <a class="facility-brand" href="facility-dashboard.html" aria-label="Bệnh viện Đa khoa Tâm Anh - Bảng điều khiển">
-        <span class="facility-logo"><img class="icon" src="assets/icons/hospital-svgrepo-com.svg" alt=""></span>
+        <span class="facility-logo"><img class="icon" src="../assets/icons/hospital-svgrepo-com.svg" alt=""></span>
         <span><span class="facility-name">Bệnh viện Đa khoa Tâm Anh</span><span class="facility-role">Quản trị viên</span></span>
       </a>
       <nav class="nav-list" aria-label="Menu chính">
-        <a class="nav-link" href="facility-dashboard.html"><img class="icon" src="assets/icons/layout-grid-1-svgrepo-com.svg" alt=""><span>Bảng điều khiển</span></a>
-        <a class="nav-link active" href="facility-service-management.html" aria-current="page"><img class="icon" src="assets/icons/briefcase-svgrepo-com.svg" alt=""><span>Quản lý Dịch vụ</span></a>
-        <a class="nav-link" href="facility-guidance-management.html"><img class="icon" src="assets/icons/map-svgrepo-com.svg" alt=""><span>Quy trình hướng dẫn</span></a>
-        <a class="nav-link" href="facility-feedback-review.html"><img class="icon" src="assets/icons/message-circle-svgrepo-com.svg" alt=""><span>Phản hồi &amp; Đánh giá</span></a>
+        <a class="nav-link" href="facility-dashboard.html"><img class="icon" src="../assets/icons/layout-grid-1-svgrepo-com.svg" alt=""><span>Bảng điều khiển</span></a>
+        <a class="nav-link active" href="facility-service-management.html" aria-current="page"><img class="icon" src="../assets/icons/briefcase-svgrepo-com.svg" alt=""><span>Quản lý Dịch vụ</span></a>
+        <a class="nav-link" href="facility-guidance-management.html"><img class="icon" src="../assets/icons/map-svgrepo-com.svg" alt=""><span>Quy trình hướng dẫn</span></a>
+        <a class="nav-link" href="facility-feedback-review.html"><img class="icon" src="../assets/icons/message-circle-svgrepo-com.svg" alt=""><span>Phản hồi &amp; Đánh giá</span></a>
       </nav>
-      <div class="sidebar-footer"><a href="login.html"><img class="icon" src="assets/icons/user-svgrepo-com.svg" alt="">Đăng xuất</a></div>
+      <div class="sidebar-footer"><a href="login.html"><img class="icon" src="../assets/icons/user-svgrepo-com.svg" alt="">Đăng xuất</a></div>
     </aside>
 
     <main class="main">
@@ -206,7 +206,7 @@
           <div class="filters">
             <label class="search-wrap">
               <span class="visually-hidden" hidden>Tìm dịch vụ</span>
-              <img class="icon" src="assets/icons/list-svgrepo-com.svg" alt="">
+              <img class="icon" src="../assets/icons/list-svgrepo-com.svg" alt="">
               <input class="search-input" id="searchInput" type="search" placeholder="Tìm kiếm dịch vụ..." aria-label="Tìm kiếm dịch vụ">
             </label>
             <label>
@@ -394,7 +394,7 @@
         button.dataset.id = serviceId;
         const icon = document.createElement("img");
         icon.className = "icon";
-        icon.src = `assets/icons/${iconName}`;
+        icon.src = `../assets/icons/${iconName}`;
         icon.alt = "";
         button.append(icon);
         return button;
