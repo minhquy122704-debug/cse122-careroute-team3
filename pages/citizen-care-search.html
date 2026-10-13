@@ -34,6 +34,10 @@
             flex-direction: column;
             min-height: 100vh;
         }
+        body.page-leaving { opacity: 0; transition: opacity .18s ease; }
+        @media (prefers-reduced-motion: reduce) {
+            body.page-leaving { transition-duration: .01ms; }
+        }
 
         /* TOP HEADER */
         header {
@@ -1723,7 +1727,6 @@
                 }
                 const adminUser = { name: 'Phạm Minh Quân (Admin)', email: identifier || 'admin@careroute.vn', role: 'admin', letters: 'AD' };
                 localStorage.setItem('careroute_user', JSON.stringify(adminUser));
-                showToast('🔑 Đăng nhập Quản trị viên thành công!');
             } else {
                 const nameParts = identifier.split('@')[0];
                 const displayName = nameParts.charAt(0).toUpperCase() + nameParts.slice(1);
@@ -1740,10 +1743,30 @@
                     letters: displayName.substring(0, 2).toUpperCase()
                 };
                 localStorage.setItem('careroute_user', JSON.stringify(user));
-                showToast(`✅ Đăng nhập ${roleNames[currentLoginRole]} thành công!`);
             }
             closeAuthModal();
-            checkUserSession();
+            if (currentLoginRole === 'user') {
+                checkUserSession();
+                showToast('✅ Đăng nhập Người dân thành công!');
+                return;
+            }
+            navigateToRole(currentLoginRole);
+        }
+
+        function navigateToRole(role) {
+            const destinations = {
+                facility: 'facility-dashboard.html',
+                reviewer: 'reviewer-review-queue.html',
+                admin: 'admin-dashboard.html'
+            };
+            const destination = destinations[role];
+            if (!destination) {
+                console.error('Không có giao diện đích cho vai trò:', role);
+                showToast('Không tìm thấy giao diện phù hợp với vai trò đã chọn.');
+                return;
+            }
+            document.body.classList.add('page-leaving');
+            window.setTimeout(() => window.location.assign(destination), 180);
         }
 
         function handleRegister(e) {
