@@ -370,21 +370,12 @@
 
       document.querySelectorAll(".nav-link").forEach((link) => {
         link.addEventListener("click", (event) => {
-          if (link.getAttribute("href").startsWith("#")) {
-            document.querySelectorAll(".nav-link").forEach((item) => {
-              item.classList.toggle("active", item === link);
-              if (item === link) item.setAttribute("aria-current", "page");
-              else item.removeAttribute("aria-current");
-            });
-            return;
-          }
-          try {
-            event.preventDefault();
-            showToast("Màn hình đang được hoàn thiện", `${link.textContent.trim()} sẽ sẵn sàng khi phần quản lý được kết nối.`);
-          } catch (error) {
-            console.error("Không thể mở mục điều hướng:", error);
-            window.location.assign(link.href);
-          }
+          if (!link.getAttribute("href").startsWith("#")) return;
+          document.querySelectorAll(".nav-link").forEach((item) => {
+            item.classList.toggle("active", item === link);
+            if (item === link) item.setAttribute("aria-current", "page");
+            else item.removeAttribute("aria-current");
+          });
         });
       });
 
