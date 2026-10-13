@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f4f6f8">
+  <title>Quản lý Hướng dẫn Quy trình - CareRoute</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20283a;
+      --muted: #738097;
+      --line: #e1e7ef;
+      --teal: #559b8f;
+      --teal-dark: #408579;
+      --page: #f6f8fa;
+      --white: #fff;
+      font-family: "Be Vietnam Pro", Inter, "Segoe UI", Arial, sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { min-width: 320px; min-height: 100vh; margin: 0; padding: 22px; color: var(--ink); background: #f2f4f6; font-size: 13px; }
+    button, input, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button { color: inherit; }
+    a { color: inherit; }
+    [hidden] { display: none !important; }
+
+    .app { display: flex; width: min(100%, 1440px); min-height: calc(100vh - 44px); margin: 0 auto; overflow: hidden; background: var(--page); box-shadow: 0 1px 5px #182e3010; }
+    .sidebar { width: 190px; flex: 0 0 190px; padding: 17px 13px; border-right: 1px solid #edf0f4; background: var(--white); }
+    .facility-brand { display: flex; min-width: 0; align-items: center; gap: 9px; margin: 0 0 22px; padding: 0 5px; text-decoration: none; }
+    .facility-logo { display: grid; width: 32px; height: 32px; flex: 0 0 32px; place-items: center; border: 1px solid #edf2f4; border-radius: 8px; background: #f5fafb; }
+    .icon { display: block; width: 17px; height: 17px; flex: 0 0 auto; object-fit: contain; filter: brightness(0) saturate(100%) invert(35%) sepia(11%) saturate(1000%) hue-rotate(184deg) brightness(95%) contrast(90%); }
+    .facility-logo .icon { width: 16px; height: 16px; filter: brightness(0) saturate(100%) invert(54%) sepia(13%) saturate(1037%) hue-rotate(151deg) brightness(91%) contrast(88%); }
+    .facility-name { display: block; overflow: hidden; margin-bottom: 3px; color: #283145; font-size: 10px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .facility-role { display: block; color: #78849a; font-size: 9px; }
+    .nav-list { display: grid; gap: 5px; }
+    .nav-link { display: flex; min-height: 36px; align-items: center; gap: 9px; padding: 0 9px; border-radius: 7px; color: #39445a; font-size: 10px; font-weight: 550; text-decoration: none; transition: color .15s, background .15s; }
+    .nav-link .icon { width: 15px; height: 15px; }
+    .nav-link:hover { background: #f5f8f8; }
+    .nav-link.active { color: #3f9286; background: #eff9f7; font-weight: 650; }
+    .nav-link.active .icon { filter: brightness(0) saturate(100%) invert(52%) sepia(13%) saturate(975%) hue-rotate(117deg) brightness(89%) contrast(86%); }
+    .sidebar-footer { margin: 19px 6px 0; padding-top: 13px; border-top: 1px solid #edf0f3; }
+    .sidebar-footer a { display: inline-flex; align-items: center; gap: 7px; color: #718097; font-size: 9px; text-decoration: none; }
+    .sidebar-footer .icon { width: 13px; height: 13px; }
+
+    .main { display: flex; min-width: 0; flex: 1; flex-direction: column; }
+    .page-header { display: flex; min-height: 86px; align-items: center; justify-content: space-between; gap: 16px; padding: 16px 23px; border-bottom: 1px solid var(--line); background: #f8fafb; }
+    .page-heading h1 { margin: 0 0 4px; color: #242c3d; font-size: 18px; font-weight: 750; letter-spacing: -.45px; line-height: 1.3; }
+    .page-heading p { margin: 0; color: #69758c; font-size: 10px; line-height: 1.5; }
+    .primary-button, .secondary-button, .icon-button { display: inline-flex; min-height: 32px; align-items: center; justify-content: center; gap: 7px; padding: 0 11px; border: 1px solid transparent; border-radius: 7px; font-size: 10px; font-weight: 650; cursor: pointer; transition: background .15s, border-color .15s, color .15s; }
+    .primary-button { color: #fff; background: var(--teal); }
+    .primary-button:hover { background: var(--teal-dark); }
+    .secondary-button { border-color: var(--line); color: #536077; background: #fff; }
+    .secondary-button:hover { border-color: #c9d5df; background: #f8fafb; }
+    .primary-button .icon { width: 13px; height: 13px; filter: brightness(0) invert(1); }
+
+    .workspace { display: grid; min-height: 0; flex: 1; grid-template-columns: minmax(0, 1.48fr) minmax(270px, .92fr); gap: 18px; padding: 21px 23px 23px; }
+    .procedure-card, .editor-card { min-width: 0; border: 1px solid var(--line); border-radius: 11px; background: #fff; }
+    .procedure-card { display: flex; min-height: 450px; flex-direction: column; padding: 14px 15px 13px; border-color: #80b8ae; }
+    .procedure-header { display: flex; min-height: 24px; align-items: center; gap: 8px; }
+    .procedure-select { max-width: min(48%, 210px); min-height: 28px; padding: 0 7px; border: 1px solid #e2e8ef; border-radius: 6px; color: #526077; background: #fff; font-size: 9px; }
+    .procedure-toggle { display: flex; min-width: 0; flex: 1; align-items: center; gap: 9px; padding: 2px 0; border: 0; color: #273146; background: transparent; text-align: left; cursor: pointer; }
+    .procedure-title { overflow: hidden; font-size: 11px; font-weight: 700; text-overflow: ellipsis; white-space: nowrap; }
+    .auto-badge { flex: 0 0 auto; padding: 4px 8px; border-radius: 5px; color: #35936b; background: #e0f8eb; font-size: 8px; font-weight: 650; white-space: nowrap; }
+    .procedure-chevron { width: 16px; height: 16px; flex: 0 0 auto; transition: transform .18s; }
+    .procedure-card.collapsed .procedure-chevron { transform: rotate(180deg); }
+    .steps-list { display: grid; align-content: start; gap: 8px; margin-top: 11px; }
+    .step-row { display: grid; min-height: 37px; grid-template-columns: 18px 22px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 4px 7px; border: 1px solid transparent; border-radius: 7px; background: #f7f9fb; cursor: grab; }
+    .step-row:hover { border-color: #e5ebf0; background: #f4f7f9; }
+    .step-row.selected { border-color: #dcece8; background: #f5f9f8; }
+    .step-row.dragging { opacity: .45; }
+    .step-row.drop-target { border-color: var(--teal); }
+    .drag-handle { width: 15px; height: 17px; border: 0; color: #93a0b0; background: transparent; cursor: grab; }
+    .drag-handle::before { display: block; content: "≡"; font-size: 16px; line-height: 15px; transform: rotate(90deg); }
+    .step-number { display: grid; width: 18px; height: 18px; place-items: center; border-radius: 50%; color: #fff; background: var(--teal); font-size: 9px; font-weight: 700; }
+    .step-title-button { min-width: 0; overflow: hidden; padding: 4px 0; border: 0; color: #30394b; background: transparent; font-size: 10px; font-weight: 600; text-align: left; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+    .step-actions { display: flex; gap: 4px; }
+    .icon-button { width: 23px; min-height: 25px; padding: 0; border-radius: 5px; color: #68748a; background: transparent; }
+    .icon-button:hover { color: var(--teal-dark); background: #eaf5f2; }
+    .icon-button.delete:hover { color: #bf4f4b; background: #fff0ef; }
+    .icon-button .icon { width: 13px; height: 13px; }
+    .steps-empty { padding: 22px 10px; color: #8490a1; font-size: 10px; text-align: center; }
+    .procedure-footer { display: flex; justify-content: flex-start; margin-top: auto; padding-top: 8px; border-top: 1px solid #e5eaf0; }
+    .outline-button { display: inline-flex; min-height: 26px; align-items: center; gap: 6px; padding: 0 10px; border: 1px solid #79b3a9; border-radius: 6px; color: #418f83; background: #fff; font-size: 9px; font-weight: 600; cursor: pointer; }
+    .outline-button:hover { background: #f1f9f7; }
+    .procedure-card.collapsed .steps-list, .procedure-card.collapsed .procedure-footer { display: none; }
+
+    .editor-card { display: flex; min-height: 450px; flex-direction: column; padding: 16px 16px 14px; }
+    .editor-card h2 { margin: 0 0 14px; color: #283145; font-size: 12px; font-weight: 700; }
+    .editor-empty { display: grid; flex: 1; place-items: center; color: #8490a1; font-size: 10px; text-align: center; }
+    .editor-form { display: flex; min-height: 0; flex: 1; flex-direction: column; gap: 12px; }
+    .form-field { display: grid; gap: 6px; }
+    .form-field label { color: #606c81; font-size: 9px; font-weight: 650; }
+    .field-control { width: 100%; min-height: 32px; padding: 7px 9px; border: 1px solid #e2e8ef; border-radius: 6px; outline: 0; color: #354158; background: #f8fafc; font-size: 10px; }
+    .description-field { display: flex; min-height: 0; flex: 1; flex-direction: column; }
+    textarea.field-control { min-height: 180px; flex: 1; resize: vertical; line-height: 1.55; }
+    .field-control:focus { border-color: #77b5a9; box-shadow: 0 0 0 3px #559b8f1c; }
+    .editor-actions { display: flex; justify-content: flex-end; gap: 8px; margin-top: auto; padding-top: 2px; }
+    .toast { position: fixed; z-index: 20; right: 18px; bottom: 18px; max-width: min(360px, calc(100vw - 32px)); padding: 10px 14px; border: 1px solid #d3e9e4; border-radius: 8px; color: #286f64; background: #f0faf7; box-shadow: 0 8px 28px #1b2e3517; opacity: 0; pointer-events: none; transform: translateY(9px); transition: opacity .2s, transform .2s; }
+    .toast.visible { opacity: 1; transform: translateY(0); }
+    .toast strong { display: block; margin-bottom: 2px; font-size: 11px; }
+    .toast span { font-size: 10px; }
+    .modal-backdrop { position: fixed; z-index: 10; inset: 0; display: grid; place-items: center; overflow-y: auto; padding: 20px; background: rgb(21 27 38 / 48%); }
+    .modal { width: min(100%, 420px); overflow: hidden; border: 1px solid #e7ebf0; border-radius: 11px; background: #fff; box-shadow: 0 20px 70px #10182740; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 15px 17px; border-bottom: 1px solid #edf0f4; }
+    .modal-header h2 { margin: 0; color: #273146; font-size: 13px; font-weight: 750; }
+    .close-button { display: grid; width: 26px; height: 26px; place-items: center; padding: 0; border: 0; border-radius: 6px; color: #778399; background: transparent; font-size: 19px; cursor: pointer; }
+    .close-button:hover { color: #354158; background: #f2f5f7; }
+    .modal-form { display: grid; gap: 13px; padding: 16px 17px 17px; }
+    .checkbox-line { display: flex; align-items: center; gap: 8px; color: #536077; font-size: 10px; }
+    .checkbox-line input { accent-color: var(--teal); }
+    .modal-actions { display: flex; justify-content: flex-end; gap: 8px; }
+    .primary-button:focus-visible, .secondary-button:focus-visible, .icon-button:focus-visible, .outline-button:focus-visible, .close-button:focus-visible, .nav-link:focus-visible, .procedure-toggle:focus-visible, .step-title-button:focus-visible, .drag-handle:focus-visible, .sidebar-footer a:focus-visible { outline: 2px solid #84bdb3; outline-offset: 3px; }
+
+    @media (min-width: 1200px) {
+      body { padding: 26px; }
+      .app { min-height: calc(100vh - 52px); }
+      .sidebar { width: 205px; flex-basis: 205px; padding: 19px 14px; }
+      .page-header { min-height: 88px; padding-right: 25px; padding-left: 25px; }
+      .workspace { gap: 18px; padding: 23px 24px 24px; }
+      .procedure-card, .editor-card { min-height: 480px; }
+    }
+    @media (max-width: 820px) {
+      body { padding: 12px; }
+      .app { min-height: calc(100vh - 24px); }
+      .sidebar { width: 166px; flex-basis: 166px; padding-right: 10px; padding-left: 10px; }
+      .workspace { grid-template-columns: minmax(0, 1.25fr) minmax(240px, .9fr); gap: 12px; padding-right: 15px; padding-left: 15px; }
+      .procedure-card, .editor-card { padding-right: 12px; padding-left: 12px; }
+      .procedure-header { flex-wrap: wrap; }
+    }
+    @media (max-width: 640px) {
+      body { padding: 0; background: var(--page); }
+      .app { min-height: 100vh; flex-direction: column; }
+      .sidebar { display: flex; width: 100%; flex: 0 0 auto; align-items: center; gap: 13px; padding: 10px 13px; border-right: 0; border-bottom: 1px solid var(--line); }
+      .facility-brand { flex: 0 1 170px; margin: 0; padding: 0; }
+      .nav-list { display: flex; min-width: 0; flex: 1; gap: 5px; overflow-x: auto; }
+      .nav-link { min-width: 35px; justify-content: center; gap: 0; padding: 0 9px; }
+      .nav-link span:last-child { display: none; }
+      .nav-link .icon { width: 16px; height: 16px; }
+      .sidebar-footer { display: none; }
+      .page-header { min-height: 74px; padding: 12px 15px; }
+      .page-heading h1 { font-size: 16px; }
+      .page-heading p { max-width: 270px; font-size: 9px; }
+      .page-header > .primary-button { min-height: 30px; gap: 5px; padding: 0 8px; font-size: 9px; white-space: nowrap; }
+      .workspace { grid-template-columns: 1fr; gap: 12px; padding: 13px; }
+      .procedure-card { min-height: 320px; }
+      .editor-card { min-height: 355px; }
+      textarea.field-control { min-height: 120px; }
+    }
+    @media (max-width: 380px) {
+      .sidebar { align-items: flex-start; flex-direction: column; gap: 9px; }
+      .facility-brand { flex-basis: auto; }
+      .nav-list { width: 100%; flex: none; }
+      .nav-link { min-height: 33px; }
+      .page-heading p { max-width: 180px; }
+      .procedure-title { max-width: 100%; }
+      .auto-badge { margin-left: 27px; }
+      .procedure-header { align-items: flex-start; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" aria-label="Điều hướng cơ sở y tế">
+      <a class="facility-brand" href="facility-dashboard.html" aria-label="Bệnh viện Đa khoa Tâm Anh - Bảng điều khiển">
+        <span class="facility-logo"><img class="icon" src="assets/icons/hospital-svgrepo-com.svg" alt=""></span>
+        <span><span class="facility-name">Bệnh viện Đa khoa Tâm Anh</span><span class="facility-role">Quản trị viên</span></span>
+      </a>
+      <nav class="nav-list" aria-label="Menu chính">
+        <a class="nav-link" href="facility-dashboard.html"><img class="icon" src="assets/icons/layout-grid-1-svgrepo-com.svg" alt=""><span>Bảng điều khiển</span></a>
+        <a class="nav-link" href="facility-service-management.html"><img class="icon" src="assets/icons/briefcase-svgrepo-com.svg" alt=""><span>Quản lý Dịch vụ</span></a>
+        <a class="nav-link active" href="facility-guidance-management.html" aria-current="page"><img class="icon" src="assets/icons/map-svgrepo-com.svg" alt=""><span>Quy trình hướng dẫn</span></a>
+        <a class="nav-link" href="facility-feedback-review.html"><img class="icon" src="assets/icons/message-circle-svgrepo-com.svg" alt=""><span>Phản hồi &amp; Đánh giá</span></a>
+      </nav>
+      <div class="sidebar-footer"><a href="login.html"><img class="icon" src="assets/icons/user-svgrepo-com.svg" alt="">Đăng xuất</a></div>
+    </aside>
+
+    <main class="main">
+      <header class="page-header">
+        <div class="page-heading">
+          <h1>Quản Lý Hướng Dẫn Quy Trình</h1>
+          <p>Kiến tạo luồng hướng dẫn trực quan để bệnh nhân chuẩn bị tốt nhất trước khi đến khám.</p>
+        </div>
+        <button class="primary-button" id="createProcedureButton" type="button">
+          <span aria-hidden="true">+</span> Tạo quy trình mới
+        </button>
+      </header>
+
+      <section class="workspace" aria-label="Biên tập quy trình hướng dẫn">
+        <article class="procedure-card" id="procedureCard">
+          <header class="procedure-header">
+            <button class="procedure-toggle" id="procedureToggle" type="button" aria-expanded="true">
+              <span class="procedure-title" id="procedureTitle"></span>
+              <span class="auto-badge" id="autoBadge" hidden>Áp dụng tự động</span>
+            </button>
+            <label id="procedureSelectLabel" hidden>
+              <span hidden>Chọn quy trình</span>
+              <select class="procedure-select" id="procedureSelect" aria-label="Chọn quy trình"></select>
+            </label>
+            <button class="icon-button" id="collapseButton" type="button" aria-label="Thu gọn quy trình" title="Thu gọn quy trình">
+              <svg class="procedure-chevron" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m5.5 12 4.5-4.5 4.5 4.5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </header>
+          <div class="steps-list" id="stepsList" aria-label="Các bước trong quy trình"></div>
+          <div class="steps-empty" id="stepsEmpty" hidden>Quy trình chưa có bước nào. Hãy thêm bước đầu tiên.</div>
+          <footer class="procedure-footer">
+            <button class="outline-button" id="addStepButton" type="button"><span aria-hidden="true">+</span> Thêm bước mới</button>
+          </footer>
+        </article>
+
+        <aside class="editor-card" aria-label="Chỉnh sửa bước quy trình">
+          <h2 id="editorTitle">Chỉnh sửa bước</h2>
+          <div class="editor-empty" id="editorEmpty" hidden>Chọn một bước trong quy trình để chỉnh sửa.</div>
+          <form class="editor-form" id="stepForm">
+            <div class="form-field">
+              <label for="stepName">Tiêu đề bước</label>
+              <input class="field-control" id="stepName" type="text" maxlength="120" autocomplete="off" required>
+            </div>
+            <div class="form-field description-field">
+              <label for="stepDescription">Mô tả chi tiết</label>
+              <textarea class="field-control" id="stepDescription" maxlength="1000"></textarea>
+            </div>
+            <div class="editor-actions">
+              <button class="primary-button" type="submit">Cập nhật</button>
+            </div>
+          </form>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <div class="modal-backdrop" id="procedureModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="procedureModalTitle">
+      <header class="modal-header">
+        <h2 id="procedureModalTitle">Tạo quy trình mới</h2>
+        <button class="close-button" id="closeProcedureModal" type="button" aria-label="Đóng hộp thoại">×</button>
+      </header>
+      <form class="modal-form" id="procedureForm">
+        <div class="form-field">
+          <label for="newProcedureTitle">Tên quy trình</label>
+          <input class="field-control" id="newProcedureTitle" type="text" maxlength="120" placeholder="Ví dụ: Quy trình khám tổng quát" required>
+        </div>
+        <label class="checkbox-line"><input id="newProcedureAuto" type="checkbox"> Áp dụng tự động cho dịch vụ phù hợp</label>
+        <div class="modal-actions">
+          <button class="secondary-button" id="cancelProcedureModal" type="button">Hủy</button>
+          <button class="primary-button" type="submit">Tạo quy trình</button>
+        </div>
+      </form>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"><strong id="toastTitle"></strong><span id="toastMessage"></span></div>
+
+  <script>
+    (() => {
+      const storageKey = "careroute.facility.guidance.v1";
+      const defaultData = {
+        procedures: [{
+          id: "procedure-mri",
+          title: "Quy trình chụp MRI thần kinh sọ não",
+          autoApply: true,
+          steps: [
+            { id: "step-registration", title: "Đăng ký hồ sơ tại quầy tiếp đón", description: "Vui lòng mang theo giấy tờ tùy thân, thẻ bảo hiểm (nếu có) và phiếu chỉ định để đăng ký tại quầy tiếp đón." },
+            { id: "step-metal", title: "Tháo bỏ trang sức & vật dụng kim loại tại phòng chuẩn bị", description: "Yêu cầu tháo đồng hồ, chìa khóa, điện thoại để tránh ảnh hưởng từ trường mạnh của máy chụp MRI." }
+          ]
+        }]
+      };
+      const procedureCard = document.getElementById("procedureCard");
+      const stepsList = document.getElementById("stepsList");
+      const stepForm = document.getElementById("stepForm");
+      const procedureModal = document.getElementById("procedureModal");
+      const toast = document.getElementById("toast");
+      let data = loadData();
+      let activeProcedureId = data.procedures[0] ? data.procedures[0].id : null;
+      let selectedStepId = data.procedures[0] && data.procedures[0].steps[1]
+        ? data.procedures[0].steps[1].id
+        : (data.procedures[0] && data.procedures[0].steps[0] ? data.procedures[0].steps[0].id : null);
+      let toastTimer;
+      let dragStepId = null;
+
+      function loadData() {
+        try {
+          const saved = window.localStorage.getItem(storageKey);
+          if (saved === null) return defaultData;
+          const parsed = JSON.parse(saved);
+          if (!parsed || !Array.isArray(parsed.procedures) || parsed.procedures.some((procedure) =>
+            !procedure || typeof procedure.id !== "string" || typeof procedure.title !== "string" ||
+            typeof procedure.autoApply !== "boolean" || !Array.isArray(procedure.steps) ||
+            procedure.steps.some((step) => !step || typeof step.id !== "string" ||
+              typeof step.title !== "string" || typeof step.description !== "string"))) {
+            throw new Error("Dữ liệu quy trình đã lưu không đúng định dạng.");
+          }
+          return parsed;
+        } catch (error) {
+          console.error("Không thể tải quy trình đã lưu:", error);
+          window.setTimeout(() => showToast("Không thể tải dữ liệu", "Quy trình mẫu được hiển thị; thay đổi trước đó có thể chưa được khôi phục."), 0);
+          return defaultData;
+        }
+      }
+
+      function persist(nextData) {
+        try {
+          window.localStorage.setItem(storageKey, JSON.stringify(nextData));
+          data = nextData;
+          return true;
+        } catch (error) {
+          console.error("Không thể lưu quy trình:", error);
+          showToast("Không thể lưu dữ liệu", "Trình duyệt không cho phép lưu thay đổi. Vui lòng kiểm tra quyền lưu trữ.");
+          return false;
+        }
+      }
+
+      function showToast(title, message) {
+        document.getElementById("toastTitle").textContent = title;
+        document.getElementById("toastMessage").textContent = message;
+        toast.classList.add("visible");
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 3200);
+      }
+
+      function activeProcedure() {
+        return data.procedures.find((procedure) => procedure.id === activeProcedureId) || null;
+      }
+
+      function createStepButton(label, iconName, action, stepId) {
+        const button = document.createElement("button");
+        button.className = `icon-button${action === "delete" ? " delete" : ""}`;
+        button.type = "button";
+        button.dataset.action = action;
+        button.dataset.id = stepId;
+        button.setAttribute("aria-label", `${label} bước`);
+        button.title = `${label} bước`;
+        const icon = document.createElement("img");
+        icon.className = "icon";
+        icon.src = `assets/icons/${iconName}`;
+        icon.alt = "";
+        button.append(icon);
+        return button;
+      }
+
+      function render() {
+        const procedure = activeProcedure();
+        document.getElementById("procedureTitle").textContent = procedure ? procedure.title : "Chưa có quy trình";
+        document.getElementById("autoBadge").hidden = !procedure || !procedure.autoApply;
+        const procedureSelect = document.getElementById("procedureSelect");
+        document.getElementById("procedureSelectLabel").hidden = data.procedures.length < 2;
+        procedureSelect.replaceChildren(...data.procedures.map((item) => {
+          const option = document.createElement("option");
+          option.value = item.id;
+          option.textContent = item.title;
+          option.selected = item.id === activeProcedureId;
+          return option;
+        }));
+        stepsList.replaceChildren();
+        if (procedure) {
+          procedure.steps.forEach((step, index) => {
+            const row = document.createElement("div");
+            row.className = `step-row${step.id === selectedStepId ? " selected" : ""}`;
+            row.draggable = true;
+            row.dataset.id = step.id;
+            row.setAttribute("role", "listitem");
+            const handle = document.createElement("button");
+            handle.className = "drag-handle";
+            handle.type = "button";
+            handle.setAttribute("aria-label", `Kéo để sắp xếp bước ${index + 1}`);
+            handle.tabIndex = -1;
+            const number = document.createElement("span");
+            number.className = "step-number";
+            number.textContent = String(index + 1);
+            const title = document.createElement("button");
+            title.className = "step-title-button";
+            title.type = "button";
+            title.dataset.action = "select";
+            title.dataset.id = step.id;
+            title.textContent = step.title;
+            const actions = document.createElement("div");
+            actions.className = "step-actions";
+            actions.append(
+              createStepButton("Chỉnh sửa", "edit-square-svgrepo-com.svg", "edit", step.id),
+              createStepButton("Xóa", "delete-bin-line-svgrepo-com.svg", "delete", step.id)
+            );
+            row.append(handle, number, title, actions);
+            stepsList.append(row);
+          });
+        }
+        const hasSteps = Boolean(procedure && procedure.steps.length);
+        document.getElementById("stepsEmpty").hidden = hasSteps;
+        stepsList.hidden = !hasSteps;
+        renderEditor();
+      }
+
+      function renderEditor() {
+        const procedure = activeProcedure();
+        const step = procedure && procedure.steps.find((item) => item.id === selectedStepId);
+        const editorForm = document.getElementById("stepForm");
+        document.getElementById("editorEmpty").hidden = Boolean(step);
+        editorForm.hidden = !step;
+        if (!step) {
+          document.getElementById("editorTitle").textContent = "Chỉnh sửa bước";
+          return;
+        }
+        const index = procedure.steps.indexOf(step);
+        document.getElementById("editorTitle").textContent = `Chỉnh sửa bước ${index + 1}`;
+        document.getElementById("stepName").value = step.title;
+        document.getElementById("stepDescription").value = step.description;
+      }
+
+      function updateProcedure(change) {
+        const procedure = activeProcedure();
+        if (!procedure) return false;
+        const nextData = {
+          procedures: data.procedures.map((item) =>
+            item.id === procedure.id ? { ...item, ...change } : item
+          )
+        };
+        return persist(nextData);
+      }
+
+      function makeId(prefix) {
+        return window.crypto && window.crypto.randomUUID
+          ? `${prefix}-${window.crypto.randomUUID()}`
+          : `${prefix}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
+      }
+
+      function openProcedureModal() {
+        document.getElementById("procedureForm").reset();
+        procedureModal.hidden = false;
+        document.body.style.overflow = "hidden";
+        document.getElementById("newProcedureTitle").focus();
+      }
+
+      function closeProcedureModal() {
+        procedureModal.hidden = true;
+        document.body.style.overflow = "";
+        document.getElementById("createProcedureButton").focus();
+      }
+
+      document.getElementById("procedureToggle").addEventListener("click", () => {
+        const collapsed = procedureCard.classList.toggle("collapsed");
+        document.getElementById("procedureToggle").setAttribute("aria-expanded", String(!collapsed));
+        document.getElementById("collapseButton").setAttribute("aria-label", collapsed ? "Mở rộng quy trình" : "Thu gọn quy trình");
+        document.getElementById("collapseButton").title = collapsed ? "Mở rộng quy trình" : "Thu gọn quy trình";
+      });
+      document.getElementById("collapseButton").addEventListener("click", () => {
+        document.getElementById("procedureToggle").click();
+      });
+
+      stepsList.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+        const procedure = activeProcedure();
+        if (!procedure) return;
+        const step = procedure.steps.find((item) => item.id === button.dataset.id);
+        if (!step) {
+          showToast("Không tìm thấy bước", "Danh sách vừa thay đổi. Vui lòng tải lại và thử lại.");
+          return;
+        }
+        if (button.dataset.action === "select" || button.dataset.action === "edit") {
+          selectedStepId = step.id;
+          render();
+          document.getElementById("stepName").focus();
+          return;
+        }
+        if (button.dataset.action === "delete") {
+          if (!window.confirm(`Bạn có chắc muốn xóa bước “${step.title}” không?`)) return;
+          const nextSteps = procedure.steps.filter((item) => item.id !== step.id);
+          if (updateProcedure({ steps: nextSteps })) {
+            if (selectedStepId === step.id) selectedStepId = nextSteps[0] ? nextSteps[0].id : null;
+            render();
+            showToast("Đã xóa bước", "Bước hướng dẫn đã được xóa khỏi quy trình.");
+          }
+        }
+      });
+      stepsList.addEventListener("keydown", (event) => {
+        if (!event.altKey || !["ArrowUp", "ArrowDown"].includes(event.key)) return;
+        const titleButton = event.target.closest(".step-title-button");
+        if (!titleButton) return;
+        event.preventDefault();
+        const procedure = activeProcedure();
+        if (!procedure) return;
+        const currentIndex = procedure.steps.findIndex((step) => step.id === titleButton.dataset.id);
+        const nextIndex = currentIndex + (event.key === "ArrowUp" ? -1 : 1);
+        if (currentIndex < 0 || nextIndex < 0 || nextIndex >= procedure.steps.length) return;
+        const reordered = [...procedure.steps];
+        [reordered[currentIndex], reordered[nextIndex]] = [reordered[nextIndex], reordered[currentIndex]];
+        if (updateProcedure({ steps: reordered })) {
+          selectedStepId = titleButton.dataset.id;
+          render();
+          stepsList.querySelector(`.step-title-button[data-id="${selectedStepId}"]`).focus();
+          showToast("Đã sắp xếp lại", "Thứ tự các bước hướng dẫn đã được cập nhật.");
+        }
+      });
+
+      stepsList.addEventListener("dragstart", (event) => {
+        const row = event.target.closest(".step-row");
+        if (!row) return;
+        dragStepId = row.dataset.id;
+        row.classList.add("dragging");
+        event.dataTransfer.effectAllowed = "move";
+        event.dataTransfer.setData("text/plain", dragStepId);
+      });
+      stepsList.addEventListener("dragover", (event) => {
+        const row = event.target.closest(".step-row");
+        if (!row || !dragStepId || row.dataset.id === dragStepId) return;
+        event.preventDefault();
+        row.classList.add("drop-target");
+      });
+      stepsList.addEventListener("dragleave", (event) => {
+        const row = event.target.closest(".step-row");
+        if (row && !row.contains(event.relatedTarget)) row.classList.remove("drop-target");
+      });
+      stepsList.addEventListener("drop", (event) => {
+        const targetRow = event.target.closest(".step-row");
+        if (!targetRow || !dragStepId || targetRow.dataset.id === dragStepId) return;
+        event.preventDefault();
+        const procedure = activeProcedure();
+        if (!procedure) return;
+        const reordered = [...procedure.steps];
+        const sourceIndex = reordered.findIndex((step) => step.id === dragStepId);
+        const targetIndex = reordered.findIndex((step) => step.id === targetRow.dataset.id);
+        if (sourceIndex < 0 || targetIndex < 0) return;
+        const [moved] = reordered.splice(sourceIndex, 1);
+        reordered.splice(targetIndex, 0, moved);
+        if (updateProcedure({ steps: reordered })) {
+          render();
+          showToast("Đã sắp xếp lại", "Thứ tự các bước hướng dẫn đã được cập nhật.");
+        }
+      });
+      stepsList.addEventListener("dragend", () => {
+        dragStepId = null;
+        stepsList.querySelectorAll(".step-row").forEach((row) => row.classList.remove("dragging", "drop-target"));
+      });
+
+      document.getElementById("addStepButton").addEventListener("click", () => {
+        const procedure = activeProcedure();
+        if (!procedure) {
+          showToast("Chưa có quy trình", "Hãy tạo quy trình trước khi thêm bước hướng dẫn.");
+          return;
+        }
+        const newStep = { id: makeId("step"), title: "Bước hướng dẫn mới", description: "" };
+        if (updateProcedure({ steps: [...procedure.steps, newStep] })) {
+          selectedStepId = newStep.id;
+          render();
+          document.getElementById("stepName").focus();
+        }
+      });
+
+      stepForm.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const procedure = activeProcedure();
+        if (!procedure) return;
+        const title = document.getElementById("stepName").value.trim();
+        if (!title) {
+          document.getElementById("stepName").setCustomValidity("Vui lòng nhập tiêu đề bước.");
+          document.getElementById("stepName").reportValidity();
+          return;
+        }
+        document.getElementById("stepName").setCustomValidity("");
+        const steps = procedure.steps.map((step) => step.id === selectedStepId
+          ? { ...step, title, description: document.getElementById("stepDescription").value.trim() }
+          : step);
+        if (updateProcedure({ steps })) {
+          render();
+          showToast("Đã cập nhật bước", "Nội dung hướng dẫn đã được lưu.");
+        }
+      });
+      document.getElementById("stepName").addEventListener("input", (event) => event.currentTarget.setCustomValidity(""));
+
+      document.getElementById("createProcedureButton").addEventListener("click", openProcedureModal);
+      document.getElementById("procedureSelect").addEventListener("change", (event) => {
+        activeProcedureId = event.currentTarget.value;
+        const procedure = activeProcedure();
+        selectedStepId = procedure && procedure.steps[1]
+          ? procedure.steps[1].id
+          : (procedure && procedure.steps[0] ? procedure.steps[0].id : null);
+        procedureCard.classList.remove("collapsed");
+        document.getElementById("procedureToggle").setAttribute("aria-expanded", "true");
+        render();
+      });
+      document.getElementById("closeProcedureModal").addEventListener("click", closeProcedureModal);
+      document.getElementById("cancelProcedureModal").addEventListener("click", closeProcedureModal);
+      procedureModal.addEventListener("click", (event) => {
+        if (event.target === procedureModal) closeProcedureModal();
+      });
+      document.getElementById("procedureForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const title = document.getElementById("newProcedureTitle").value.trim();
+        if (!title) return;
+        const procedure = {
+          id: makeId("procedure"),
+          title,
+          autoApply: document.getElementById("newProcedureAuto").checked,
+          steps: []
+        };
+        if (persist({ procedures: [...data.procedures, procedure] })) {
+          activeProcedureId = procedure.id;
+          selectedStepId = null;
+          procedureCard.classList.remove("collapsed");
+          document.getElementById("procedureToggle").setAttribute("aria-expanded", "true");
+          closeProcedureModal();
+          render();
+          showToast("Đã tạo quy trình", `“${title}” đã được thêm vào danh sách quy trình.`);
+        }
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !procedureModal.hidden) closeProcedureModal();
+      });
+
+      render();
+    })();
+  </script>
+</body>
+</html>

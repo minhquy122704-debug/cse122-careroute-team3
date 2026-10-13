@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý cơ sở y tế | CareRoute</title>
+    <style>
+      :root {
+        color-scheme: light;
+        --page-bg: #f2f4f6;
+        --workspace-bg: #f7f9fb;
+        --surface: #fff;
+        --line: #e3e9ef;
+        --text: #20283a;
+        --muted: #778398;
+        --teal: #529d95;
+        --teal-dark: #438a82;
+        --teal-soft: #f0faf8;
+        --green: #45a879;
+        --green-soft: #dff5e9;
+        --red: #d84949;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        min-width: 320px;
+        min-height: 100vh;
+        margin: 0;
+        background: var(--page-bg);
+        color: var(--text);
+        font-family: "Segoe UI", Arial, sans-serif;
+        font-size: 13px;
+      }
+
+      button,
+      input,
+      select {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      .page-shell {
+        width: min(1360px, calc(100% - 26px));
+        margin: 10px auto 17px;
+      }
+
+      .page-label {
+        margin: 0 0 8px;
+        color: #a5acb5;
+        font-size: 14px;
+        line-height: 18px;
+      }
+
+      .app-shell {
+        min-height: calc(100vh - 53px);
+        overflow: hidden;
+        border: 1px solid var(--line);
+        background: var(--workspace-bg);
+        box-shadow: 0 8px 24px rgba(36, 52, 69, 0.06);
+      }
+
+      .app-header {
+        display: flex;
+        height: 45px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 26px 0 29px;
+        border-bottom: 1px solid var(--line);
+        background: var(--surface);
+      }
+
+      .brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: var(--text);
+        font-size: 13px;
+        font-weight: 700;
+        text-decoration: none;
+      }
+
+      .brand-mark {
+        display: grid;
+        width: 23px;
+        height: 23px;
+        place-items: center;
+        border-radius: 6px;
+        background: var(--teal);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 400;
+        line-height: 1;
+      }
+
+      .topbar-actions,
+      .user-card {
+        display: flex;
+        align-items: center;
+      }
+
+      .topbar-actions {
+        gap: 13px;
+      }
+
+      .notification-button {
+        display: grid;
+        width: 29px;
+        height: 29px;
+        padding: 7px;
+        place-items: center;
+        border: 0;
+        border-radius: 50%;
+        background: #f6f8fa;
+      }
+
+      .notification-button img {
+        width: 15px;
+        height: 15px;
+        opacity: 0.7;
+      }
+
+      .user-card {
+        gap: 6px;
+      }
+
+      .user-avatar {
+        width: 27px;
+        height: 27px;
+        border: 1px solid #e5eaee;
+        border-radius: 50%;
+        object-fit: cover;
+      }
+
+      .user-name {
+        font-size: 11px;
+        font-weight: 700;
+        line-height: 1.3;
+      }
+
+      .user-role {
+        display: block;
+        color: #9aa5b3;
+        font-size: 9px;
+        line-height: 1.3;
+      }
+
+      .app-body {
+        display: flex;
+        min-height: calc(100vh - 99px);
+      }
+
+      .sidebar {
+        flex: 0 0 181px;
+        padding: 16px 14px;
+        border-right: 1px solid var(--line);
+        background: var(--surface);
+      }
+
+      .sidebar-label {
+        margin: 0 0 12px;
+        color: #8591a2;
+        font-size: 8px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+
+      .nav-list {
+        display: grid;
+        gap: 4px;
+      }
+
+      .nav-item {
+        display: flex;
+        min-height: 29px;
+        align-items: center;
+        gap: 9px;
+        padding: 0 9px;
+        border-radius: 6px;
+        color: #283247;
+        font-size: 10px;
+        text-decoration: none;
+      }
+
+      .nav-item:hover {
+        background: #f6f9fa;
+      }
+
+      .nav-item.active {
+        background: var(--teal-soft);
+        color: var(--teal-dark);
+        font-weight: 600;
+      }
+
+      .nav-icon {
+        display: inline-flex;
+        width: 13px;
+        height: 13px;
+        flex: 0 0 13px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .nav-icon img {
+        width: 13px;
+        height: 13px;
+        object-fit: contain;
+        opacity: 0.8;
+      }
+
+      .main-panel {
+        min-width: 0;
+        flex: 1;
+        padding: 19px 20px 28px;
+        background: var(--workspace-bg);
+      }
+
+      .content-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        margin-bottom: 15px;
+      }
+
+      .content-heading h1 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+      }
+
+      .content-heading p {
+        margin: 3px 0 0;
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .button {
+        min-height: 29px;
+        padding: 0 11px;
+        border: 1px solid transparent;
+        border-radius: 6px;
+        font-size: 10px;
+        font-weight: 600;
+        white-space: nowrap;
+      }
+
+      .button-primary {
+        border-color: var(--teal);
+        background: var(--teal);
+        color: #fff;
+      }
+
+      .button-primary:hover {
+        border-color: var(--teal-dark);
+        background: var(--teal-dark);
+      }
+
+      .filter-card,
+      .table-card {
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        background: var(--surface);
+      }
+
+      .filter-card {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+        padding: 10px 12px;
+      }
+
+      .visually-hidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        clip-path: inset(50%);
+      }
+
+      .search-field {
+        position: relative;
+        min-width: 160px;
+        flex: 1;
+      }
+
+      .search-field svg {
+        position: absolute;
+        top: 50%;
+        left: 10px;
+        width: 13px;
+        height: 13px;
+        fill: none;
+        stroke: #56657b;
+        stroke-linecap: round;
+        stroke-width: 1.7;
+        pointer-events: none;
+        transform: translateY(-50%);
+      }
+
+      .search-field input,
+      .filter-card select {
+        width: 100%;
+        height: 27px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        outline: none;
+        background: #fff;
+        color: #384257;
+        font-size: 9px;
+      }
+
+      .search-field input {
+        padding: 0 10px 0 30px;
+        background: #f9fafb;
+      }
+
+      .search-field input::placeholder {
+        color: #a2adbd;
+      }
+
+      .search-field input:focus,
+      .filter-card select:focus,
+      .form-field input:focus,
+      .form-field select:focus {
+        border-color: #82bdb5;
+        box-shadow: 0 0 0 2px rgba(82, 157, 149, 0.12);
+      }
+
+      .filter-card select {
+        width: 104px;
+        padding: 0 22px 0 9px;
+      }
+
+      .table-card {
+        padding: 14px 14px 12px;
+      }
+
+      .table-scroll {
+        overflow-x: auto;
+      }
+
+      .facility-table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        text-align: left;
+      }
+
+      .facility-table th {
+        height: 31px;
+        padding: 0 8px;
+        background: #f7f9fb;
+        color: #5b667a;
+        font-size: 8px;
+        font-weight: 700;
+        white-space: nowrap;
+      }
+
+      .facility-table td {
+        height: 40px;
+        padding: 6px 8px;
+        border-bottom: 1px solid #edf0f4;
+        color: #596579;
+        font-size: 9px;
+        vertical-align: middle;
+      }
+
+      .facility-table tbody tr:last-child td {
+        border-bottom: 0;
+      }
+
+      .facility-table th:nth-child(1) { width: 25%; }
+      .facility-table th:nth-child(2) { width: 17%; }
+      .facility-table th:nth-child(3) { width: 17%; }
+      .facility-table th:nth-child(4) { width: 12%; }
+      .facility-table th:nth-child(5) { width: 11%; }
+      .facility-table th:nth-child(6) { width: 18%; }
+
+      .facility-name {
+        color: #20283a;
+        font-weight: 600;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 3px 7px;
+        border-radius: 4px;
+        background: var(--green-soft);
+        color: var(--green);
+        font-size: 8px;
+        line-height: 1;
+        white-space: nowrap;
+      }
+
+      .status-badge.paused {
+        background: #f0f2f6;
+        color: #69758a;
+      }
+
+      .row-actions {
+        display: flex;
+        gap: 6px;
+      }
+
+      .action-button {
+        min-width: 31px;
+        height: 19px;
+        padding: 0 7px;
+        border: 1px solid var(--line);
+        border-radius: 4px;
+        background: #fff;
+        color: #354056;
+        font-size: 8px;
+      }
+
+      .action-button:hover {
+        background: #f7f9fb;
+      }
+
+      .action-button.delete {
+        border-color: #ee5b5b;
+        color: #d54545;
+      }
+
+      .action-button.delete:hover {
+        background: #fff4f4;
+      }
+
+      .empty-row {
+        height: 90px !important;
+        color: var(--muted) !important;
+        text-align: center;
+      }
+
+      .table-footer {
+        display: flex;
+        min-height: 38px;
+        align-items: end;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 7px 6px 0;
+      }
+
+      .result-count {
+        color: #9aa5b3;
+        font-size: 8px;
+      }
+
+      .pagination {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+
+      .page-button {
+        display: grid;
+        min-width: 22px;
+        height: 20px;
+        padding: 0 6px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        background: #fff;
+        color: #667187;
+        font-size: 8px;
+      }
+
+      .page-button:disabled {
+        cursor: not-allowed;
+        opacity: 0.45;
+      }
+
+      .page-button[aria-current="page"] {
+        border-color: var(--teal);
+        background: var(--teal);
+        color: #fff;
+      }
+
+      dialog {
+        width: min(410px, calc(100% - 28px));
+        padding: 0;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        color: var(--text);
+        box-shadow: 0 18px 55px rgba(25, 44, 56, 0.2);
+      }
+
+      dialog::backdrop {
+        background: rgba(27, 39, 54, 0.35);
+      }
+
+      .dialog-content {
+        padding: 20px;
+      }
+
+      .dialog-heading {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+
+      .dialog-heading h2 {
+        margin: 0;
+        font-size: 15px;
+      }
+
+      .dialog-heading p {
+        margin: 4px 0 0;
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .dialog-close {
+        display: grid;
+        width: 25px;
+        height: 25px;
+        place-items: center;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        background: #fff;
+        color: #667187;
+      }
+
+      .form-field {
+        display: grid;
+        gap: 5px;
+        margin-bottom: 12px;
+      }
+
+      .form-field label {
+        color: #455168;
+        font-size: 10px;
+        font-weight: 600;
+      }
+
+      .form-field input,
+      .form-field select {
+        width: 100%;
+        min-height: 33px;
+        padding: 0 9px;
+        border: 1px solid var(--line);
+        border-radius: 5px;
+        outline: none;
+        background: #fff;
+        color: #384257;
+        font-size: 10px;
+      }
+
+      .form-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0 12px;
+      }
+
+      .dialog-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 8px;
+        margin-top: 17px;
+      }
+
+      .button-secondary {
+        border-color: var(--line);
+        background: #fff;
+        color: #596579;
+      }
+
+      @media (min-width: 1200px) {
+        .main-panel {
+          padding-right: 28px;
+          padding-left: 28px;
+        }
+      }
+
+      @media (max-width: 760px) {
+        .page-shell {
+          width: 100%;
+          margin: 0;
+        }
+
+        .page-label {
+          display: none;
+        }
+
+        .app-shell {
+          min-height: 100vh;
+          border: 0;
+        }
+
+        .app-body {
+          min-height: calc(100vh - 45px);
+          flex-direction: column;
+        }
+
+        .sidebar {
+          flex: 0 0 auto;
+          padding: 8px 12px;
+          border-right: 0;
+          border-bottom: 1px solid var(--line);
+        }
+
+        .sidebar-label {
+          display: none;
+        }
+
+        .nav-list {
+          display: flex;
+          gap: 5px;
+          overflow-x: auto;
+        }
+
+        .nav-item {
+          flex: 0 0 auto;
+        }
+
+        .main-panel {
+          padding: 18px 14px 28px;
+        }
+      }
+
+      @media (max-width: 560px) {
+        .content-heading {
+          align-items: flex-start;
+        }
+
+        .content-heading p {
+          max-width: 290px;
+          line-height: 1.45;
+        }
+
+        .filter-card {
+          flex-wrap: wrap;
+        }
+
+        .search-field {
+          flex-basis: 100%;
+        }
+
+        .filter-card select {
+          flex: 1;
+          width: auto;
+        }
+
+        .table-card {
+          padding: 10px;
+        }
+
+        .facility-table {
+          min-width: 670px;
+        }
+
+        .table-footer {
+          align-items: flex-start;
+          flex-direction: column;
+        }
+      }
+
+      @media (max-width: 420px) {
+        .app-header {
+          padding-right: 12px;
+          padding-left: 14px;
+        }
+
+        .content-heading h1 {
+          font-size: 15px;
+        }
+
+        .content-heading .button {
+          padding: 0 8px;
+        }
+
+        .form-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-shell">
+      <p class="page-label">admin-facility-management</p>
+      <div class="app-shell">
+        <header class="app-header">
+          <a class="brand" href="admin-dashboard.html" aria-label="CareRoute - Bảng điều khiển">
+            <span class="brand-mark" aria-hidden="true">+</span>
+            <span>CareRoute</span>
+          </a>
+          <div class="topbar-actions">
+            <button class="notification-button" type="button" aria-label="Thông báo">
+              <img src="../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg" alt="" />
+            </button>
+            <div class="user-card">
+              <img class="user-avatar" src="../assets/images/anh_bac_si.png" alt="" />
+              <div>
+                <div class="user-name">Minh Quý</div>
+                <span class="user-role">Điều Phối Viên</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="app-body">
+          <aside class="sidebar" aria-label="Điều hướng quản trị">
+            <p class="sidebar-label">HỆ THỐNG QUẢN TRỊ</p>
+            <nav class="nav-list">
+              <a class="nav-item" href="admin-dashboard.html">
+                <span class="nav-icon" aria-hidden="true"><img src="../assets/icons/layout-grid-1-svgrepo-com.svg" alt="" /></span>
+                <span>Bảng điều khiển</span>
+              </a>
+              <a class="nav-item active" href="admin-facility-management.html" aria-current="page">
+                <span class="nav-icon" aria-hidden="true"><img src="../assets/icons/briefcase-svgrepo-com.svg" alt="" /></span>
+                <span>Quản lý cơ sở</span>
+              </a>
+              <a class="nav-item" href="admin-category-management.html">
+                <span class="nav-icon" aria-hidden="true"><img src="../assets/icons/map-svgrepo-com.svg" alt="" /></span>
+                <span>Quản lý danh mục</span>
+              </a>
+              <a class="nav-item" href="#settings">
+                <span class="nav-icon" aria-hidden="true"><img src="../assets/icons/settings-svgrepo-com.svg" alt="" /></span>
+                <span>Cài đặt hệ thống</span>
+              </a>
+            </nav>
+          </aside>
+
+          <main class="main-panel">
+            <div class="content-heading">
+              <div>
+                <h1>Quản lý Cơ sở y tế</h1>
+                <p>Danh sách và trạng thái phê duyệt của các Bệnh viện, Phòng khám đăng ký trên nền tảng</p>
+              </div>
+              <button class="button button-primary" id="add-facility" type="button">Thêm cơ sở mới</button>
+            </div>
+
+            <section class="filter-card" aria-label="Tìm kiếm và lọc cơ sở y tế">
+              <label class="search-field">
+                <svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3 3" /></svg>
+                <input id="facility-search" type="search" placeholder="Tìm kiếm bệnh viện, phòng khám..." aria-label="Tìm kiếm cơ sở y tế" />
+              </label>
+              <label>
+                <span class="visually-hidden">Lọc theo khu vực</span>
+                <select id="region-filter">
+                  <option value="">Tất cả khu vực</option>
+                  <option value="TP.HCM">TP.HCM</option>
+                  <option value="Hà Nội">Hà Nội</option>
+                  <option value="Đà Nẵng">Đà Nẵng</option>
+                  <option value="Cần Thơ">Cần Thơ</option>
+                </select>
+              </label>
+              <label>
+                <span class="visually-hidden">Lọc theo trạng thái</span>
+                <select id="status-filter">
+                  <option value="">Tất cả trạng thái</option>
+                  <option value="Hoạt động">Hoạt động</option>
+                  <option value="Tạm ngưng">Tạm ngưng</option>
+                </select>
+              </label>
+            </section>
+
+            <section class="table-card" aria-label="Danh sách cơ sở y tế">
+              <div class="table-scroll">
+                <table class="facility-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">TÊN CƠ SỞ Y TẾ</th>
+                      <th scope="col">LOẠI HÌNH</th>
+                      <th scope="col">KHU VỰC</th>
+                      <th scope="col">SỐ DỊCH VỤ</th>
+                      <th scope="col">TRẠNG THÁI</th>
+                      <th scope="col">HÀNH ĐỘNG</th>
+                    </tr>
+                  </thead>
+                  <tbody id="facility-rows"></tbody>
+                </table>
+              </div>
+              <div class="table-footer">
+                <span class="result-count" id="result-count" aria-live="polite"></span>
+                <nav class="pagination" id="pagination" aria-label="Phân trang"></nav>
+              </div>
+            </section>
+          </main>
+        </div>
+      </div>
+    </div>
+
+    <dialog id="facility-dialog" aria-labelledby="dialog-title">
+      <form class="dialog-content" id="facility-form">
+        <div class="dialog-heading">
+          <div>
+            <h2 id="dialog-title">Thêm cơ sở y tế</h2>
+            <p>Nhập thông tin cơ sở để cập nhật danh sách.</p>
+          </div>
+          <button class="dialog-close" id="close-dialog" type="button" aria-label="Đóng">×</button>
+        </div>
+        <input id="facility-id" type="hidden" />
+        <div class="form-field">
+          <label for="facility-name">Tên cơ sở y tế</label>
+          <input id="facility-name" name="name" type="text" maxlength="100" required />
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="facility-type">Loại hình</label>
+            <select id="facility-type" name="type" required>
+              <option value="Bệnh viện">Bệnh viện</option>
+              <option value="Phòng khám tư">Phòng khám tư</option>
+              <option value="Xét nghiệm">Xét nghiệm</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="facility-region">Khu vực</label>
+            <select id="facility-region" name="region" required>
+              <option value="TP.HCM">TP.HCM</option>
+              <option value="Hà Nội">Hà Nội</option>
+              <option value="Đà Nẵng">Đà Nẵng</option>
+              <option value="Cần Thơ">Cần Thơ</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="facility-services">Số dịch vụ</label>
+            <input id="facility-services" name="services" type="number" min="0" max="9999" value="0" required />
+          </div>
+          <div class="form-field">
+            <label for="facility-status">Trạng thái</label>
+            <select id="facility-status" name="status" required>
+              <option value="Hoạt động">Hoạt động</option>
+              <option value="Tạm ngưng">Tạm ngưng</option>
+            </select>
+          </div>
+        </div>
+        <div class="dialog-actions">
+          <button class="button button-secondary" id="cancel-dialog" type="button">Hủy</button>
+          <button class="button button-primary" type="submit">Lưu cơ sở</button>
+        </div>
+      </form>
+    </dialog>
+
+    <script>
+      let facilities = [];
+      let loadError = false;
+      const pageSize = 4;
+      let currentPage = 1;
+      const rows = document.querySelector("#facility-rows");
+      const searchInput = document.querySelector("#facility-search");
+      const regionFilter = document.querySelector("#region-filter");
+      const statusFilter = document.querySelector("#status-filter");
+      const pagination = document.querySelector("#pagination");
+      const resultCount = document.querySelector("#result-count");
+      const dialog = document.querySelector("#facility-dialog");
+      const form = document.querySelector("#facility-form");
+      const formId = document.querySelector("#facility-id");
+      const nameInput = document.querySelector("#facility-name");
+
+      function getFilteredFacilities() {
+        const query = searchInput.value.trim().toLocaleLowerCase("vi");
+        return facilities.filter((facility) => {
+          const matchesQuery = !query || `${facility.name} ${facility.type} ${facility.region}`.toLocaleLowerCase("vi").includes(query);
+          const matchesRegion = !regionFilter.value || facility.regionCode === regionFilter.value;
+          const matchesStatus = !statusFilter.value || facility.status === statusFilter.value;
+          return matchesQuery && matchesRegion && matchesStatus;
+        });
+      }
+
+      function renderPagination(totalPages) {
+        pagination.replaceChildren();
+        const previous = document.createElement("button");
+        previous.type = "button";
+        previous.className = "page-button";
+        previous.textContent = "Trước";
+        previous.disabled = currentPage === 1;
+        previous.setAttribute("aria-label", "Trang trước");
+        previous.addEventListener("click", () => {
+          currentPage -= 1;
+          renderFacilities();
+        });
+        pagination.append(previous);
+
+        for (let page = 1; page <= totalPages; page += 1) {
+          const button = document.createElement("button");
+          button.type = "button";
+          button.className = "page-button";
+          button.textContent = String(page);
+          button.setAttribute("aria-label", `Trang ${page}`);
+          if (page === currentPage) button.setAttribute("aria-current", "page");
+          button.addEventListener("click", () => {
+            currentPage = page;
+            renderFacilities();
+          });
+          pagination.append(button);
+        }
+
+        const next = document.createElement("button");
+        next.type = "button";
+        next.className = "page-button";
+        next.textContent = "Sau";
+        next.disabled = currentPage === totalPages;
+        next.setAttribute("aria-label", "Trang sau");
+        next.addEventListener("click", () => {
+          currentPage += 1;
+          renderFacilities();
+        });
+        pagination.append(next);
+      }
+
+      function renderFacilities() {
+        const filteredFacilities = getFilteredFacilities();
+        const totalPages = Math.max(1, Math.ceil(filteredFacilities.length / pageSize));
+        currentPage = Math.min(currentPage, totalPages);
+        const start = (currentPage - 1) * pageSize;
+        const visibleFacilities = filteredFacilities.slice(start, start + pageSize);
+
+        rows.replaceChildren();
+        if (visibleFacilities.length === 0) {
+          const row = document.createElement("tr");
+          const cell = document.createElement("td");
+          cell.className = "empty-row";
+          cell.colSpan = 6;
+          cell.textContent = loadError ? "Không thể tải dữ liệu cơ sở y tế." : "Không tìm thấy cơ sở y tế phù hợp.";
+          row.append(cell);
+          rows.append(row);
+        } else {
+          visibleFacilities.forEach((facility) => {
+            const row = document.createElement("tr");
+            const values = [
+              { text: facility.name, className: "facility-name" },
+              { text: facility.type },
+              { text: facility.region },
+              { text: String(facility.services) },
+            ];
+
+            values.forEach((value) => {
+              const cell = document.createElement("td");
+              cell.textContent = value.text;
+              if (value.className) cell.className = value.className;
+              row.append(cell);
+            });
+
+            const statusCell = document.createElement("td");
+            const badge = document.createElement("span");
+            badge.className = `status-badge${facility.status === "Tạm ngưng" ? " paused" : ""}`;
+            badge.textContent = facility.status;
+            statusCell.append(badge);
+            row.append(statusCell);
+
+            const actionsCell = document.createElement("td");
+            const actions = document.createElement("div");
+            actions.className = "row-actions";
+            const editButton = document.createElement("button");
+            editButton.type = "button";
+            editButton.className = "action-button";
+            editButton.textContent = "Sửa";
+            editButton.setAttribute("aria-label", `Sửa ${facility.name}`);
+            editButton.addEventListener("click", () => openEditDialog(facility));
+            const deleteButton = document.createElement("button");
+            deleteButton.type = "button";
+            deleteButton.className = "action-button delete";
+            deleteButton.textContent = "Xóa";
+            deleteButton.setAttribute("aria-label", `Xóa ${facility.name}`);
+            deleteButton.addEventListener("click", () => deleteFacility(facility));
+            actions.append(editButton, deleteButton);
+            actionsCell.append(actions);
+            row.append(actionsCell);
+            rows.append(row);
+          });
+        }
+
+        const firstResult = filteredFacilities.length ? start + 1 : 0;
+        const lastResult = Math.min(start + pageSize, filteredFacilities.length);
+        resultCount.textContent = `Hiển thị ${firstResult}-${lastResult} trong số ${filteredFacilities.length} cơ sở`;
+        renderPagination(totalPages);
+      }
+
+      function openAddDialog() {
+        form.reset();
+        formId.value = "";
+        document.querySelector("#dialog-title").textContent = "Thêm cơ sở y tế";
+        dialog.showModal();
+        nameInput.focus();
+      }
+
+      function openEditDialog(facility) {
+        form.reset();
+        formId.value = facility.id;
+        nameInput.value = facility.name;
+        document.querySelector("#facility-type").value = facility.type;
+        document.querySelector("#facility-region").value = facility.regionCode;
+        document.querySelector("#facility-services").value = String(facility.services);
+        document.querySelector("#facility-status").value = facility.status;
+        document.querySelector("#dialog-title").textContent = "Cập nhật cơ sở y tế";
+        dialog.showModal();
+        nameInput.focus();
+      }
+
+      function deleteFacility(facility) {
+        if (!window.confirm(`Bạn có chắc muốn xóa "${facility.name}" khỏi danh sách?`)) return;
+        const facilityIndex = facilities.findIndex((item) => item.id === facility.id);
+        if (facilityIndex === -1) return;
+        facilities.splice(facilityIndex, 1);
+        renderFacilities();
+      }
+
+      document.querySelector("#add-facility").addEventListener("click", openAddDialog);
+      document.querySelector("#close-dialog").addEventListener("click", () => dialog.close());
+      document.querySelector("#cancel-dialog").addEventListener("click", () => dialog.close());
+      searchInput.addEventListener("input", () => {
+        currentPage = 1;
+        renderFacilities();
+      });
+      regionFilter.addEventListener("change", () => {
+        currentPage = 1;
+        renderFacilities();
+      });
+      statusFilter.addEventListener("change", () => {
+        currentPage = 1;
+        renderFacilities();
+      });
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+        const selectedRegion = document.querySelector("#facility-region").value;
+        const facility = {
+          id: formId.value || `facility-${Date.now()}`,
+          name: nameInput.value.trim(),
+          type: document.querySelector("#facility-type").value,
+          region: selectedRegion,
+          regionCode: selectedRegion,
+          services: Number(document.querySelector("#facility-services").value),
+          status: document.querySelector("#facility-status").value,
+        };
+
+        if (formId.value) {
+          const facilityIndex = facilities.findIndex((item) => item.id === formId.value);
+          if (facilityIndex === -1) return;
+          facilities[facilityIndex] = facility;
+        } else {
+          facilities.unshift(facility);
+        }
+
+        dialog.close();
+        currentPage = 1;
+        searchInput.value = "";
+        regionFilter.value = "";
+        statusFilter.value = "";
+        renderFacilities();
+      });
+
+      fetch("../assets/data/facilities.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then((data) => {
+          if (!Array.isArray(data)) throw new Error("facilities.json phải chứa một danh sách.");
+          facilities = data.map((facility) => ({
+            id: facility.id,
+            name: facility.name,
+            type: facility.type,
+            region: facility.location,
+            regionCode: facility.location,
+            services: Number(facility.services_count) || 0,
+            status: facility.status
+          }));
+          renderFacilities();
+        })
+        .catch((error) => {
+          console.error("Không thể tải danh sách cơ sở y tế:", error);
+          loadError = true;
+          renderFacilities();
+        });
+    </script>
+  </body>
+</html>
