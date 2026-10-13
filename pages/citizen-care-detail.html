@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CareRoute - Chi Tiết Cơ Sở Y Tế</title>
+    <style>
+        :root {
+            --primary: #0d9488;
+            --primary-dark: #0f766e;
+            --primary-bg: #e6fffa;
+            --dark-header: #1e293b;
+            --footer-bg: #064e3b;
+            --text-dark: #0f172a;
+            --text-gray: #475569;
+            --text-light: #64748b;
+            --border-color: #e2e8f0;
+            --bg-light: #f8fafc;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+        body { background-color: #f1f5f9; color: var(--text-dark); display: flex; flex-direction: column; min-height: 100vh; }
+
+        header { min-height: 68px; background: #ffffff; border-bottom: 1px solid var(--border-color); padding: 8px max(28px, calc((100% - 1160px) / 2)); display: flex; align-items: center; justify-content: space-between; gap: 24px; }
+        .logo { display: flex; align-items: center; gap: 10px; flex: 0 0 auto; font-weight: 700; font-size: 18px; color: #172536; text-decoration: none; }
+        .logo-icon { background: var(--primary); color: white; width: 32px; height: 32px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .header-actions { display: flex; align-items: center; gap: 10px; }
+        .header-action { width: 34px; height: 34px; display: grid; place-items: center; border: 1px solid #e8eef0; border-radius: 50%; background: #f8fafc; }
+        .header-action img { width: 17px; height: 17px; opacity: .65; }
+
+        .sub-nav { height: 100%; display: flex; align-items: center; justify-content: center; gap: 18px; padding: 0 12px; background: #ffffff; }
+        .sub-nav a { display: inline-flex; align-items: center; padding: 0 10px; border-bottom: 3px solid transparent; color: #475569; font-size: 14px; font-weight: 500; text-decoration: none; white-space: nowrap; }
+        .sub-nav a:hover, .sub-nav a.active-nav { color: var(--primary); }
+        .sub-nav a.active-nav { border-bottom-color: var(--primary); font-weight: 700; }
+
+        .btn { background: var(--primary); color: white; border: none; padding: 10px 18px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; transition: background .2s, transform .2s; }
+        .btn:hover { background: var(--primary-dark); transform: translateY(-1px); }
+
+        main { flex: 1; max-width: 1200px; width: 100%; margin: 0 auto; background: #f7f9fa; box-shadow: 0 0 15px rgba(0,0,0,0.03); }
+
+        .clinic-hero {
+            position: relative;
+            min-height: 220px;
+            background: linear-gradient(90deg, rgba(10,31,39,.76), rgba(10,31,39,.26)), url('../assets/images/co_so_y_te.png');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 28px 5%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .clinic-hero h1 { font-size: clamp(27px, 3vw, 34px); margin-bottom: 8px; }
+        .clinic-meta { display: flex; flex-wrap: wrap; gap: 10px 15px; font-size: 13px; align-items: center; }
+        .clinic-meta-address { display: inline-flex; align-items: center; gap: 6px; }
+        .clinic-meta-address img, .detail-icon { width: 15px; height: 15px; object-fit: contain; filter: brightness(0) invert(1); }
+        .verified-badge { background: #059669; padding: 4px 10px; border-radius: 5px; font-size: 11px; font-weight: 650; }
+        .clinic-rating { color: #ffdf8d; }
+
+        .clinic-body { display: grid; grid-template-columns: minmax(0, 2fr) minmax(250px, .85fr); gap: 20px; padding: 26px 5% 40px; align-items: start; }
+        .info-card { border: 1px solid #e5ecea; border-radius: 14px; padding: 20px; margin-bottom: 16px; background: white; }
+        .info-card h3 { font-size: 16px; margin-bottom: 14px; border-bottom: 1px solid #e7f3f0; padding-bottom: 9px; color: #173b36; }
+        .general-info { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 20px; }
+        .info-label { margin-bottom: 4px; color: var(--text-light); font-size: 12px; }
+        .info-value { color: #243b39; font-size: 13px; line-height: 1.5; }
+        a.info-value { color: var(--primary-dark); text-decoration: none; font-weight: 700; }
+        a.info-value:hover { text-decoration: underline; }
+
+        .price-table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+        .price-table th, .price-table td { padding: 10px 9px; text-align: left; border-bottom: 1px solid #edf1f3; font-size: 12px; }
+        .price-table th { background: #effbf9; color: #35514d; font-size: 11px; }
+        .price-table td:last-child { white-space: nowrap; }
+
+        .booking-box { border: 1px solid var(--primary); border-radius: 13px; padding: 18px; background: #ffffff; position: sticky; top: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        .pill-tag { background: #e6fffa; color: var(--primary-dark); font-size: 10px; font-weight: 700; padding: 5px 9px; border-radius: 20px; display: inline-block; }
+        .booking-box h2 { font-size: 18px; line-height: 1.35; margin: 9px 0; color: #173b36; }
+        .booking-box p { color: var(--text-gray); font-size: 12px; line-height: 1.55; margin-bottom: 15px; }
+        .booking-hotline { display: block; margin-top: 12px; color: var(--primary-dark); font-size: 12px; text-align: center; text-decoration: none; }
+        .booking-hotline:hover { text-decoration: underline; }
+
+        .timeline-step { display: flex; gap: 11px; margin-bottom: 13px; }
+        .timeline-step:last-child { margin-bottom: 0; }
+        .step-num { width: 24px; height: 24px; background: #dcf8f2; color: var(--primary-dark); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 11px; flex-shrink: 0; }
+        .timeline-step strong { color: #253c39; font-size: 12px; }
+        .timeline-step p { margin-top: 3px; font-size: 11px !important; line-height: 1.45; }
+
+        footer { background: var(--footer-bg); color: #ecfdf5; padding: 22px 5%; margin-top: auto; font-size: 12px; text-align: center; }
+
+        @media (max-width: 900px) {
+            .clinic-body { grid-template-columns: 1fr; }
+            .booking-box { position: static; }
+        }
+        @media (max-width: 600px) {
+            header { min-height: 60px; padding: 10px 16px; flex-wrap: wrap; gap: 8px 12px; }
+            .logo { font-size: 16px; }
+            .logo-icon { width: 30px; height: 30px; }
+            .header-actions { margin-left: auto; }
+            .sub-nav { order: 3; width: 100%; height: 42px; justify-content: flex-start; gap: 3px; padding: 0; overflow-x: auto; }
+            .sub-nav a { flex: 0 0 auto; padding: 0 9px; font-size: 12px; }
+            .clinic-hero { min-height: 230px; padding: 22px 20px; }
+            .clinic-meta { align-items: flex-start; flex-direction: column; gap: 8px; }
+            .clinic-body { gap: 4px; padding: 18px 16px 28px; }
+            .info-card { padding: 16px; }
+            .general-info { grid-template-columns: 1fr; gap: 12px; }
+            .price-table th, .price-table td { padding: 9px 6px; font-size: 11px; }
+            .price-table th { font-size: 10px; }
+            .booking-box { margin-bottom: 16px; }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a class="logo" href="citizen-care-search.html" aria-label="CareRoute - Trang tra cứu">
+            <div class="logo-icon">+</div>
+            CareRoute
+        </a>
+        <nav class="sub-nav" aria-label="Điều hướng chính">
+            <a href="citizen-care-search.html">Tra cứu Dịch vụ</a>
+            <a href="citizen-care-checklist.html">Checklist Chuẩn bị</a>
+            <a class="active-nav" href="citizen-care-detail.html" aria-current="page">Dành cho Cơ sở y tế</a>
+        </nav>
+        <div class="header-actions">
+            <a class="header-action" href="citizen-care-checklist.html" aria-label="Mở checklist chuẩn bị">
+                <img src="../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg" alt="">
+            </a>
+            <a class="header-action" href="login.html" aria-label="Đăng nhập">
+                <img src="../assets/icons/user-svgrepo-com.svg" alt="">
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <div class="clinic-hero">
+            <div style="font-size: 13px; opacity: 0.9; margin-bottom: 8px;">
+                <a href="citizen-care-search.html" style="color: white; text-decoration: none;">Trang chủ</a> /
+                Bệnh viện Đa khoa Tâm Anh
+            </div>
+            <h1>Bệnh viện Đa khoa Tâm Anh</h1>
+            <div class="clinic-meta">
+                <span class="verified-badge">Đã xác minh</span>
+                <span class="clinic-rating">★ 4.9 (428 đánh giá)</span>
+                <span class="clinic-meta-address"><img src="../assets/icons/map-svgrepo-com.svg" alt="">108 Hoàng Văn Thụ, Phường 2, Tân Bình, TP. HCM</span>
+            </div>
+        </div>
+
+        <div class="clinic-body">
+            <div>
+                <!-- Thông tin chung -->
+                <div class="info-card">
+                    <h3>Thông tin chung</h3>
+                    <div class="general-info">
+                        <div>
+                            <div class="info-label">Giờ hoạt động</div>
+                            <strong class="info-value">07:30 - 19:00 (Thứ 2 - Chủ Nhật)</strong>
+                        </div>
+                        <div>
+                            <div class="info-label">Số điện thoại hotline</div>
+                            <a class="info-value" href="tel:18006858">1800 6858</a>
+                        </div>
+                        <div>
+                            <div class="info-label">Chuyên khoa thế mạnh</div>
+                            <strong class="info-value">Thần kinh, Tim mạch, Xương khớp, Sản phụ khoa</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bảng giá dịch vụ -->
+                <div class="info-card">
+                    <h3>Dịch vụ cung cấp & Bảng giá</h3>
+                    <table class="price-table">
+                        <thead>
+                            <tr>
+                                <th>Tên dịch vụ</th>
+                                <th>Bảng giá ước tính</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Khám Tổng quát Thần kinh</td>
+                                <td><strong style="color: var(--primary-dark);">350.000 đ</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Chụp cộng hưởng từ MRI sọ não</td>
+                                <td><strong style="color: var(--primary-dark);">2.200.000 đ</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Đo điện não đồ (EEG)</td>
+                                <td><strong style="color: var(--primary-dark);">450.000 đ</strong></td>
+                            </tr>
+                            <tr>
+                                <td>Siêu âm tim Doppler màu</td>
+                                <td><strong style="color: var(--primary-dark);">500.000 đ</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Quy trình hướng dẫn -->
+                <div class="info-card">
+                    <h3>Quy trình khám hướng dẫn tại viện</h3>
+                    <div class="timeline-step">
+                        <div class="step-num">1</div>
+                        <div>
+                            <strong>Đăng ký thông tin tại Quầy lễ tân tầng 1</strong>
+                            <p style="font-size: 13px; color: var(--text-gray);">Xuất trình CCCD/Bảo hiểm y tế. Nhận số thứ tự phòng khám chuyên khoa.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-num">2</div>
+                        <div>
+                            <strong>Khám lâm sàng tại Phòng 204</strong>
+                            <p style="font-size: 13px; color: var(--text-gray);">Bác sĩ chuyên khoa thần kinh trực tiếp thăm khám và chỉ định chụp chiếu nếu cần.</p>
+                        </div>
+                    </div>
+                    <div class="timeline-step">
+                        <div class="step-num">3</div>
+                        <div>
+                            <strong>Thực hiện cận lâm sàng (MRI / Xét nghiệm)</strong>
+                            <p style="font-size: 13px; color: var(--text-gray);">Di chuyển theo sự hướng dẫn của điều dưỡng đến khu kỹ thuật cao Tầng 3.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột đặt lịch bên phải -->
+            <div>
+                <div class="booking-box">
+                    <span class="pill-tag">ĐẶT LỊCH TIỆN LỢI</span>
+                    <h2>Đặt lịch khám trực tuyến</h2>
+                    <p>
+                        Đặt chỗ nhanh chóng qua CareRoute để nhận checklist chuẩn bị riêng biệt bằng AI miễn phí.
+                    </p>
+                    <a class="btn" style="width: 100%;" href="citizen-care-checklist.html">
+                        Đặt lịch khám ngay
+                    </a>
+                    <a class="booking-hotline" href="tel:18006858">Hotline bệnh viện: 1800 6858</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>© 2026 CareRoute Health. Thông tin trên nền tảng không thay thế chẩn đoán y khoa.</p>
+    </footer>
+</body>
+</html>

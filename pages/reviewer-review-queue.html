@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f9fb">
+  <title>Hàng chờ duyệt nội dung - CareRoute</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20283a;
+      --muted: #758198;
+      --line: #e1e7ef;
+      --teal: #4b9b8e;
+      --teal-dark: #378578;
+      --page: #f7f9fb;
+      --white: #fff;
+      font-family: "Be Vietnam Pro", Inter, "Segoe UI", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; color: var(--ink); background: #f2f4f6; font-size: 13px; }
+    button, input, select { font: inherit; }
+    button, a, select { -webkit-tap-highlight-color: transparent; }
+    button { color: inherit; }
+
+    .app { width: min(100%, 1440px); min-height: 100vh; margin: 0 auto; background: var(--page); }
+    .topbar { height: 56px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: var(--white); border-bottom: 1px solid var(--line); }
+    .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--ink); text-decoration: none; font-size: 16px; font-weight: 700; letter-spacing: -.35px; }
+    .brand-mark { display: grid; width: 32px; height: 32px; place-items: center; border-radius: 7px; color: #fff; background: var(--teal); }
+    .brand-mark svg { width: 20px; height: 20px; }
+    .top-actions { display: flex; align-items: center; gap: 15px; }
+    .icon-button { display: grid; width: 34px; height: 34px; place-items: center; padding: 0; border: 0; border-radius: 50%; color: #48566c; background: #f6f8fa; cursor: pointer; }
+    .icon-button:hover { background: #edf2f5; }
+    .icon { display: inline-block; flex: 0 0 auto; width: 16px; height: 16px; background: currentColor; mask: var(--icon) center / contain no-repeat; -webkit-mask: var(--icon) center / contain no-repeat; }
+    .user { display: flex; align-items: center; gap: 9px; min-width: 110px; }
+    .avatar { width: 32px; height: 32px; border-radius: 50%; object-fit: cover; border: 1px solid #d9e1e7; }
+    .user-name { display: block; color: var(--ink); font-size: 11px; font-weight: 650; line-height: 1.5; }
+    .user-role { display: block; color: #8994a6; font-size: 10px; line-height: 1.35; }
+
+    .layout { display: flex; min-height: calc(100vh - 56px); }
+    .sidebar { width: 220px; flex: 0 0 220px; padding: 22px 14px; background: var(--white); border-right: 1px solid var(--line); }
+    .sidebar-label { margin: 0 0 14px 4px; color: #8793a8; font-size: 10px; font-weight: 700; letter-spacing: .035em; }
+    .nav-list { display: grid; gap: 5px; }
+    .nav-link { display: flex; align-items: center; gap: 10px; min-height: 38px; padding: 0 10px; border-radius: 7px; color: #374258; text-decoration: none; font-size: 12px; transition: background .15s, color .15s; }
+    .nav-link .icon { width: 15px; height: 15px; color: #55647a; }
+    .nav-link:hover { background: #f5f8f8; }
+    .nav-link.active { color: #32877b; background: #eff9f7; font-weight: 600; }
+    .nav-link.active .icon { color: #32877b; }
+
+    .main { flex: 1; min-width: 0; padding: 24px 28px 46px; }
+    .page-heading { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
+    h1 { margin: 0 0 3px; color: #20283a; font-size: 20px; line-height: 1.35; letter-spacing: -.45px; }
+    .subtitle { margin: 0; color: #6f7b90; font-size: 11px; }
+    .button { display: inline-flex; align-items: center; justify-content: center; gap: 7px; min-height: 34px; padding: 0 13px; border: 1px solid var(--line); border-radius: 7px; color: #354158; background: var(--white); text-decoration: none; white-space: nowrap; cursor: pointer; transition: border-color .15s, background .15s, transform .15s; }
+    .button:hover { border-color: #c6d2dc; background: #fbfcfd; }
+    .button:active { transform: translateY(1px); }
+    .button-small { min-height: 30px; padding: 0 11px; font-size: 11px; }
+    .stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; margin-bottom: 15px; }
+    .stat { min-height: 94px; padding: 13px 14px 11px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+    .stat-top { display: flex; align-items: center; justify-content: space-between; color: #66738a; font-size: 11px; }
+    .stat-icon { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 6px; color: #4a9b90; background: #f0f9f7; }
+    .stat-icon.alert { color: #ca8b21; background: #fff7dc; }
+    .stat-icon.rose { color: #bd777e; background: #fbf0f1; }
+    .stat-icon .icon { width: 15px; height: 15px; }
+    .stat-number { margin: 5px 0 2px; font-size: 20px; line-height: 1.2; font-weight: 700; letter-spacing: -.3px; }
+    .stat-note { margin: 0; color: #4b9b8e; font-size: 10px; }
+    .stat-note.alert { color: #d0962d; }
+    .stat-note.rose { color: #c4777d; }
+
+    .filterbar { display: flex; align-items: center; gap: 10px; min-height: 68px; margin-bottom: 15px; padding: 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+    .searchbox { position: relative; flex: 1; min-width: 150px; }
+    .search-symbol { position: absolute; top: 50%; left: 12px; width: 12px; height: 12px; border: 1.5px solid #506078; border-radius: 50%; transform: translateY(-58%); pointer-events: none; }
+    .search-symbol::after { position: absolute; right: -4px; bottom: -3px; width: 5px; height: 1.5px; border-radius: 2px; background: #506078; content: ""; transform: rotate(48deg); }
+    .searchbox input { width: 100%; height: 38px; padding: 0 12px 0 34px; border: 1px solid #e7ebf0; border-radius: 7px; outline: none; color: var(--ink); background: #f8fafb; font-size: 11px; }
+    .searchbox input::placeholder { color: #9aa4b4; }
+    .searchbox input:focus { border-color: #8dc3b9; box-shadow: 0 0 0 3px #4b9b8e18; background: var(--white); }
+    .filter-select { height: 38px; max-width: 180px; padding: 0 28px 0 11px; border: 1px solid #e7ebf0; border-radius: 7px; outline: none; color: #344057; background-color: #fff; font-size: 11px; cursor: pointer; }
+    .filter-select:focus { border-color: #8dc3b9; }
+    .review-list { display: grid; gap: 10px; }
+    .review-card { padding: 14px 14px 12px; border: 1px solid var(--line); border-radius: 9px; background: var(--white); }
+    .review-header { display: flex; align-items: center; gap: 9px; min-width: 0; }
+    .review-title { overflow: hidden; margin: 0; color: #263147; font-size: 12px; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+    .category { flex: 0 0 auto; padding: 4px 8px; border-radius: 5px; color: #448d82; background: #eff9f7; font-size: 9px; line-height: 1; }
+    .review-meta { display: flex; align-items: center; gap: 8px; margin-left: auto; color: #95a0b0; font-size: 10px; white-space: nowrap; }
+    .priority { padding: 4px 8px; border-radius: 5px; color: #a74348; background: #fbe9e9; font-size: 9px; line-height: 1; }
+    .priority.medium { color: #a9771f; background: #fff4d2; }
+    .priority.low { color: #667085; background: #f0f2f5; }
+    .review-description { overflow: hidden; margin: 10px 0 9px; color: #69758a; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+    .review-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; }
+    .requester { display: flex; align-items: center; gap: 6px; min-width: 0; color: #526078; font-size: 10px; }
+    .requester .icon { width: 14px; height: 14px; }
+    .card-actions { display: flex; align-items: center; gap: 7px; }
+    .card-actions .button { min-height: 29px; padding: 0 11px; font-size: 10px; }
+    .button-approve { border-color: var(--teal); color: #fff; background: var(--teal); }
+    .button-approve:hover { border-color: var(--teal-dark); color: #fff; background: var(--teal-dark); }
+    .button-reject { border-color: #ed7377; color: #d5545a; }
+    .button-reject:hover { border-color: #db555b; color: #bd3f46; background: #fff8f8; }
+    .empty-state { display: none; padding: 36px 20px; border: 1px solid var(--line); border-radius: 9px; color: var(--muted); background: var(--white); text-align: center; }
+    .empty-state.visible { display: block; }
+    .empty-state strong { display: block; margin-bottom: 5px; color: var(--ink); }
+
+    .modal-backdrop { position: fixed; z-index: 10; inset: 0; display: none; align-items: center; justify-content: center; padding: 20px; background: #17203366; }
+    .modal-backdrop.open { display: flex; }
+    .modal { width: min(100%, 460px); padding: 21px; border: 1px solid var(--line); border-radius: 12px; background: var(--white); box-shadow: 0 18px 55px #18243925; }
+    .modal-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 14px; }
+    .modal h2 { margin: 0; font-size: 17px; }
+    .modal-content { margin-top: 14px; color: #66738a; font-size: 12px; line-height: 1.7; }
+    .modal-content p { margin: 0 0 9px; }
+    .modal-close { width: 30px; height: 30px; border: 0; border-radius: 6px; color: #66738a; background: #f4f6f8; cursor: pointer; font-size: 19px; line-height: 1; }
+    .toast { position: fixed; z-index: 20; right: 22px; bottom: 22px; max-width: min(360px, calc(100vw - 32px)); padding: 12px 16px; border: 1px solid #d3e9e4; border-radius: 9px; color: #286f64; background: #f0faf7; box-shadow: 0 8px 28px #1b2e3517; opacity: 0; transform: translateY(10px); pointer-events: none; transition: opacity .2s, transform .2s; }
+    .toast.visible { opacity: 1; transform: translateY(0); }
+    .toast strong { display: block; margin-bottom: 2px; font-size: 12px; }
+    .toast span { color: #557b75; font-size: 11px; }
+
+    @media (min-width: 1200px) {
+      .main { padding-right: 32px; padding-left: 32px; }
+      .review-list { gap: 11px; }
+    }
+    @media (max-width: 850px) {
+      .sidebar { width: 190px; flex-basis: 190px; }
+      .main { padding: 22px 18px 36px; }
+      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .filterbar { flex-wrap: wrap; }
+      .searchbox { flex-basis: 100%; }
+      .filter-select { flex: 1; max-width: none; }
+    }
+    @media (max-width: 600px) {
+      .topbar { height: 54px; padding: 0 14px; }
+      .layout { min-height: calc(100vh - 54px); }
+      .sidebar { width: 62px; flex-basis: 62px; padding: 19px 8px; }
+      .sidebar-label { margin: 0 0 12px; overflow: hidden; font-size: 0; }
+      .sidebar-label::after { content: "MENU"; font-size: 8px; }
+      .nav-link { justify-content: center; min-height: 40px; padding: 0; }
+      .nav-link span { display: none; }
+      .nav-link .icon { width: 17px; height: 17px; }
+      .main { padding: 20px 12px 30px; }
+      .page-heading { align-items: flex-start; }
+      h1 { font-size: 17px; }
+      .subtitle { max-width: 260px; font-size: 10px; line-height: 1.5; }
+      .stats { gap: 8px; }
+      .stat { min-height: 88px; padding: 10px; }
+      .stat-number { font-size: 18px; }
+      .stat-top { font-size: 10px; }
+      .filterbar { gap: 8px; padding: 9px; }
+      .filter-select { padding-left: 8px; font-size: 10px; }
+      .review-card { padding: 12px 10px; }
+      .review-header { flex-wrap: wrap; gap: 6px; }
+      .review-title { flex: 1 1 calc(100% - 4px); order: 0; white-space: normal; }
+      .category { order: 1; }
+      .review-meta { order: 2; margin-left: auto; }
+      .review-description { margin: 9px 0; line-height: 1.55; white-space: normal; }
+      .review-footer { align-items: flex-start; flex-direction: column; gap: 10px; }
+      .requester { max-width: 100%; }
+      .card-actions { align-self: flex-end; }
+      .user { min-width: 0; }
+      .user > div { display: none; }
+      .top-actions { gap: 8px; }
+    }
+    @media (max-width: 390px) {
+      .page-heading { flex-wrap: wrap; }
+      .page-heading > .button { min-height: 29px; }
+      .card-actions { width: 100%; }
+      .card-actions .button { flex: 1; padding: 0 6px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="CareRoute - Trang chủ">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        </span>
+        <span>CareRoute</span>
+      </a>
+      <div class="top-actions">
+        <button class="icon-button" type="button" aria-label="Thông báo" title="Thông báo"><span class="icon" style="--icon:url('../assets/icons/notification-bell-alert-alarm-clock-time-watch-svgrepo-com.svg')"></span></button>
+        <div class="user">
+          <img class="avatar" src="../assets/images/anh_bac_si.png" alt="Ảnh đại diện Minh Quý">
+          <div><span class="user-name">Minh Quý</span><span class="user-role">Điều Phối Viên</span></div>
+        </div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="Điều hướng kiểm duyệt">
+        <p class="sidebar-label">KIỂM DUYỆT VIÊN</p>
+        <nav class="nav-list">
+          <a class="nav-link active" href="reviewer-review-queue.html" aria-current="page"><span class="icon" style="--icon:url('../assets/icons/list-svgrepo-com.svg')"></span><span>Hàng chờ duyệt</span></a>
+          <a class="nav-link" href="reviewer-feedback-review.html"><span class="icon" style="--icon:url('../assets/icons/message-circle-svgrepo-com.svg')"></span><span>Phản hồi &amp; Sửa đổi</span></a>
+          <a class="nav-link" href="reviewer-freshness-monitor.html"><span class="icon" style="--icon:url('../assets/icons/clock-two-svgrepo-com.svg')"></span><span>Giám sát nội dung cũ</span></a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <div class="page-heading">
+          <div>
+            <h1>Hàng chờ Duyệt nội dung</h1>
+            <p class="subtitle">Quản lý và kiểm duyệt thông tin y tế gửi từ các cơ sở trên toàn hệ thống</p>
+          </div>
+          <button class="button button-small" id="historyButton" type="button">Lịch sử duyệt</button>
+        </div>
+
+        <section class="stats" aria-label="Thống kê duyệt nội dung">
+          <article class="stat">
+            <div class="stat-top"><span>Chờ duyệt</span><span class="stat-icon rose"><span class="icon" style="--icon:url('../assets/icons/folder-open-svgrepo-com.svg')"></span></span></div>
+            <p class="stat-number" id="pendingCount">18</p><p class="stat-note rose">8 hồ sơ khẩn cấp cần xử lý</p>
+          </article>
+          <article class="stat">
+            <div class="stat-top"><span>Đã duyệt hôm nay</span><span class="stat-icon"><span class="icon" style="--icon:url('../assets/icons/check-circle-svgrepo-com.svg')"></span></span></div>
+            <p class="stat-number" id="approvedCount">32</p><p class="stat-note">+5 so với hôm qua</p>
+          </article>
+          <article class="stat">
+            <div class="stat-top"><span>Yêu cầu sửa đổi</span><span class="stat-icon alert"><span class="icon" style="--icon:url('../assets/icons/message-circle-svgrepo-com.svg')"></span></span></div>
+            <p class="stat-number">4</p><p class="stat-note alert">Đang chờ phản hồi</p>
+          </article>
+          <article class="stat">
+            <div class="stat-top"><span>Thời gian duyệt TB</span><span class="stat-icon"><span class="icon" style="--icon:url('../assets/icons/clock-two-svgrepo-com.svg')"></span></span></div>
+            <p class="stat-number">15 phút</p><p class="stat-note">Nhanh hơn mục tiêu 5m</p>
+          </article>
+        </section>
+
+        <section class="filterbar" aria-label="Tìm kiếm và lọc hồ sơ">
+          <label class="searchbox">
+            <span class="search-symbol" aria-hidden="true"></span>
+            <input id="searchInput" type="search" placeholder="Tìm kiếm cơ sở, người gửi..." aria-label="Tìm kiếm cơ sở hoặc người gửi">
+          </label>
+          <select class="filter-select" id="priorityFilter" aria-label="Lọc theo độ ưu tiên">
+            <option value="all">Tất cả độ ưu tiên</option>
+            <option value="high">Cao</option>
+            <option value="medium">Trung bình</option>
+            <option value="low">Thấp</option>
+          </select>
+          <select class="filter-select" id="categoryFilter" aria-label="Lọc theo loại nội dung">
+            <option value="all">Tất cả loại nội dung</option>
+            <option value="service">Bảng giá / Dịch vụ</option>
+            <option value="guidance">Quy trình hướng dẫn</option>
+            <option value="general">Thông tin chung</option>
+          </select>
+        </section>
+
+        <section class="review-list" id="reviewList" aria-label="Danh sách nội dung chờ duyệt" aria-live="polite"></section>
+        <div class="empty-state" id="emptyState"><strong>Không tìm thấy hồ sơ phù hợp</strong>Thử thay đổi từ khóa tìm kiếm hoặc bộ lọc.</div>
+      </main>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="modalBackdrop" role="presentation">
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="modal-heading"><h2 id="modalTitle">Thông tin hồ sơ</h2><button class="modal-close" id="modalClose" type="button" aria-label="Đóng">×</button></div>
+      <div class="modal-content" id="modalContent"></div>
+    </section>
+  </div>
+  <div class="toast" id="toast" role="status" aria-live="polite"><strong id="toastTitle"></strong><span id="toastMessage"></span></div>
+
+  <script>
+    (() => {
+      const reviewList = document.getElementById("reviewList");
+      const searchInput = document.getElementById("searchInput");
+      const priorityFilter = document.getElementById("priorityFilter");
+      const categoryFilter = document.getElementById("categoryFilter");
+      const emptyState = document.getElementById("emptyState");
+      const modalBackdrop = document.getElementById("modalBackdrop");
+      const modalTitle = document.getElementById("modalTitle");
+      const modalContent = document.getElementById("modalContent");
+      const toast = document.getElementById("toast");
+      let pendingCount = 0;
+      let approvedCount = 32;
+      let toastTimer;
+
+      function createCard(review) {
+        const priorities = { "Cao": "high", "Trung bình": "medium", "Thấp": "low" };
+        const categories = {
+          "Bảng giá / Dịch vụ": "service",
+          "Quy trình hướng dẫn": "guidance",
+          "Thông tin chung": "general"
+        };
+        const card = document.createElement("article");
+        const priority = priorities[review.priority] || "low";
+        const category = categories[review.content_type] || "general";
+        const summary = review.details.summary
+          || `Cập nhật ${review.details.service_name || "nội dung"}${review.details.proposed_price ? ` lên ${review.details.proposed_price}` : ""}`;
+        const date = new Date(review.created_at);
+        card.className = "review-card";
+        card.dataset.priority = priority;
+        card.dataset.category = category;
+        card.dataset.search = `${review.facility_name} ${review.requested_by}`.toLocaleLowerCase("vi");
+
+        const header = document.createElement("div");
+        header.className = "review-header";
+        const title = document.createElement("h2");
+        title.className = "review-title";
+        title.textContent = review.facility_name;
+        const categoryLabel = document.createElement("span");
+        categoryLabel.className = "category";
+        categoryLabel.textContent = review.content_type;
+        const meta = document.createElement("div");
+        meta.className = "review-meta";
+        const dateLabel = document.createElement("span");
+        dateLabel.textContent = `Gửi ngày: ${Number.isNaN(date.getTime()) ? "Không rõ" : date.toLocaleDateString("vi-VN")}`;
+        const priorityLabel = document.createElement("span");
+        priorityLabel.className = `priority${priority === "high" ? "" : ` ${priority}`}`;
+        priorityLabel.textContent = review.priority;
+        meta.append(dateLabel, priorityLabel);
+        header.append(title, categoryLabel, meta);
+
+        const description = document.createElement("p");
+        description.className = "review-description";
+        description.textContent = summary;
+        const footer = document.createElement("div");
+        footer.className = "review-footer";
+        const requester = document.createElement("div");
+        requester.className = "requester";
+        const icon = document.createElement("span");
+        icon.className = "icon";
+        icon.style.setProperty("--icon", "url('../assets/icons/user-svgrepo-com.svg')");
+        const requesterLabel = document.createElement("span");
+        requesterLabel.textContent = `Yêu cầu bởi: ${review.requested_by}`;
+        requester.append(icon, requesterLabel);
+
+        const actions = document.createElement("div");
+        actions.className = "card-actions";
+        [["approve", "Duyệt Ngay", "button button-approve"], ["reject", "Từ Chối", "button button-reject"], ["details", "Xem Chi Tiết", "button"]]
+          .forEach(([action, label, className]) => {
+            const button = document.createElement("button");
+            button.type = "button";
+            button.dataset.action = action;
+            button.className = className;
+            button.textContent = label;
+            actions.append(button);
+          });
+        footer.append(requester, actions);
+        card.append(header, description, footer);
+        return card;
+      }
+
+      function renderReviews(reviews) {
+        reviewList.replaceChildren(...reviews.map(createCard));
+        pendingCount = reviews.length;
+        document.getElementById("pendingCount").textContent = String(pendingCount);
+        applyFilters();
+      }
+
+      function applyFilters() {
+        const query = searchInput.value.trim().toLocaleLowerCase("vi");
+        const priority = priorityFilter.value;
+        const category = categoryFilter.value;
+        let visible = 0;
+
+        reviewList.querySelectorAll(".review-card").forEach((card) => {
+          const matches = card.dataset.search.includes(query)
+            && (priority === "all" || card.dataset.priority === priority)
+            && (category === "all" || card.dataset.category === category);
+          card.hidden = !matches;
+          if (matches) visible += 1;
+        });
+        emptyState.classList.toggle("visible", visible === 0);
+      }
+
+      function showToast(title, message) {
+        document.getElementById("toastTitle").textContent = title;
+        document.getElementById("toastMessage").textContent = message;
+        toast.classList.add("visible");
+        window.clearTimeout(toastTimer);
+        toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 3200);
+      }
+
+      function openModal(title, content) {
+        modalTitle.textContent = title;
+        modalContent.replaceChildren(...(Array.isArray(content) ? content : [content]));
+        modalBackdrop.classList.add("open");
+        document.getElementById("modalClose").focus();
+      }
+
+      [searchInput, priorityFilter, categoryFilter].forEach((control) => {
+        control.addEventListener("input", applyFilters);
+        control.addEventListener("change", applyFilters);
+      });
+
+      reviewList.addEventListener("click", (event) => {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+        const card = button.closest(".review-card");
+        const facility = card.querySelector(".review-title").textContent;
+        const action = button.dataset.action;
+
+        if (action === "details") {
+          const description = document.createElement("p");
+          description.textContent = card.querySelector(".review-description").textContent;
+          const sender = document.createElement("p");
+          sender.textContent = card.querySelector(".requester").textContent.trim();
+          const date = document.createElement("p");
+          date.textContent = card.querySelector(".review-meta span").textContent;
+          openModal(facility, [description, sender, date]);
+          return;
+        }
+
+        card.remove();
+        pendingCount = Math.max(0, pendingCount - 1);
+        document.getElementById("pendingCount").textContent = pendingCount;
+        if (action === "approve") {
+          approvedCount += 1;
+          document.getElementById("approvedCount").textContent = approvedCount;
+          showToast("Đã duyệt nội dung", `${facility} đã được chuyển sang trạng thái đã duyệt.`);
+        } else {
+          showToast("Đã từ chối nội dung", `Yêu cầu cập nhật của ${facility} đã bị từ chối.`);
+        }
+        applyFilters();
+      });
+
+      document.getElementById("historyButton").addEventListener("click", () => {
+        const history = document.createElement("p");
+        history.textContent = "Hôm nay: 32 nội dung đã được duyệt. Các hồ sơ mới nhất sẽ xuất hiện tại đây sau khi được xử lý.";
+        openModal("Lịch sử duyệt", history);
+      });
+
+      document.getElementById("modalClose").addEventListener("click", () => modalBackdrop.classList.remove("open"));
+      modalBackdrop.addEventListener("click", (event) => {
+        if (event.target === modalBackdrop) modalBackdrop.classList.remove("open");
+      });
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") modalBackdrop.classList.remove("open");
+      });
+
+      fetch("../assets/data/reviews.json")
+        .then((response) => {
+          if (!response.ok) throw new Error(`HTTP ${response.status}`);
+          return response.json();
+        })
+        .then((reviews) => {
+          if (!Array.isArray(reviews)) throw new Error("reviews.json phải chứa một danh sách.");
+          renderReviews(reviews);
+        })
+        .catch((error) => {
+          console.error("Không thể tải danh sách kiểm duyệt:", error);
+          reviewList.textContent = "Không thể tải danh sách kiểm duyệt. Vui lòng thử tải lại trang.";
+          emptyState.classList.add("visible");
+        });
+    })();
+  </script>
+</body>
+</html>
