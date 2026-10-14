@@ -73,10 +73,18 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 
 ## Minh chứng OBS
 - Link video quay màn hình demo sản phẩm và giải thích code qua OBS:
+ *[https://youtu.be/uLMj3M1RrIA]*
+ *[https://youtu.be/4Ol9xnKeG60]*
+ *[https://youtu.be/t4KsRZbqySY]*
+ *[https://youtu.be/JvigB8pIoY8]*
+ *[https://youtu.be/meJQ-8Xsstg]*
+ *[https://youtu.be/rjejxlVmwpM]*
+ *[Chèn link video OBS tại đây]*
+ *[Chèn link video OBS tại đây]*
+ *[Chèn link video OBS tại đây]*
  *[Chèn link video OBS tại đây]*
  *[Chèn link video OBS tại đây]*
  *[Chèn link video OBS tại đây]*
  
-
 ## Khai báo sử dụng AI
 - Sử dụng các công cụ AI hỗ trợ trong quá trình định hình ý tưởng cấu trúc, kiểm tra mã nguồn, hỗ trợ viết tài liệu hướng dẫn và tối ưu hóa giao diện người dùng theo đúng quy chế học phần.
