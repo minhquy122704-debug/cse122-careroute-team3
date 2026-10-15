@@ -73,9 +73,9 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 
 ## Minh chứng OBS
 - Link video quay màn hình demo sản phẩm và giải thích code qua OBS:
- *[Chèn link video OBS tại đây]*
- *[Chèn link video OBS tại đây]*
- *[Chèn link video OBS tại đây]*
+ *[https://www.youtube.com/watch?v=VCxoekJkriU]*
+ *[https://www.youtube.com/watch?v=VlI6-VO329c]*
+ *[https://www.youtube.com/watch?v=YS7xXJUFyiI&t=5s]*
  
 
 ## Khai báo sử dụng AI
