@@ -1,72 +1,15 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" data-page="index">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#f3f8f7">
   <meta name="description" content="Bản demo CareRoute: tra cứu dịch vụ y tế, quản lý cơ sở và quản trị hệ thống.">
   <title>CareRoute - Bản demo</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --ink: #20312f;
-      --muted: #71827f;
-      --teal: #4f9187;
-      --teal-dark: #397d73;
-      --line: #dce8e4;
-      --page: #f3f8f7;
-      --white: #fff;
-      font-family: "Be Vietnam Pro", Inter, "Segoe UI", Arial, sans-serif;
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-    }
 
-    * { box-sizing: border-box; }
-    body { min-width: 320px; min-height: 100vh; margin: 0; padding: 32px; color: var(--ink); background: var(--page); }
-    a { color: inherit; }
-    .page { width: min(100%, 1080px); margin: 0 auto; }
-    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 62px; }
-    .brand { display: inline-flex; align-items: center; gap: 10px; color: #243733; font-size: 18px; font-weight: 750; text-decoration: none; }
-    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px; color: var(--white); background: var(--teal); }
-    .brand-mark svg { width: 20px; height: 20px; }
-    .demo-label { padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--teal-dark); background: #fff; font-size: 11px; font-weight: 650; }
-    .hero { max-width: 680px; margin-bottom: 34px; }
-    .eyebrow { margin: 0 0 11px; color: var(--teal-dark); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
-    h1 { margin: 0 0 13px; color: #20312f; font-size: clamp(32px, 5vw, 48px); letter-spacing: -1.6px; line-height: 1.12; }
-    .intro { max-width: 600px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
-    .groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
-    .group { padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); box-shadow: 0 5px 20px #27453b08; }
-    .group-heading { display: flex; align-items: center; gap: 11px; margin-bottom: 17px; }
-    .group-icon { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 10px; color: var(--teal-dark); background: #edf7f4; }
-    .group-icon svg { width: 20px; height: 20px; }
-    h2 { margin: 0 0 3px; color: #283a36; font-size: 16px; }
-    .group-heading p { margin: 0; color: #899793; font-size: 11px; }
-    .link-list { display: grid; gap: 9px; }
-    .demo-link { display: flex; min-height: 55px; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid #e7eeeb; border-radius: 9px; text-decoration: none; transition: border-color .16s, background .16s, transform .16s; }
-    .demo-link:hover { transform: translateY(-1px); border-color: #a9cec5; background: #f8fcfb; }
-    .link-copy { display: grid; gap: 3px; }
-    .link-copy strong { color: #344440; font-size: 12px; font-weight: 650; }
-    .link-copy small { color: #879590; font-size: 10px; line-height: 1.4; }
-    .arrow { color: var(--teal); font-size: 18px; line-height: 1; }
-    .footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 17px; border-top: 1px solid var(--line); color: #82918d; font-size: 11px; }
-    .footer p { margin: 0; }
-    :focus-visible { outline: 3px solid #79b6aa; outline-offset: 3px; }
-
-    @media (max-width: 800px) {
-      .topbar { margin-bottom: 48px; }
-    }
-    @media (max-width: 560px) {
-      body { padding: 22px 16px; }
-      .topbar { margin-bottom: 40px; }
-      .groups { grid-template-columns: 1fr; }
-      .group { padding: 18px; }
-      .footer { flex-direction: column; }
-    }
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
-    }
-  </style>
-</head>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+  </head>
 <body>
   <div class="page">
     <header class="topbar">
@@ -150,5 +93,6 @@
       <p>Bản demo giao diện — một số chức năng chưa kết nối dữ liệu thật.</p>
     </footer>
   </div>
+  <script src="js/main.js" defer></script>
 </body>
 </html>

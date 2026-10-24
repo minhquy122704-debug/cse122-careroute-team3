@@ -3,7 +3,54 @@
  * Quản lý dữ liệu tập trung, LocalStorage và mô phỏng AI cho toàn bộ 4 vai trò
  */
 
+const storageAdapter = (() => {
+  const fallbackStore = new Map();
+
+  const resolveStorage = () => {
+    if (typeof globalThis !== 'undefined' && globalThis.localStorage) {
+      return globalThis.localStorage;
+    }
+    if (typeof window !== 'undefined' && window.localStorage) {
+      return window.localStorage;
+    }
+    return null;
+  };
+
+  return {
+    getItem(key) {
+      const storage = resolveStorage();
+      if (storage) return storage.getItem(key);
+      return fallbackStore.has(key) ? fallbackStore.get(key) : null;
+    },
+    setItem(key, value) {
+      const storage = resolveStorage();
+      if (storage) {
+        storage.setItem(key, value);
+        return;
+      }
+      fallbackStore.set(key, String(value));
+    },
+    removeItem(key) {
+      const storage = resolveStorage();
+      if (storage) {
+        storage.removeItem(key);
+      } else {
+        fallbackStore.delete(key);
+      }
+    },
+    clear() {
+      const storage = resolveStorage();
+      if (storage) {
+        storage.clear();
+      } else {
+        fallbackStore.clear();
+      }
+    }
+  };
+})();
+
 const CareRouteDB = {
+  storage: storageAdapter,
   KEYS: {
     FACILITIES: 'careroute_facilities',
     SERVICES: 'careroute_services',
@@ -350,9 +397,9 @@ const CareRouteDB = {
   init() {
     for (const [key, value] of Object.entries(this.KEYS)) {
       const dbKey = key.toLowerCase();
-      if (!localStorage.getItem(value)) {
+      if (!this.storage.getItem(value)) {
         if (this.INITIAL_DATA[dbKey]) {
-          localStorage.setItem(value, JSON.stringify(this.INITIAL_DATA[dbKey]));
+          this.storage.setItem(value, JSON.stringify(this.INITIAL_DATA[dbKey]));
         }
       }
     }
@@ -363,11 +410,12 @@ const CareRouteDB = {
     const storageKey = this.KEYS[keyName.toUpperCase()];
     if (!storageKey) return [];
     try {
-      const data = localStorage.getItem(storageKey);
-      return data ? JSON.parse(data) : (this.INITIAL_DATA[keyName.toLowerCase()] || []);
+      const data = this.storage.getItem(storageKey);
+      const fallback = this.INITIAL_DATA[keyName.toLowerCase()] ?? [];
+      return data ? JSON.parse(data) : fallback;
     } catch (e) {
       console.error("Lỗi đọc LocalStorage", e);
-      return this.INITIAL_DATA[keyName.toLowerCase()] || [];
+      return this.INITIAL_DATA[keyName.toLowerCase()] ?? [];
     }
   },
 
@@ -375,7 +423,7 @@ const CareRouteDB = {
     const storageKey = this.KEYS[keyName.toUpperCase()];
     if (!storageKey) return false;
     try {
-      localStorage.setItem(storageKey, JSON.stringify(data));
+      this.storage.setItem(storageKey, JSON.stringify(data));
       return true;
     } catch (e) {
       console.error("Lỗi ghi LocalStorage", e);
@@ -387,7 +435,7 @@ const CareRouteDB = {
     for (const [key, value] of Object.entries(this.KEYS)) {
       const dbKey = key.toLowerCase();
       if (this.INITIAL_DATA[dbKey]) {
-        localStorage.setItem(value, JSON.stringify(this.INITIAL_DATA[dbKey]));
+        this.storage.setItem(value, JSON.stringify(this.INITIAL_DATA[dbKey]));
       }
     }
   },
@@ -405,6 +453,25 @@ const CareRouteDB = {
 
   getServiceById(id) {
     return this.getServices().find(s => s.id === id) || null;
+  },
+
+  searchServices(query = '', filters = {}) {
+    const list = this.getServices();
+    const searchValue = (query || '').trim().toLowerCase();
+
+    return list.filter(service => {
+      const text = [service.name, service.facilityName, service.category, service.description, service.preparation]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+
+      const matchesQuery = !searchValue || text.includes(searchValue);
+      const matchesFacility = !filters.facilityId || service.facilityId === filters.facilityId;
+      const matchesCategory = !filters.category || service.category === filters.category;
+      const matchesStatus = !filters.status || service.status === filters.status;
+
+      return matchesQuery && matchesFacility && matchesCategory && matchesStatus;
+    });
   },
 
   saveService(serviceData) {
@@ -531,6 +598,53 @@ const CareRouteDB = {
     list = list.filter(c => c.id !== id);
     this.set('CATEGORIES', list);
     return true;
+  },
+
+  // 6. Checklist & thống kê
+  getChecklists(serviceId = null) {
+    const list = this.get('CHECKLISTS');
+    if (!serviceId) return list;
+    return list.filter(item => item.serviceId === serviceId);
+  },
+
+  getChecklistByServiceId(serviceId) {
+    return this.getChecklists(serviceId)[0] || null;
+  },
+
+  saveChecklist(checklistData) {
+    const list = this.getChecklists();
+    if (checklistData.id) {
+      const idx = list.findIndex(item => item.id === checklistData.id);
+      if (idx !== -1) {
+        list[idx] = { ...list[idx], ...checklistData };
+      } else {
+        list.unshift(checklistData);
+      }
+    } else {
+      checklistData.id = 'chk-' + Date.now();
+      list.unshift(checklistData);
+    }
+    this.set('CHECKLISTS', list);
+    return checklistData;
+  },
+
+  deleteChecklist(id) {
+    const list = this.getChecklists().filter(item => item.id !== id);
+    this.set('CHECKLISTS', list);
+    return true;
+  },
+
+  getStats() {
+    const stats = this.get('STATS');
+    if (stats && typeof stats === 'object') return stats;
+    return this.INITIAL_DATA.stats;
+  },
+
+  saveStats(statsData) {
+    const current = this.getStats();
+    const next = { ...current, ...statsData };
+    this.set('STATS', next);
+    return next;
   },
 
   // 6. Audit Logs
@@ -750,5 +864,10 @@ const CareRouteDB = {
 // Tự động khởi tạo kho dữ liệu khi nạp script
 CareRouteDB.init();
 
-// Xuất ra window
-window.CareRouteDB = CareRouteDB;
+if (typeof window !== 'undefined') {
+  window.CareRouteDB = CareRouteDB;
+}
+
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { CareRouteDB, storageAdapter };
+}
