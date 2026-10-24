@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f3f8f7">
+  <meta name="description" content="Bản demo CareRoute: tra cứu dịch vụ y tế, quản lý cơ sở và quản trị hệ thống.">
+  <title>CareRoute - Bản demo</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20312f;
+      --muted: #71827f;
+      --teal: #4f9187;
+      --teal-dark: #397d73;
+      --line: #dce8e4;
+      --page: #f3f8f7;
+      --white: #fff;
+      font-family: "Be Vietnam Pro", Inter, "Segoe UI", Arial, sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+    body { min-width: 320px; min-height: 100vh; margin: 0; padding: 32px; color: var(--ink); background: var(--page); }
+    a { color: inherit; }
+    .page { width: min(100%, 1080px); margin: 0 auto; }
+    .topbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 62px; }
+    .brand { display: inline-flex; align-items: center; gap: 10px; color: #243733; font-size: 18px; font-weight: 750; text-decoration: none; }
+    .brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px; color: var(--white); background: var(--teal); }
+    .brand-mark svg { width: 20px; height: 20px; }
+    .demo-label { padding: 7px 11px; border: 1px solid var(--line); border-radius: 999px; color: var(--teal-dark); background: #fff; font-size: 11px; font-weight: 650; }
+    .hero { max-width: 680px; margin-bottom: 34px; }
+    .eyebrow { margin: 0 0 11px; color: var(--teal-dark); font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+    h1 { margin: 0 0 13px; color: #20312f; font-size: clamp(32px, 5vw, 48px); letter-spacing: -1.6px; line-height: 1.12; }
+    .intro { max-width: 600px; margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+    .groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .group { padding: 22px; border: 1px solid var(--line); border-radius: 14px; background: var(--white); box-shadow: 0 5px 20px #27453b08; }
+    .group-heading { display: flex; align-items: center; gap: 11px; margin-bottom: 17px; }
+    .group-icon { display: grid; width: 38px; height: 38px; flex: 0 0 38px; place-items: center; border-radius: 10px; color: var(--teal-dark); background: #edf7f4; }
+    .group-icon svg { width: 20px; height: 20px; }
+    h2 { margin: 0 0 3px; color: #283a36; font-size: 16px; }
+    .group-heading p { margin: 0; color: #899793; font-size: 11px; }
+    .link-list { display: grid; gap: 9px; }
+    .demo-link { display: flex; min-height: 55px; align-items: center; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid #e7eeeb; border-radius: 9px; text-decoration: none; transition: border-color .16s, background .16s, transform .16s; }
+    .demo-link:hover { transform: translateY(-1px); border-color: #a9cec5; background: #f8fcfb; }
+    .link-copy { display: grid; gap: 3px; }
+    .link-copy strong { color: #344440; font-size: 12px; font-weight: 650; }
+    .link-copy small { color: #879590; font-size: 10px; line-height: 1.4; }
+    .arrow { color: var(--teal); font-size: 18px; line-height: 1; }
+    .footer { display: flex; justify-content: space-between; gap: 12px; margin-top: 28px; padding-top: 17px; border-top: 1px solid var(--line); color: #82918d; font-size: 11px; }
+    .footer p { margin: 0; }
+    :focus-visible { outline: 3px solid #79b6aa; outline-offset: 3px; }
+
+    @media (max-width: 800px) {
+      .topbar { margin-bottom: 48px; }
+    }
+    @media (max-width: 560px) {
+      body { padding: 22px 16px; }
+      .topbar { margin-bottom: 40px; }
+      .groups { grid-template-columns: 1fr; }
+      .group { padding: 18px; }
+      .footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="topbar">
+      <a class="brand" href="./" aria-label="CareRoute - Trang chủ demo">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2.7" stroke-linecap="round"/></svg>
+        </span>
+        <span>CareRoute</span>
+      </a>
+      <span class="demo-label">Bản demo giao diện</span>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="pageTitle">
+        <p class="eyebrow">Nền tảng chăm sóc sức khỏe</p>
+        <h1 id="pageTitle">Chọn giao diện để trải nghiệm</h1>
+        <p class="intro">Khám phá các luồng chính của CareRoute dành cho người dân, cơ sở y tế, quản trị viên và kiểm duyệt viên. Chọn một màn hình bên dưới để bắt đầu.</p>
+      </section>
+
+      <div class="groups">
+        <section class="group" aria-labelledby="citizenTitle">
+          <div class="group-heading">
+            <span class="group-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="8" r="3.5" stroke="currentColor" stroke-width="1.7"/><path d="M4.5 20c.6-3.7 3.3-5.5 7.5-5.5s6.9 1.8 7.5 5.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+            </span>
+            <div><h2 id="citizenTitle">Người dân</h2><p>Tra cứu và chuẩn bị đi khám</p></div>
+          </div>
+          <nav class="link-list" aria-label="Giao diện người dân">
+            <a class="demo-link" href="pages/citizen-care-search.html"><span class="link-copy"><strong>Tra cứu dịch vụ</strong><small>Tìm dịch vụ và cơ sở y tế phù hợp</small></span><span class="arrow" aria-hidden="true">→</span></a>
+            <a class="demo-link" href="pages/citizen-care-detail.html"><span class="link-copy"><strong>Chi tiết cơ sở y tế</strong><small>Xem thông tin và dịch vụ của cơ sở</small></span><span class="arrow" aria-hidden="true">→</span></a>
+            <a class="demo-link" href="pages/citizen-care-checklist.html"><span class="link-copy"><strong>Checklist chuẩn bị</strong><small>Chuẩn bị trước cuộc hẹn khám</small></span><span class="arrow" aria-hidden="true">→</span></a>
+          </nav>
+        </section>
+
+        <section class="group" aria-labelledby="facilityTitle">
+          <div class="group-heading">
+            <span class="group-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M4 21V6.5A1.5 1.5 0 0 1 5.5 5H18a2 2 0 0 1 2 2v14M2 21h20M9 9h2m-2 4h2m-2 4h2m4-8h1m-1 4h1m-1 4h1M9 5V3h6v2" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div><h2 id="facilityTitle">Cơ sở y tế</h2><p>Quản lý hoạt động và dịch vụ</p></div>
+          </div>
+          <nav class="link-list" aria-label="Giao diện cơ sở y tế">
+            <a class="demo-link" href="pages/facility-dashboard.html"><span class="link-copy"><strong>Bảng điều khiển</strong><small>Tổng quan hoạt động cơ sở</small></span><span class="arrow" aria-hidden="true">→</span></a>
+            <a class="demo-link" href="pages/facility-service-management.html"><span class="link-copy"><strong>Quản lý dịch vụ</strong><small>Cập nhật danh mục và giá dịch vụ</small></span><span class="arrow" aria-hidden="true">→</span></a>
+            <a class="demo-link" href="pages/facility-guidance-management.html"><span class="link-copy"><strong>Quản lý hướng dẫn</strong><small>Thiết lập quy trình chuẩn bị khám</small></span><span class="arrow" aria-hidden="true">→</span></a>
+          </nav>
+        </section>
+
+        <section class="group" aria-labelledby="adminTitle">
+          <div class="group-heading">
+            <span class="group-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 19 6v5c0 4.5-2.9 7.8-7 10-4.1-2.2-7-5.5-7-10V6l7-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div><h2 id="adminTitle">Quản trị viên</h2><p>Quản trị hệ thống CareRoute</p></div>
+          </div>
+          <nav class="link-list" aria-label="Giao diện quản trị viên">
+            <a class="demo-link" href="pages/admin-dashboard.html"><span class="link-copy"><strong>Bảng quản trị</strong><small>Theo dõi số liệu toàn hệ thống</small></span><span class="arrow" aria-hidden="true">→</span></a>
+            <a class="demo-link" href="pages/admin-facility-management.html"><span class="link-copy"><strong>Quản lý cơ sở y tế</strong><small>Quản lý thông tin các cơ sở</small></span><span class="arrow" aria-hidden="true">→</span></a>
+            <a class="demo-link" href="pages/admin-category-management.html"><span class="link-copy"><strong>Quản lý danh mục</strong><small>Cấu hình danh mục chuyên khoa</small></span><span class="arrow" aria-hidden="true">→</span></a>
+          </nav>
+        </section>
+
+        <section class="group" aria-labelledby="reviewerTitle">
+          <div class="group-heading">
+            <span class="group-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 3 19 6v5c0 4.5-2.9 7.8-7 10-4.1-2.2-7-5.5-7-10V6l7-3Z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="m9 12 2 2 4-4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+            <div><h2 id="reviewerTitle">Kiểm duyệt viên</h2><p>Rà soát và duy trì chất lượng nội dung</p></div>
+          </div>
+          <nav class="link-list" aria-label="Giao diện kiểm duyệt viên">
+            <a class="demo-link" href="pages/reviewer-review-queue.html"><span class="link-copy"><strong>Hàng chờ duyệt</strong><small>Rà soát nội dung y tế mới</small></span><span class="arrow" aria-hidden="true">→</span></a>
+            <a class="demo-link" href="pages/reviewer-feedback-review.html"><span class="link-copy"><strong>Kiểm duyệt phản hồi</strong><small>Xem xét phản hồi và nội dung thay đổi</small></span><span class="arrow" aria-hidden="true">→</span></a>
+            <a class="demo-link" href="pages/reviewer-freshness-monitor.html"><span class="link-copy"><strong>Giám sát nội dung cũ</strong><small>Theo dõi nội dung cần được cập nhật</small></span><span class="arrow" aria-hidden="true">→</span></a>
+          </nav>
+        </section>
+      </div>
+    </main>
+
+    <footer class="footer">
+      <p>© 2026 CareRoute Health</p>
+      <p>Bản demo giao diện — một số chức năng chưa kết nối dữ liệu thật.</p>
+    </footer>
+  </div>
+</body>
+</html>

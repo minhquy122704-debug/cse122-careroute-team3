@@ -1,0 +1,82 @@
+[
+  {
+    "id": "FAC001",
+    "name": "Bệnh viện Đa khoa Tâm Anh",
+    "type": "Bệnh viện",
+    "location": "Hà Nội",
+    "services_count": 145,
+    "status": "Hoạt động"
+  },
+  {
+    "id": "FAC002",
+    "name": "Phòng khám Đa khoa Quốc tế Golden Healthcare",
+    "type": "Phòng khám tư",
+    "location": "TP.HCM",
+    "services_count": 32,
+    "status": "Hoạt động"
+  },
+  {
+    "id": "FAC003",
+    "name": "Trung tâm Xét nghiệm Diag - Chi nhánh Quận 3",
+    "type": "Xét nghiệm",
+    "location": "TP.HCM",
+    "services_count": 18,
+    "status": "Hoạt động"
+  },
+  {
+    "id": "FAC004",
+    "name": "Bệnh viện Đa khoa Quốc tế Vinmec",
+    "type": "Bệnh viện",
+    "location": "Đà Nẵng",
+    "services_count": 98,
+    "status": "Tạm ngưng"
+  },
+  {
+    "id": "FAC005",
+    "name": "Bệnh viện Bạch Mai",
+    "type": "Bệnh viện",
+    "location": "Hà Nội",
+    "services_count": 120,
+    "status": "Hoạt động"
+  },
+  {
+    "id": "FAC006",
+    "name": "Phòng khám Đa khoa Hoàn Mỹ Sài Gòn",
+    "type": "Phòng khám tư",
+    "location": "TP.HCM",
+    "services_count": 27,
+    "status": "Hoạt động"
+  },
+  {
+    "id": "FAC007",
+    "name": "Trung tâm Xét nghiệm Medlatec",
+    "type": "Xét nghiệm",
+    "location": "Hà Nội",
+    "services_count": 35,
+    "status": "Hoạt động"
+  },
+  {
+    "id": "FAC008",
+    "name": "Bệnh viện Đa khoa Trung ương Cần Thơ",
+    "type": "Bệnh viện",
+    "location": "Cần Thơ",
+    "services_count": 76,
+    "status": "Hoạt động"
+  },
+  {
+    "id": "FAC009",
+    "name": "Phòng khám Đa khoa Đà Nẵng",
+    "type": "Phòng khám tư",
+    "location": "Đà Nẵng",
+    "services_count": 21,
+    "status": "Tạm ngưng"
+  },
+  {
+    "id": "FAC010",
+    "name": "Trung tâm Xét nghiệm Pasteur TP.HCM",
+    "type": "Xét nghiệm",
+    "location": "TP.HCM",
+    "services_count": 42,
+    "status": "Hoạt động"
+  }
+]
