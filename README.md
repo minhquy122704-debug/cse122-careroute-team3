@@ -87,6 +87,7 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 ## Minh chứng OBS
 
 - Link video quay màn hình demo sản phẩm và giải thích code qua OBS:
+<<<<<<< HEAD
   _[https://youtu.be/uLMj3M1RrIA]_
   _[https://youtu.be/4Ol9xnKeG60]_
   _[https://youtu.be/t4KsRZbqySY]_
@@ -96,6 +97,12 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
   _[https://youtu.be/_AgrcEPVFW0]_
   _[https://youtu.be/OMCS33W9OSA]_
   _[https://youtu.be/fbL64b3g8EM]_
+=======
+ *[https://www.youtube.com/watch?v=VCxoekJkriU]*
+ *[https://www.youtube.com/watch?v=VlI6-VO329c]*
+ *[https://www.youtube.com/watch?v=YS7xXJUFyiI&t=5s]*
+ 
+>>>>>>> 5187c44b6675608432630b205548c3279d8b4b2b
 
 ## Khai báo sử dụng AI
 
