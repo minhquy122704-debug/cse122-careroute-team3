@@ -87,10 +87,6 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 ## Minh chứng OBS
 
 - Link video quay màn hình demo sản phẩm và giải thích code qua OBS:
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 1e5990d3b4a9122d374613ff6ec5766a51530971
   _[https://youtu.be/uLMj3M1RrIA]_
   _[https://youtu.be/4Ol9xnKeG60]_
   _[https://youtu.be/t4KsRZbqySY]_
@@ -100,15 +96,9 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
   _[https://youtu.be/_AgrcEPVFW0]_
   _[https://youtu.be/OMCS33W9OSA]_
   _[https://youtu.be/fbL64b3g8EM]_
-<<<<<<< HEAD
-=======
- *[https://www.youtube.com/watch?v=VCxoekJkriU]*
- *[https://www.youtube.com/watch?v=VlI6-VO329c]*
- *[https://www.youtube.com/watch?v=YS7xXJUFyiI&t=5s]*
- 
->>>>>>> 5187c44b6675608432630b205548c3279d8b4b2b
-=======
->>>>>>> 1e5990d3b4a9122d374613ff6ec5766a51530971
+ _[https://www.youtube.com/watch?v=VCxoekJkriU]_
+ _[https://www.youtube.com/watch?v=VlI6-VO329c]_
+_[https://www.youtube.com/watch?v=YS7xXJUFyiI&t=5s]_
 
 ## Khai báo sử dụng AI
 
