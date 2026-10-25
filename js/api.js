@@ -350,46 +350,120 @@ const CareRouteDB = {
   init() {
     for (const [key, value] of Object.entries(this.KEYS)) {
       const dbKey = key.toLowerCase();
-      if (!localStorage.getItem(value)) {
-        if (this.INITIAL_DATA[dbKey]) {
-          localStorage.setItem(value, JSON.stringify(this.INITIAL_DATA[dbKey]));
+      try {
+        if (window.localStorage.getItem(value) === null && this.INITIAL_DATA[dbKey] !== undefined) {
+          this.set(key, this.INITIAL_DATA[dbKey]);
         }
+      } catch (error) {
+        console.error(`Không thể khởi tạo dữ liệu "${value}" trong LocalStorage:`, error);
       }
     }
   },
 
+  clone(data) {
+    return JSON.parse(JSON.stringify(data));
+  },
+
+  createId(prefix) {
+    const randomPart = Math.random().toString(36).slice(2, 8);
+    return `${prefix}-${Date.now()}-${randomPart}`;
+  },
+
+  upsert(keyName, record, prefix, defaults = {}) {
+    if (!record || typeof record !== 'object' || Array.isArray(record)) {
+      console.error(`Dữ liệu lưu "${keyName}" phải là một đối tượng.`);
+      return null;
+    }
+
+    const list = this.get(keyName);
+    if (!Array.isArray(list)) {
+      console.error(`Dữ liệu "${keyName}" trong LocalStorage không hợp lệ.`);
+      return null;
+    }
+
+    const existingIndex = record.id ? list.findIndex(item => item.id === record.id) : -1;
+    const savedRecord = {
+      ...defaults,
+      ...(existingIndex === -1 ? {} : list[existingIndex]),
+      ...record,
+      id: record.id || this.createId(prefix)
+    };
+
+    if (existingIndex === -1) {
+      list.unshift(savedRecord);
+    } else {
+      list[existingIndex] = savedRecord;
+    }
+
+    return this.set(keyName, list) ? savedRecord : null;
+  },
+
+  removeRecord(keyName, id) {
+    const list = this.get(keyName);
+    if (!Array.isArray(list)) {
+      console.error(`Dữ liệu "${keyName}" trong LocalStorage không hợp lệ.`);
+      return false;
+    }
+
+    const nextList = list.filter(item => item.id !== id);
+    if (nextList.length === list.length) return false;
+    return this.set(keyName, nextList);
+  },
+
   // Getter & Setter tổng quát
   get(keyName) {
-    const storageKey = this.KEYS[keyName.toUpperCase()];
-    if (!storageKey) return [];
+    const normalizedKey = typeof keyName === 'string' ? keyName.toUpperCase() : '';
+    const storageKey = this.KEYS[normalizedKey];
+    if (!storageKey) {
+      console.error(`Không tìm thấy khóa dữ liệu "${keyName}".`);
+      return [];
+    }
+
+    const fallback = this.INITIAL_DATA[normalizedKey.toLowerCase()];
     try {
-      const data = localStorage.getItem(storageKey);
-      return data ? JSON.parse(data) : (this.INITIAL_DATA[keyName.toLowerCase()] || []);
-    } catch (e) {
-      console.error("Lỗi đọc LocalStorage", e);
-      return this.INITIAL_DATA[keyName.toLowerCase()] || [];
+      const data = window.localStorage.getItem(storageKey);
+      if (data === null) return this.clone(fallback);
+
+      const parsed = JSON.parse(data);
+      const hasExpectedShape = Array.isArray(fallback)
+        ? Array.isArray(parsed)
+        : parsed !== null && typeof parsed === 'object' && !Array.isArray(parsed);
+      if (fallback !== undefined && !hasExpectedShape) {
+        console.error(`Dữ liệu "${storageKey}" trong LocalStorage không đúng định dạng.`);
+        return this.clone(fallback);
+      }
+      return parsed;
+    } catch (error) {
+      console.error(`Lỗi đọc dữ liệu "${storageKey}" từ LocalStorage:`, error);
+      return this.clone(fallback);
     }
   },
 
   set(keyName, data) {
-    const storageKey = this.KEYS[keyName.toUpperCase()];
-    if (!storageKey) return false;
+    const normalizedKey = typeof keyName === 'string' ? keyName.toUpperCase() : '';
+    const storageKey = this.KEYS[normalizedKey];
+    if (!storageKey) {
+      console.error(`Không tìm thấy khóa dữ liệu "${keyName}".`);
+      return false;
+    }
     try {
-      localStorage.setItem(storageKey, JSON.stringify(data));
+      window.localStorage.setItem(storageKey, JSON.stringify(data));
       return true;
-    } catch (e) {
-      console.error("Lỗi ghi LocalStorage", e);
+    } catch (error) {
+      console.error(`Lỗi ghi dữ liệu "${storageKey}" vào LocalStorage:`, error);
       return false;
     }
   },
 
   resetAll() {
+    let succeeded = true;
     for (const [key, value] of Object.entries(this.KEYS)) {
       const dbKey = key.toLowerCase();
       if (this.INITIAL_DATA[dbKey]) {
-        localStorage.setItem(value, JSON.stringify(this.INITIAL_DATA[dbKey]));
+        succeeded = this.set(key, this.INITIAL_DATA[dbKey]) && succeeded;
       }
     }
+    return succeeded;
   },
 
   // ===== CÁC THAO TÁC CRUD NGHIỆP VỤ =====
@@ -408,30 +482,18 @@ const CareRouteDB = {
   },
 
   saveService(serviceData) {
-    const list = this.getServices();
-    if (serviceData.id) {
-      const index = list.findIndex(s => s.id === serviceData.id);
-      if (index !== -1) {
-        list[index] = { ...list[index], ...serviceData, lastUpdated: new Date().toISOString().split('T')[0] };
-      } else {
-        list.unshift(serviceData);
-      }
-    } else {
-      serviceData.id = 'srv-' + Date.now();
-      serviceData.lastUpdated = new Date().toISOString().split('T')[0];
-      serviceData.searches = 0;
-      serviceData.verified = false;
-      list.unshift(serviceData);
+    if (!serviceData || typeof serviceData !== 'object' || Array.isArray(serviceData)) {
+      return this.upsert('SERVICES', serviceData, 'srv');
     }
-    this.set('SERVICES', list);
-    return serviceData;
+    const isNew = !serviceData || !serviceData.id || !this.getServiceById(serviceData.id);
+    return this.upsert('SERVICES', {
+      ...serviceData,
+      lastUpdated: new Date().toISOString().split('T')[0]
+    }, 'srv', isNew ? { searches: 0, verified: false } : {});
   },
 
   deleteService(id) {
-    let list = this.getServices();
-    list = list.filter(s => s.id !== id);
-    this.set('SERVICES', list);
-    return true;
+    return this.removeRecord('SERVICES', id);
   },
 
   // 2. Cơ sở y tế (Facilities)
@@ -444,18 +506,8 @@ const CareRouteDB = {
   },
 
   saveFacility(facilityData) {
-    const list = this.getFacilities();
-    if (facilityData.id) {
-      const idx = list.findIndex(f => f.id === facilityData.id);
-      if (idx !== -1) list[idx] = { ...list[idx], ...facilityData };
-    } else {
-      facilityData.id = 'fac-' + Date.now();
-      facilityData.rating = 5.0;
-      facilityData.reviewCount = 1;
-      list.unshift(facilityData);
-    }
-    this.set('FACILITIES', list);
-    return facilityData;
+    const isNew = !facilityData || !facilityData.id || !this.getFacilityById(facilityData.id);
+    return this.upsert('FACILITIES', facilityData, 'fac', isNew ? { rating: 5.0, reviewCount: 1 } : {});
   },
 
   // 3. Quy trình hướng dẫn (Guidances)
@@ -466,45 +518,42 @@ const CareRouteDB = {
   },
 
   saveGuidance(data) {
-    const list = this.getGuidances();
-    if (data.id) {
-      const idx = list.findIndex(g => g.id === data.id);
-      if (idx !== -1) list[idx] = { ...list[idx], ...data, updatedAt: new Date().toISOString().split('T')[0] };
-    } else {
-      data.id = 'gui-' + Date.now();
-      data.updatedAt = new Date().toISOString().split('T')[0];
-      list.unshift(data);
+    if (!data || typeof data !== 'object' || Array.isArray(data)) {
+      return this.upsert('GUIDANCES', data, 'gui');
     }
-    this.set('GUIDANCES', list);
-    return data;
+    return this.upsert('GUIDANCES', {
+      ...data,
+      updatedAt: new Date().toISOString().split('T')[0]
+    }, 'gui');
   },
 
   deleteGuidance(id) {
-    let list = this.getGuidances();
-    list = list.filter(g => g.id !== id);
-    this.set('GUIDANCES', list);
-    return true;
+    return this.removeRecord('GUIDANCES', id);
   },
 
   // 4. Hàng chờ duyệt (Review Queue)
-  getReviewQueue() {
-    return this.get('REVIEW_QUEUE');
+  getReviewQueue(status = null) {
+    const queue = this.get('REVIEW_QUEUE');
+    return status ? queue.filter(item => item.status === status) : queue;
   },
 
   updateReviewStatus(id, newStatus, feedbackText = '') {
+    if (!['pending', 'approved', 'rejected'].includes(newStatus)) {
+      console.error(`Trạng thái duyệt "${newStatus}" không hợp lệ.`);
+      return false;
+    }
+
     const queue = this.getReviewQueue();
     const item = queue.find(q => q.id === id);
-    if (item) {
-      item.status = newStatus;
-      item.reviewerFeedback = feedbackText;
-      item.reviewedAt = new Date().toLocaleString('vi-VN');
-      this.set('REVIEW_QUEUE', queue);
+    if (!item) return false;
 
-      // Thêm log
-      this.addAuditLog('Biên tập viên', `${newStatus === 'approved' ? 'Phê duyệt' : 'Từ chối'} nội dung`, item.title);
-      return true;
-    }
-    return false;
+    item.status = newStatus;
+    item.reviewerFeedback = feedbackText;
+    item.reviewedAt = new Date().toLocaleString('vi-VN');
+    if (!this.set('REVIEW_QUEUE', queue)) return false;
+
+    this.addAuditLog('Biên tập viên', `${newStatus === 'approved' ? 'Phê duyệt' : newStatus === 'rejected' ? 'Từ chối' : 'Mở lại'} nội dung`, item.title);
+    return true;
   },
 
   // 5. Taxonomy & Categories
@@ -513,24 +562,12 @@ const CareRouteDB = {
   },
 
   saveCategory(cat) {
-    const list = this.getCategories();
-    if (cat.id) {
-      const idx = list.findIndex(c => c.id === cat.id);
-      if (idx !== -1) list[idx] = { ...list[idx], ...cat };
-    } else {
-      cat.id = 'cat-' + Date.now();
-      cat.count = 0;
-      list.unshift(cat);
-    }
-    this.set('CATEGORIES', list);
-    return cat;
+    const isNew = !cat || !cat.id || !this.getCategories().some(category => category.id === cat.id);
+    return this.upsert('CATEGORIES', cat, 'cat', isNew ? { count: 0 } : {});
   },
 
   deleteCategory(id) {
-    let list = this.getCategories();
-    list = list.filter(c => c.id !== id);
-    this.set('CATEGORIES', list);
-    return true;
+    return this.removeRecord('CATEGORIES', id);
   },
 
   // 6. Audit Logs
@@ -541,13 +578,62 @@ const CareRouteDB = {
   addAuditLog(user, action, target) {
     const logs = this.getAuditLogs();
     logs.unshift({
-      id: 'log-' + Date.now(),
+      id: this.createId('log'),
       time: 'Vừa xong',
       user,
       action,
       target
     });
-    this.set('AUDIT_LOGS', logs.slice(0, 30));
+    return this.set('AUDIT_LOGS', logs.slice(0, 30));
+  },
+
+  // 7. Checklist và thống kê
+  getChecklists() {
+    return this.get('CHECKLISTS');
+  },
+
+  getChecklistById(id) {
+    return this.getChecklists().find(checklist => checklist.id === id) || null;
+  },
+
+  saveChecklist(checklist) {
+    return this.upsert('CHECKLISTS', checklist, 'chk');
+  },
+
+  deleteChecklist(id) {
+    return this.removeRecord('CHECKLISTS', id);
+  },
+
+  updateChecklistItem(checklistId, itemId, checked) {
+    if (typeof checked !== 'boolean') {
+      console.error('Trạng thái checklist phải là giá trị boolean.');
+      return false;
+    }
+
+    const checklist = this.getChecklistById(checklistId);
+    const item = checklist && Array.isArray(checklist.items)
+      ? checklist.items.find(entry => entry.id === itemId)
+      : null;
+    if (!item) return false;
+
+    item.checked = checked;
+    return this.set('CHECKLISTS', this.getChecklists().map(entry =>
+      entry.id === checklistId ? checklist : entry
+    ));
+  },
+
+  getStats() {
+    return this.get('STATS');
+  },
+
+  updateStats(stats) {
+    if (!stats || typeof stats !== 'object' || Array.isArray(stats)) {
+      console.error('Dữ liệu thống kê phải là một đối tượng.');
+      return null;
+    }
+
+    const updatedStats = { ...this.getStats(), ...stats };
+    return this.set('STATS', updatedStats) ? updatedStats : null;
   },
 
   // ===== MÔ PHỎNG 3 TÍNH NĂNG AI THEO YÊU CẦU ĐỀ TÀI =====
@@ -560,7 +646,7 @@ const CareRouteDB = {
     // Giả lập độ trễ AI xử lý 600ms
     await new Promise(res => setTimeout(res, 600));
 
-    const lower = queryText.toLowerCase().trim();
+    const lower = typeof queryText === 'string' ? queryText.toLowerCase().trim() : '';
     if (!lower) {
       return {
         success: false,
@@ -634,7 +720,13 @@ const CareRouteDB = {
     }
 
     const service = this.getServiceById(matched.recommendedServiceId) || this.getServices()[0];
-    const facility = this.getFacilityById(service.facilityId) || this.getFacilities()[0];
+    if (!service) {
+      return {
+        success: false,
+        error: 'Hiện chưa có dịch vụ y tế để đề xuất. Vui lòng thử lại sau.'
+      };
+    }
+    const facility = this.getFacilityById(service.facilityId) || null;
 
     return {
       success: true,
@@ -657,6 +749,12 @@ const CareRouteDB = {
     await new Promise(res => setTimeout(res, 500));
 
     const service = this.getServiceById(serviceId) || this.getServices()[0];
+    if (!service) {
+      return {
+        success: false,
+        error: 'Hiện chưa có dịch vụ để tạo checklist. Vui lòng thử lại sau.'
+      };
+    }
     const items = [
       { id: 'c-1', text: 'Căn cước công dân gắn chip (hoặc VNeID định danh điện tử mức 2)', category: 'Giấy tờ tùy thân', required: true, checked: true },
       { id: 'c-2', text: patientType === 'bhyt' ? 'Thẻ BHYT còn hạn hoặc hình ảnh thẻ trên ứng dụng VssID' : 'Thẻ Bảo hiểm sức khỏe tư nhân / Thẻ bảo lãnh viện phí', category: 'Bảo hiểm & Chi phí', required: true, checked: true },
@@ -701,22 +799,27 @@ const CareRouteDB = {
     await new Promise(res => setTimeout(res, 700));
 
     const services = this.getServices();
-    const currentDate = new Date('2026-10-06');
+    const currentDate = new Date();
     const results = [];
 
     services.forEach(srv => {
       const updateDate = new Date(srv.lastUpdated);
-      const diffMonths = Math.floor((currentDate - updateDate) / (1000 * 60 * 60 * 24 * 30));
+      const validUpdateDate = !Number.isNaN(updateDate.getTime());
+      const diffMonths = validUpdateDate
+        ? Math.max(0, (currentDate.getFullYear() - updateDate.getFullYear()) * 12 + currentDate.getMonth() - updateDate.getMonth())
+        : null;
 
-      let riskLevel = 'fresh';
-      let aiAdvice = 'Nội dung cập nhật gần đây, thông tin chính xác.';
-      let score = 95;
+      let riskLevel = validUpdateDate ? 'fresh' : 'critical';
+      let aiAdvice = validUpdateDate
+        ? 'Nội dung cập nhật gần đây, thông tin chính xác.'
+        : 'Không xác định được ngày cập nhật. Cần rà soát và bổ sung thời điểm kiểm chứng.';
+      let score = validUpdateDate ? 95 : 42;
 
-      if (diffMonths >= 10) {
+      if (validUpdateDate && diffMonths >= 10) {
         riskLevel = 'critical';
         score = 42;
         aiAdvice = `Đã hơn ${diffMonths} tháng chưa được cơ sở y tế rà soát. Nguy cơ giá dịch vụ, lịch trực và chỉ định đã thay đổi. Cần gửi thông báo yêu cầu cập nhật ngay.`;
-      } else if (diffMonths >= 5) {
+      } else if (validUpdateDate && diffMonths >= 5) {
         riskLevel = 'warning';
         score = 68;
         aiAdvice = `Đã ${diffMonths} tháng kể từ lần sửa đổi cuối. Đề xuất gửi thư nhắc nhở CSYT xác nhận lại quy trình.`;

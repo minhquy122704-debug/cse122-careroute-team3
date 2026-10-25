@@ -1,235 +1,241 @@
-/**
- * CareRoute - Main UI & Global Interaction Controller
- * Hệ thống điều phối giao diện, chuyển đổi vai trò, thông báo Toast, Modal và Header/Sidebar
- */
+(() => {
+  const authForm = document.getElementById("authForm");
+  if (!authForm) return;
 
-document.addEventListener('DOMContentLoaded', () => {
-  // 1. Khởi tạo Lucide Icons nếu có thư viện
-  if (window.lucide) {
-    window.lucide.createIcons();
+  const formTitle = document.getElementById("formTitle");
+  const formSubtitle = document.getElementById("formSubtitle");
+  const submitButton = document.getElementById("submitButton");
+  const switchMode = document.getElementById("switchMode");
+  const formStatus = document.getElementById("formStatus");
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const passwordToggle = document.getElementById("passwordToggle");
+  const rememberEmail = document.getElementById("rememberEmail");
+  const forgotDialog = document.getElementById("forgotDialog");
+  const toast = document.getElementById("toast");
+  let isRegistering = false;
+  let toastTimer;
+
+  function showToast(title, message) {
+    document.getElementById("toastTitle").textContent = title;
+    document.getElementById("toastMessage").textContent = message;
+    toast.classList.add("visible");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 3400);
   }
 
-  // 2. Gắn Thanh điều hướng nhanh vai trò (Role Switcher Floating Widget)
-  renderRoleSwitcher();
-
-  // 3. Xử lý Sidebar Toggle trên mobile/tablet
-  initMobileSidebar();
-
-  // 4. Highlight Menu hiện tại
-  highlightActiveMenu();
-});
-
-/**
- * Hiển thị thông báo Toast đẹp mắt
- */
-function showToast(message, type = 'success', duration = 3500) {
-  let container = document.getElementById('careroute-toast-container');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'careroute-toast-container';
-    container.className = 'fixed bottom-5 right-5 z-50 flex flex-col gap-2.5 max-w-sm pointer-events-none';
-    document.body.appendChild(container);
+  function setMode(registering) {
+    isRegistering = registering;
+    formStatus.textContent = "";
+    formStatus.classList.remove("success");
+    formTitle.textContent = registering ? "Tạo tài khoản CareRoute" : "Chào mừng bạn trở lại";
+    formSubtitle.textContent = registering
+      ? "Tạo tài khoản để bắt đầu sử dụng CareRoute."
+      : "Chọn vai trò và đăng nhập để tiếp tục.";
+    submitButton.textContent = registering ? "Tạo tài khoản" : "Đăng nhập";
+    switchMode.innerHTML = registering
+      ? 'Đã có tài khoản? <a href="#login" id="loginLink">Đăng nhập ngay</a>'
+      : 'Chưa có tài khoản? <a href="#register" id="registerLink">Đăng ký ngay</a>';
+    passwordInput.autocomplete = registering ? "new-password" : "current-password";
   }
 
-  const toast = document.createElement('div');
-  toast.className = `pointer-events-auto flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium shadow-xl border backdrop-blur-md transition-all duration-300 transform translate-y-4 opacity-0`;
-
-  let bgClass = 'bg-white text-slate-800 border-slate-200';
-  let iconHtml = '<i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-600 shrink-0"></i>';
-
-  if (type === 'success') {
-    bgClass = 'bg-emerald-900/90 text-white border-emerald-700/50 shadow-emerald-950/20';
-    iconHtml = '<i data-lucide="check-circle-2" class="w-5 h-5 text-emerald-400 shrink-0"></i>';
-  } else if (type === 'warning') {
-    bgClass = 'bg-amber-900/90 text-white border-amber-700/50 shadow-amber-950/20';
-    iconHtml = '<i data-lucide="alert-triangle" class="w-5 h-5 text-amber-400 shrink-0"></i>';
-  } else if (type === 'error') {
-    bgClass = 'bg-rose-900/90 text-white border-rose-700/50 shadow-rose-950/20';
-    iconHtml = '<i data-lucide="x-circle" class="w-5 h-5 text-rose-400 shrink-0"></i>';
-  } else if (type === 'info') {
-    bgClass = 'bg-slate-900/90 text-white border-slate-700/50 shadow-slate-950/20';
-    iconHtml = '<i data-lucide="info" class="w-5 h-5 text-teal-400 shrink-0"></i>';
+  function showFormMessage(message, isSuccess = false) {
+    formStatus.textContent = message;
+    formStatus.classList.toggle("success", isSuccess);
   }
 
-  toast.className += ` ${bgClass}`;
-  toast.innerHTML = `
-    ${iconHtml}
-    <div class="flex-1 leading-snug">${message}</div>
-    <button onclick="this.parentElement.remove()" class="text-white/60 hover:text-white p-1 ml-1 rounded-lg">
-      <i data-lucide="x" class="w-4 h-4"></i>
-    </button>
-  `;
-
-  container.appendChild(toast);
-  if (window.lucide) window.lucide.createIcons();
-
-  // Trigger animation
-  requestAnimationFrame(() => {
-    toast.classList.remove('translate-y-4', 'opacity-0');
-    toast.classList.add('translate-y-0', 'opacity-100');
+  document.querySelectorAll('input[name="role"]').forEach((input) => {
+    input.addEventListener("change", () => {
+      document.querySelectorAll(".role-option").forEach((option) => {
+        option.classList.toggle("selected", option.contains(input) && input.checked);
+      });
+      formStatus.textContent = "";
+    });
   });
 
-  setTimeout(() => {
-    toast.classList.add('opacity-0', 'translate-y-2');
-    setTimeout(() => toast.remove(), 300);
-  }, duration);
-}
-
-/**
- * Điều khiển Modal mở / đóng
- */
-function openModal(modalId) {
-  const modal = document.getElementById(modalId);
-  if (modal) {
-    modal.classList.remove('hidden');
-    modal.classList.add('flex');
-    document.body.classList.add('overflow-hidden');
-    if (window.lucide) window.lucide.createIcons();
+  const requestedRole = new URLSearchParams(window.location.search).get("role");
+  if (requestedRole) {
+    const roleInput = [...authForm.querySelectorAll('input[name="role"]')]
+      .find((input) => input.value === requestedRole);
+    if (roleInput) {
+      roleInput.checked = true;
+      roleInput.dispatchEvent(new Event("change", { bubbles: true }));
+    }
   }
-}
 
-function closeModal(modalId) {
-  const modal = document.getElementById(modalId);
-  if (modal) {
-    modal.classList.add('hidden');
-    modal.classList.remove('flex');
-    document.body.classList.remove('overflow-hidden');
-  }
-}
+  switchMode.addEventListener("click", (event) => {
+    const link = event.target.closest("a");
+    if (!link) return;
+    event.preventDefault();
+    setMode(!isRegistering);
+  });
 
-/**
- * Thanh chuyển đổi vai trò (Role Switcher) nhanh
- */
-function renderRoleSwitcher() {
-  if (document.getElementById('role-switcher-btn')) return;
+  document.getElementById("headerRegister").addEventListener("click", (event) => {
+    event.preventDefault();
+    setMode(true);
+    document.getElementById("loginCard").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
+  document.getElementById("headerLogin").addEventListener("click", (event) => {
+    event.preventDefault();
+    setMode(false);
+    document.getElementById("loginCard").scrollIntoView({ behavior: "smooth", block: "center" });
+  });
 
-  const currentPath = window.location.pathname;
+  passwordToggle.addEventListener("click", () => {
+    const shouldShow = passwordInput.type === "password";
+    passwordInput.type = shouldShow ? "text" : "password";
+    passwordToggle.setAttribute("aria-label", shouldShow ? "Ẩn mật khẩu" : "Hiện mật khẩu");
+    passwordToggle.title = shouldShow ? "Ẩn mật khẩu" : "Hiện mật khẩu";
+  });
 
-  const widget = document.createElement('div');
-  widget.id = 'role-switcher-container';
-  widget.className = 'fixed bottom-6 left-6 z-50';
-
-  widget.innerHTML = `
-    <div class="relative group">
-      <!-- Main Trigger Button -->
-      <button id="role-switcher-btn" class="flex items-center gap-2.5 px-4 py-2.5 bg-slate-900/90 text-white hover:bg-slate-900 rounded-full shadow-2xl border border-slate-700/60 backdrop-blur-md text-xs font-semibold tracking-wide transition-all transform hover:scale-105">
-        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
-        <span>Chuyển Vai Trò</span>
-        <i data-lucide="chevron-up" class="w-3.5 h-3.5 transition-transform group-hover:-rotate-180"></i>
-      </button>
-
-      <!-- Dropdown Menu -->
-      <div class="absolute bottom-full left-0 mb-3 w-72 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-slate-200 p-2.5 hidden group-hover:block transition-all">
-        <div class="px-3 py-2 border-b border-slate-100 mb-1.5 flex items-center justify-between">
-          <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">Hệ thống CareRoute</span>
-          <span class="text-[10px] bg-emerald-100 text-emerald-700 font-bold px-1.5 py-0.5 rounded">4 Vai Trò</span>
-        </div>
-
-        <div class="space-y-1">
-          <!-- Hub -->
-          <a href="../index.html" class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium text-slate-700 hover:bg-slate-100 transition-colors">
-            <div class="w-6 h-6 rounded-lg bg-teal-100 text-teal-700 flex items-center justify-center font-bold">🏠</div>
-            <div class="flex-1">
-              <p class="font-semibold text-slate-900">Trang Chủ Tổng Hợp</p>
-              <p class="text-[10px] text-slate-500">Cổng kết nối toàn bộ hệ thống</p>
-            </div>
-          </a>
-
-          <!-- Role 1: Citizen -->
-          <div class="pt-1 border-t border-slate-100">
-            <p class="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase">1. Người Dân (Citizen)</p>
-            <a href="citizen-care-search.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">
-              <i data-lucide="search" class="w-4 h-4 text-emerald-600"></i> Tra cứu & AI-1 Router
-            </a>
-            <a href="citizen-care-detail.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">
-              <i data-lucide="building-2" class="w-4 h-4 text-emerald-600"></i> Chi tiết cơ sở & dịch vụ
-            </a>
-            <a href="citizen-care-checklist.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-emerald-50 hover:text-emerald-700">
-              <i data-lucide="check-square" class="w-4 h-4 text-emerald-600"></i> AI-2 Lập Checklist chuẩn bị
-            </a>
-          </div>
-
-          <!-- Role 2: Facility -->
-          <div class="pt-1 border-t border-slate-100">
-            <p class="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase">2. Cơ Sở Y Tế (Facility)</p>
-            <a href="facility-dashboard.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-teal-50 hover:text-teal-700">
-              <i data-lucide="layout-dashboard" class="w-4 h-4 text-teal-600"></i> Bảng điều khiển CSYT
-            </a>
-            <a href="facility-service-management.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-teal-50 hover:text-teal-700">
-              <i data-lucide="stethoscope" class="w-4 h-4 text-teal-600"></i> Quản lý dịch vụ (CRUD)
-            </a>
-            <a href="facility-guidance-management.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-teal-50 hover:text-teal-700">
-              <i data-lucide="map" class="w-4 h-4 text-teal-600"></i> Quy trình hướng dẫn khám
-            </a>
-          </div>
-
-          <!-- Role 3: Reviewer -->
-          <div class="pt-1 border-t border-slate-100">
-            <p class="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase">3. Biên Tập Viên (Reviewer)</p>
-            <a href="reviewer-review-queue.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-700">
-              <i data-lucide="list-checks" class="w-4 h-4 text-amber-600"></i> Hàng chờ duyệt nội dung
-            </a>
-            <a href="reviewer-feedback-review.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-700">
-              <i data-lucide="message-square-diff" class="w-4 h-4 text-amber-600"></i> Đánh giá & Phản hồi
-            </a>
-            <a href="reviewer-freshness-monitor.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-amber-50 hover:text-amber-700">
-              <i data-lucide="sparkles" class="w-4 h-4 text-amber-600"></i> AI-3 Giám sát độ mới
-            </a>
-          </div>
-
-          <!-- Role 4: Admin -->
-          <div class="pt-1 border-t border-slate-100">
-            <p class="text-[10px] font-bold text-slate-400 px-3 py-1 uppercase">4. Quản Trị Viên (Admin)</p>
-            <a href="admin-dashboard.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-700">
-              <i data-lucide="shield" class="w-4 h-4 text-blue-600"></i> Bảng điều khiển quản trị
-            </a>
-            <a href="admin-facility-management.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-700">
-              <i data-lucide="building" class="w-4 h-4 text-blue-600"></i> Quản lý CSYT toàn quốc
-            </a>
-            <a href="admin-category-management.html" class="flex items-center gap-2.5 px-3 py-1.5 rounded-lg text-xs text-slate-700 hover:bg-blue-50 hover:text-blue-700">
-              <i data-lucide="tags" class="w-4 h-4 text-blue-600"></i> Phân loại Taxonomy
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
-  `;
-
-  document.body.appendChild(widget);
-  if (window.lucide) window.lucide.createIcons();
-}
-
-/**
- * Highlight link điều hướng đang xem
- */
-function highlightActiveMenu() {
-  const currentFile = window.location.pathname.split('/').pop();
-  if (!currentFile) return;
-
-  const links = document.querySelectorAll('nav a, aside a');
-  links.forEach(link => {
-    const href = link.getAttribute('href');
-    if (href && href.endsWith(currentFile)) {
-      link.classList.add('bg-emerald-50', 'text-emerald-700', 'font-semibold');
+  rememberEmail.addEventListener("change", () => {
+    try {
+      if (rememberEmail.checked && emailInput.value.trim()) {
+        localStorage.setItem("careroute-remembered-email", emailInput.value.trim());
+      } else {
+        localStorage.removeItem("careroute-remembered-email");
+      }
+    } catch (error) {
+      console.error("Không thể lưu tùy chọn ghi nhớ email:", error);
+      showFormMessage("Trình duyệt không cho phép lưu tùy chọn ghi nhớ email.");
     }
   });
-}
 
-/**
- * Mobile Sidebar Toggle
- */
-function initMobileSidebar() {
-  const toggleBtn = document.getElementById('sidebarToggle') || document.getElementById('mobileMenuBtn');
-  const sidebar = document.getElementById('appSidebar') || document.querySelector('aside');
-  if (toggleBtn && sidebar) {
-    toggleBtn.addEventListener('click', () => {
-      sidebar.classList.toggle('-translate-x-full');
-      sidebar.classList.toggle('translate-x-0');
-    });
+  emailInput.addEventListener("input", () => {
+    if (!rememberEmail.checked) return;
+    try {
+      if (emailInput.value.trim()) {
+        localStorage.setItem("careroute-remembered-email", emailInput.value.trim());
+      } else {
+        localStorage.removeItem("careroute-remembered-email");
+      }
+    } catch (error) {
+      console.error("Không thể cập nhật email đã ghi nhớ:", error);
+      rememberEmail.checked = false;
+      showFormMessage("Không thể lưu email trong trình duyệt này.");
+    }
+  });
+
+  try {
+    const savedEmail = localStorage.getItem("careroute-remembered-email");
+    if (savedEmail) {
+      emailInput.value = savedEmail;
+      rememberEmail.checked = true;
+    }
+  } catch (error) {
+    console.error("Không thể khôi phục email đã ghi nhớ:", error);
   }
-}
 
-// Global helper exports
-window.showToast = showToast;
-window.openModal = openModal;
-window.closeModal = closeModal;
+  authForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    if (!emailInput.value.trim()) {
+      emailInput.setCustomValidity("Vui lòng nhập email hoặc số điện thoại.");
+      emailInput.reportValidity();
+      emailInput.setCustomValidity("");
+      emailInput.focus();
+      return;
+    }
+    if (!passwordInput.value) {
+      passwordInput.setCustomValidity("Vui lòng nhập mật khẩu.");
+      passwordInput.reportValidity();
+      passwordInput.setCustomValidity("");
+      passwordInput.focus();
+      return;
+    }
+    if (isRegistering) {
+      showFormMessage("Giao diện đăng ký đã sẵn sàng; cần kết nối dịch vụ tài khoản để tạo tài khoản thật.");
+      return;
+    }
+    const selectedRole = authForm.querySelector('input[name="role"]:checked');
+    const roleNames = {
+      citizen: "Người dân",
+      facility: "Cơ sở y tế",
+      reviewer: "Kiểm duyệt viên",
+      admin: "Quản trị viên"
+    };
+    const destinations = {
+      citizen: "citizen-care-search.html",
+      facility: "facility-dashboard.html",
+      reviewer: "reviewer-review-queue.html",
+      admin: "admin-dashboard.html"
+    };
+    const destination = destinations[selectedRole.value];
+    if (!destination) {
+      showFormMessage("Vui lòng chọn một vai trò hợp lệ.");
+      return;
+    }
+    const identifier = emailInput.value.trim();
+    const displayName = identifier.includes("@") ? identifier.split("@")[0] : `Khách hàng ${identifier.slice(-4)}`;
+    const demoUser = {
+      name: displayName,
+      email: identifier,
+      role: selectedRole.value === "citizen" ? "user" : selectedRole.value,
+      roleName: roleNames[selectedRole.value],
+      letters: displayName.slice(0, 2).toLocaleUpperCase("vi")
+    };
+    try {
+      localStorage.setItem("careroute_user", JSON.stringify(demoUser));
+    } catch (error) {
+      console.error("Không thể lưu phiên đăng nhập demo:", error);
+      showFormMessage("Không thể lưu phiên đăng nhập trong trình duyệt này. Hãy kiểm tra cài đặt bộ nhớ rồi thử lại.");
+      return;
+    }
+    showFormMessage(`Đăng nhập demo với vai trò ${roleNames[selectedRole.value]}. Đang mở giao diện...`, true);
+    submitButton.disabled = true;
+    document.body.classList.add("page-leaving");
+    window.setTimeout(() => window.location.assign(destination), 180);
+  });
+
+  document.getElementById("forgotLink").addEventListener("click", (event) => {
+    event.preventDefault();
+    const recoveryEmail = document.getElementById("recoveryEmail");
+    recoveryEmail.value = emailInput.value.includes("@") ? emailInput.value.trim() : "";
+    forgotDialog.showModal();
+    recoveryEmail.focus();
+  });
+  document.getElementById("closeForgot").addEventListener("click", () => forgotDialog.close());
+  document.getElementById("forgotForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const address = document.getElementById("recoveryEmail").value;
+    forgotDialog.close();
+    showToast("Chế độ bản demo", `Chức năng gửi email khôi phục cho ${address} chưa được kết nối.`);
+  });
+  forgotDialog.addEventListener("click", (event) => {
+    if (event.target === forgotDialog) forgotDialog.close();
+  });
+
+  document.getElementById("searchForm").addEventListener("submit", (event) => {
+    event.preventDefault();
+    const query = document.getElementById("siteSearch").value.trim();
+    if (query) showToast("Tìm kiếm bản demo", `Đã nhận từ khóa “${query}”. Hãy đăng nhập để tiếp tục tra cứu.`);
+  });
+
+  document.querySelectorAll("[data-notice]").forEach((link) => {
+    link.addEventListener("click", (event) => {
+      event.preventDefault();
+      showToast("Thông tin", link.dataset.notice);
+    });
+  });
+})();
+
+(() => {
+  const searchForm = document.querySelector(".error-content #searchForm");
+  if (!searchForm) return;
+
+  const toast = document.getElementById("toast");
+  let toastTimer;
+
+  searchForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    const query = document.getElementById("siteSearch").value.trim();
+    if (!query) {
+      document.getElementById("siteSearch").focus();
+      return;
+    }
+    document.getElementById("toastTitle").textContent = "Chưa thể tìm thấy trang";
+    document.getElementById("toastMessage").textContent = `Từ khóa “${query}” đã được ghi nhận. Hãy quay về trang chủ để tiếp tục tra cứu.`;
+    toast.classList.add("visible");
+    window.clearTimeout(toastTimer);
+    toastTimer = window.setTimeout(() => toast.classList.remove("visible"), 3500);
+  });
+})();
