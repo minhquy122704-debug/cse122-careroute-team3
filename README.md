@@ -96,10 +96,7 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
   _[https://youtu.be/_AgrcEPVFW0]_
   _[https://youtu.be/OMCS33W9OSA]_
   _[https://youtu.be/fbL64b3g8EM]_
- _[https://www.youtube.com/watch?v=VCxoekJkriU]_
- _[https://www.youtube.com/watch?v=VlI6-VO329c]_
-_[https://www.youtube.com/watch?v=YS7xXJUFyiI&t=5s]_
 
 ## Khai báo sử dụng AI
 
-- Sử dụng các công cụ AI: Copilot,Gemini,Antigravity hỗ trợ trong quá trình định hình ý tưởng cấu trúc, kiểm tra mã nguồn, hỗ trợ viết tài liệu hướng dẫn và tối ưu hóa giao diện người dùng theo đúng quy chế học phần.
+- Sử dụng các công cụ AI: Copilot,Gemini,Chat GPT -> hỗ trợ trong quá trình định hình ý tưởng cấu trúc, kiểm tra mã nguồn, hỗ trợ viết tài liệu hướng dẫn và tối ưu hóa giao diện người dùng theo đúng quy chế học phần.
