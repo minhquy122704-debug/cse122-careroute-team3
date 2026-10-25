@@ -99,4 +99,4 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 
 ## Khai báo sử dụng AI
 
-- Sử dụng các công cụ AI hỗ trợ trong quá trình định hình ý tưởng cấu trúc, kiểm tra mã nguồn, hỗ trợ viết tài liệu hướng dẫn và tối ưu hóa giao diện người dùng theo đúng quy chế học phần.
+- Sử dụng các công cụ AI: Copilot,Gemini,Antigravity hỗ trợ trong quá trình định hình ý tưởng cấu trúc, kiểm tra mã nguồn, hỗ trợ viết tài liệu hướng dẫn và tối ưu hóa giao diện người dùng theo đúng quy chế học phần.
