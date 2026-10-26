@@ -3,7 +3,7 @@
 Trong quá trình phát triển dự án **CareRoute**, nhóm đã sử dụng các công cụ trí tuệ nhân tạo (AI) làm trợ lý kỹ thuật nhằm tăng năng suất. Dưới đây là báo cáo chi tiết việc ứng dụng AI:
 
 ## 1. Các công cụ AI đã sử dụng
-* **Mô hình ngôn ngữ lớn (LLM):** Hỗ trợ cấu trúc mã nguồn HTML/CSS, gợi ý cấu trúc dữ liệu JavaScript và soạn thảo tài liệu kỹ thuật trong thư mục `docs/`.
+* **Copilot,Gemini,Chat GPT:** Hỗ trợ cấu trúc mã nguồn HTML/CSS, gợi ý cấu trúc dữ liệu JavaScript và soạn thảo tài liệu kỹ thuật trong thư mục `docs/`.
 
 ## 2. Mục đích và phạm vi ứng dụng
 * **Hỗ trợ thiết kế giao diện (UI Scaffolding):** Sử dụng AI để tạo khung giao diện chuẩn responsive bằng Flexbox/Grid, sau đó nhóm tự tùy chỉnh lại màu sắc, font chữ và các thành phần CSS theo bộ nhận diện thương hiệu của CareRoute.
