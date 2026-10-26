@@ -36,7 +36,7 @@ Trong bối cảnh y tế cộng đồng hiện nay, người dân thường g�
 | 1   | Mẫu tra cứu & Gợi ý thông minh         | `citizen-care-search.html`          | Người dân         | Quân (SV1)           |
 | 2   | Mẫu chi tiết dịch vụ/cơ sở y tế        | `citizen-care-detail.html`          | Người dân         | Quân (SV1)           |
 | 3   | Mẫu danh sách kiểm tra (Checklist)     | `citizen-care-checklist.html`       | Người dân         | Quân (SV1)           |
-| 4   | Bảng điều khiển cơ sở y tế             | `facility-dashboard.html`           | Cơ sở y tế        | Bút (SV2)[cite: 2]   |
+| 4   | Bảng điều khiển cơ sở y tế             | `facility-dashboard.html`           | Cơ sở y tế        | Bút (SV2)   |
 | 5   | Trang quản lý dịch vụ y tế (CRUD)      | `facility-service-management.html`  | Cơ sở y tế        | Bút (SV2)            |
 | 6   | Trang quản lý hướng dẫn khám bệnh      | `facility-guidance-management.html` | Cơ sở y tế        | Bút (SV2)            |
 | 7   | Hàng chờ duyệt nội dung                | `reviewer-review-queue.html`        | Biên tập viên     | Quý (SV3)            |
